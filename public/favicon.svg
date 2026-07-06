@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="hood" x1="0" y1="0" x2="0.9" y2="1">
+      <stop offset="0%" stop-color="#8b74f6"/>
+      <stop offset="100%" stop-color="#4c3d9e"/>
+    </linearGradient>
+  </defs>
+  <path d="M32 12 C22 12 14 4 10 8 C14 12 12 16 12 16 Z" fill="#4ade9c"/>
+  <path d="M32 13 C40 12 48 4 54 8 C50 13 52 16 52 16 Z" fill="#2aa876"/>
+  <path d="M32 8 C48 8 57 20 56 34 C55 49 45 57 32 57 C19 57 9 49 8 34 C7 20 16 8 32 8 Z" fill="url(#hood)"/>
+  <ellipse cx="32" cy="38" rx="17" ry="15" fill="#e9edf8"/>
+  <circle cx="25.5" cy="36.5" r="2.6" fill="#232a41"/>
+  <circle cx="38.5" cy="36.5" r="2.6" fill="#232a41"/>
+  <path d="M28.5 42 Q32 45 35.5 42" fill="none" stroke="#232a41" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M18 20 L19.4 22.4 L18 24.8 L16.6 22.4 Z" fill="#5cc8ff"/>
+  <path d="M46 20 L47.4 22.4 L46 24.8 L44.6 22.4 Z" fill="#5cc8ff"/>
+</svg>

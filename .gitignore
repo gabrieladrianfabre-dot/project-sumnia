@@ -1,0 +1,6 @@
+node_modules/
+dist/
+
+# Runtime data — seeded fresh on first boot; never ship accounts or user data.
+server/data/items.json
+server/data/items.json.tmp

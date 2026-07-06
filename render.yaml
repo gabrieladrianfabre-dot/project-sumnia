@@ -1,0 +1,14 @@
+# One-click deploy on Render (https://render.com).
+# New > Blueprint > connect this repo, then set ADMIN_PASSWORD when prompted.
+services:
+  - type: web
+    name: sumnia
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: ADMIN_PASSWORD
+        sync: false # you enter the curator password in the Render dashboard
+      - key: NODE_VERSION
+        value: "20"

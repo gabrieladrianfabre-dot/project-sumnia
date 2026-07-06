@@ -1,0 +1,308 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-display: 'Space Grotesk', ui-sans-serif, sans-serif;
+  --font-body: 'Instrument Sans', ui-sans-serif, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --color-void: #060913;
+  --color-frost: #e9edf8;
+  --color-muted: #8b93ad;
+  --color-math: #5cc8ff;
+  --color-physics: #a78bfa;
+  --color-chem: #4ade9c;
+}
+
+html {
+  background: var(--color-void);
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-frost);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- Liquid glass primitives ---- */
+
+.glass {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1.25rem;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+.glass-pill {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease;
+}
+
+.glass-pill:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Active pills glow in the hue passed via --pill-glow */
+.glass-pill[data-active='true'] {
+  --glow: var(--pill-glow, #5cc8ff);
+  background: color-mix(in srgb, var(--glow) 18%, transparent);
+  border-color: color-mix(in srgb, var(--glow) 55%, transparent);
+  color: color-mix(in srgb, var(--glow) 80%, white);
+  box-shadow:
+    0 0 18px color-mix(in srgb, var(--glow) 30%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.card-lift {
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.card-lift:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.24);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 16px 44px rgba(0, 0, 0, 0.5);
+}
+
+/* ---- Aurora background ---- */
+
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.aurora::after {
+  /* faint grain-ish vignette to keep the glass from floating on flat black */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.04), transparent 60%);
+}
+
+.aurora-blob {
+  position: absolute;
+  width: 55vw;
+  height: 55vw;
+  border-radius: 50%;
+  filter: blur(110px);
+  opacity: 0.16;
+  animation: drift 26s ease-in-out infinite alternate;
+}
+
+.aurora-blob.math {
+  background: var(--color-math);
+  top: -18%;
+  left: -12%;
+}
+
+.aurora-blob.physics {
+  background: var(--color-physics);
+  top: 15%;
+  right: -18%;
+  animation-delay: -9s;
+}
+
+.aurora-blob.chem {
+  background: var(--color-chem);
+  bottom: -25%;
+  left: 22%;
+  animation-delay: -17s;
+}
+
+@keyframes drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(6vw, 4vh, 0) scale(1.15);
+  }
+}
+
+/* ---- Mascot ---- */
+
+.mascot-float {
+  display: block;
+  animation: mascot-bob 6s ease-in-out infinite;
+}
+
+.mascot-loading {
+  display: block;
+  animation: mascot-bob 1.6s ease-in-out infinite;
+}
+
+@keyframes mascot-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+/* ---- Navigation dots (side rail + mobile dock) ---- */
+
+.nav-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 999px;
+  color: var(--color-muted);
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.nav-dot:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-frost);
+}
+
+.nav-dot.active {
+  background: color-mix(in srgb, var(--color-math) 18%, transparent);
+  color: var(--color-math);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--color-math) 28%, transparent);
+}
+
+/* ---- Settings switches ---- */
+
+.switch {
+  position: relative;
+  width: 2.75rem;
+  height: 1.55rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: background 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  background: var(--color-frost);
+  transition: transform 0.2s ease;
+}
+
+.switch[aria-checked='true'] {
+  background: color-mix(in srgb, var(--color-math) 45%, transparent);
+  border-color: color-mix(in srgb, var(--color-math) 60%, transparent);
+}
+
+.switch[aria-checked='true']::after {
+  transform: translateX(1.15rem);
+}
+
+/* ---- Reduce motion (user setting mirrors the media query) ---- */
+
+.reduce-motion .aurora-blob,
+.reduce-motion .mascot-float,
+.reduce-motion .mascot-loading {
+  animation: none !important;
+}
+
+.reduce-motion .card-lift,
+.reduce-motion .card-lift:hover {
+  transform: none;
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-blob {
+    animation: none;
+  }
+  .mascot-float,
+  .mascot-loading {
+    animation: none;
+  }
+  .card-lift,
+  .card-lift:hover {
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ---- Math / prose rendering ---- */
+
+.prose-math {
+  line-height: 1.75;
+  font-size: 1.02rem;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+.prose-math .katex-display {
+  margin: 1rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0;
+}
+
+.prose-math .katex {
+  font-size: 1.08em;
+}
+
+/* Card previews: clamp height and fade out */
+.preview-clamp {
+  max-height: 7.5rem;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+}
+
+/* ---- Forms ---- */
+
+.field {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.75rem;
+  padding: 0.6rem 0.9rem;
+  color: var(--color-frost);
+  font-family: var(--font-body);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.field:focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--color-math) 60%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-math) 18%, transparent);
+}
+
+.field::placeholder {
+  color: color-mix(in srgb, var(--color-muted) 70%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-math);
+  outline-offset: 2px;
+}
