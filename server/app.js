@@ -3,25 +3,41 @@ import crypto from 'node:crypto'
 import { VAULT_ID } from './store.js'
 
 const REQUIRED_FIELDS = ['title', 'branch', 'topic', 'problem', 'solution']
+const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000 // 30 days
 
 const hashPassword = (password, salt) => crypto.scryptSync(password, salt, 32).toString('hex')
 
 // Never send password material to the client.
 const publicUser = ({ id, name, email }) => ({ id, name, email })
 
+// Express 4 doesn't catch rejected promises from async handlers.
+const h = (fn) => (req, res, next) => Promise.resolve(fn(req, res)).catch(next)
+
 export function createApp(store, { adminPassword }) {
   const app = express()
   app.use(express.json({ limit: '1mb' }))
 
-  // Session tokens live in memory for the life of the process.
-  const tokens = new Set() // curator sessions
-  const userTokens = new Map() // user sessions: token -> userId
-
+  // Sessions live in the store, so logins survive server restarts.
   const bearer = (req) => (req.headers.authorization ?? '').replace(/^Bearer /, '')
-  const isAuthed = (req) => tokens.has(bearer(req))
-  const currentUser = (req) => {
-    const userId = userTokens.get(bearer(req))
-    return userId ? store.getUser(userId) : null
+
+  async function sessionFor(req, kind) {
+    const token = bearer(req)
+    if (!token) return null
+    const session = await store.getSession(token)
+    return session?.kind === kind ? session : null
+  }
+
+  const isAuthed = async (req) => Boolean(await sessionFor(req, 'curator'))
+
+  async function currentUser(req) {
+    const session = await sessionFor(req, 'user')
+    return session ? store.getUser(session.userId) : null
+  }
+
+  async function openSession(kind, userId = null) {
+    const token = crypto.randomUUID()
+    await store.createSession({ token, kind, userId, ttlMs: SESSION_TTL_MS })
+    return token
   }
 
   function validateItem(body) {
@@ -44,18 +60,16 @@ export function createApp(store, { adminPassword }) {
     }
   }
 
-  app.post('/api/login', (req, res) => {
+  app.post('/api/login', h(async (req, res) => {
     if (req.body?.password !== adminPassword) {
       return res.status(401).json({ error: 'Wrong password' })
     }
-    const token = crypto.randomUUID()
-    tokens.add(token)
-    res.json({ token })
-  })
+    res.json({ token: await openSession('curator') })
+  }))
 
   // ---- User accounts (repo creators; separate from the curator) ----
 
-  app.post('/api/signup', (req, res) => {
+  app.post('/api/signup', h(async (req, res) => {
     const name = typeof req.body?.name === 'string' ? req.body.name.trim() : ''
     const email = typeof req.body?.email === 'string' ? req.body.email.trim() : ''
     const password = typeof req.body?.password === 'string' ? req.body.password : ''
@@ -68,20 +82,23 @@ export function createApp(store, { adminPassword }) {
     if (password.length < 6) {
       return res.status(400).json({ error: 'Password must be at least 6 characters' })
     }
-    if (store.getUserByEmail(email)) {
+    if (await store.getUserByEmail(email)) {
       return res.status(409).json({ error: 'An account with this email already exists — sign in instead' })
     }
     const salt = crypto.randomBytes(16).toString('hex')
-    const user = store.createUser({ name, email, passwordHash: hashPassword(password, salt), salt })
-    const token = crypto.randomUUID()
-    userTokens.set(token, user.id)
-    res.status(201).json({ token, user: publicUser(user) })
-  })
+    const user = await store.createUser({
+      name,
+      email,
+      passwordHash: hashPassword(password, salt),
+      salt,
+    })
+    res.status(201).json({ token: await openSession('user', user.id), user: publicUser(user) })
+  }))
 
-  app.post('/api/auth/login', (req, res) => {
+  app.post('/api/auth/login', h(async (req, res) => {
     const email = typeof req.body?.email === 'string' ? req.body.email.trim() : ''
     const password = typeof req.body?.password === 'string' ? req.body.password : ''
-    const user = email ? store.getUserByEmail(email) : null
+    const user = email ? await store.getUserByEmail(email) : null
     const ok =
       user &&
       crypto.timingSafeEqual(
@@ -89,24 +106,22 @@ export function createApp(store, { adminPassword }) {
         Buffer.from(hashPassword(password, user.salt), 'hex')
       )
     if (!ok) return res.status(401).json({ error: 'Wrong email or password' })
-    const token = crypto.randomUUID()
-    userTokens.set(token, user.id)
-    res.json({ token, user: publicUser(user) })
-  })
+    res.json({ token: await openSession('user', user.id), user: publicUser(user) })
+  }))
 
   // ---- Repositories ----
 
-  app.get('/api/repos', (_req, res) => {
-    res.json({ repos: store.listRepos() })
-  })
+  app.get('/api/repos', h(async (_req, res) => {
+    res.json({ repos: await store.listRepos() })
+  }))
 
   // Creating a repository needs a signed-in user (or the curator), so every
   // community repo is attributed to its creator. No curator password involved.
-  app.post('/api/repos', (req, res) => {
-    const user = currentUser(req)
+  app.post('/api/repos', h(async (req, res) => {
+    const user = await currentUser(req)
     const creator = user
       ? { id: user.id, name: user.name }
-      : isAuthed(req)
+      : (await isAuthed(req))
         ? { id: 'curator', name: 'The Curator' }
         : null
     if (!creator) {
@@ -120,64 +135,70 @@ export function createApp(store, { adminPassword }) {
     if (description.length > 300) {
       return res.status(400).json({ error: 'Description must be 300 characters or fewer' })
     }
-    res.status(201).json(store.createRepo({ name, description, createdBy: creator }))
-  })
+    res.status(201).json(await store.createRepo({ name, description, createdBy: creator }))
+  }))
 
-  app.get('/api/items', (req, res) => {
+  app.get('/api/items', h(async (req, res) => {
     const { branch, topic, repo } = req.query
     res.json({
-      ...store.taxonomies(),
-      items: store.listItems({ branch, topic, repo }),
+      ...(await store.taxonomies()),
+      items: await store.listItems({ branch, topic, repo }),
     })
-  })
+  }))
 
-  app.get('/api/items/:id', (req, res) => {
-    const item = store.getItem(req.params.id)
+  app.get('/api/items/:id', h(async (req, res) => {
+    const item = await store.getItem(req.params.id)
     if (!item) return res.status(404).json({ error: 'Item not found' })
-    const repo = store.getRepo(item.repoId)
+    const repo = await store.getRepo(item.repoId)
     res.json({
       ...item,
       repo: repo ? { id: repo.id, name: repo.name, official: repo.official } : null,
     })
-  })
+  }))
 
   // Writes to the vault need the curator token; community repos are open.
-  const guardRepo = (repo, req, res) => {
-    if (repo.official && !isAuthed(req)) {
+  const guardRepo = async (repo, req, res) => {
+    if (repo.official && !(await isAuthed(req))) {
       res.status(401).json({ error: 'The vault is curator-only — sign in to edit it' })
       return false
     }
     return true
   }
 
-  app.post('/api/items', (req, res) => {
+  app.post('/api/items', h(async (req, res) => {
     const body = req.body ?? {}
     const repoId = typeof body.repoId === 'string' && body.repoId ? body.repoId : VAULT_ID
-    const repo = store.getRepo(repoId)
+    const repo = await store.getRepo(repoId)
     if (!repo) return res.status(400).json({ error: 'Unknown repository' })
-    if (!guardRepo(repo, req, res)) return
+    if (!(await guardRepo(repo, req, res))) return
     const { error, fields } = validateItem(body)
     if (error) return res.status(400).json({ error })
-    res.status(201).json(store.createItem({ ...fields, repoId }))
-  })
+    res.status(201).json(await store.createItem({ ...fields, repoId }))
+  }))
 
-  app.put('/api/items/:id', (req, res) => {
-    const existing = store.getItem(req.params.id)
+  app.put('/api/items/:id', h(async (req, res) => {
+    const existing = await store.getItem(req.params.id)
     if (!existing) return res.status(404).json({ error: 'Item not found' })
-    const repo = store.getRepo(existing.repoId)
-    if (!guardRepo(repo, req, res)) return
+    const repo = await store.getRepo(existing.repoId)
+    if (!(await guardRepo(repo, req, res))) return
     const { error, fields } = validateItem(req.body ?? {})
     if (error) return res.status(400).json({ error })
-    res.json(store.updateItem(req.params.id, fields))
-  })
+    res.json(await store.updateItem(req.params.id, fields))
+  }))
 
-  app.delete('/api/items/:id', (req, res) => {
-    const existing = store.getItem(req.params.id)
+  app.delete('/api/items/:id', h(async (req, res) => {
+    const existing = await store.getItem(req.params.id)
     if (!existing) return res.status(404).json({ error: 'Item not found' })
-    const repo = store.getRepo(existing.repoId)
-    if (!guardRepo(repo, req, res)) return
-    store.deleteItem(req.params.id)
+    const repo = await store.getRepo(existing.repoId)
+    if (!(await guardRepo(repo, req, res))) return
+    await store.deleteItem(req.params.id)
     res.status(204).end()
+  }))
+
+  // eslint-disable-next-line no-unused-vars
+  app.use('/api', (err, _req, res, _next) => {
+    console.error(err)
+    res.status(500).json({ error: 'Internal server error' })
   })
 
   return app

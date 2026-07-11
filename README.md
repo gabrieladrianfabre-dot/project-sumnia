@@ -39,10 +39,24 @@ Node host — static hosting like GitHub Pages can't run the API.
    build`, start `npm start`.
 3. Set **`ADMIN_PASSWORD`** when prompted. Deploy.
 
-Note: Render's free tier has an ephemeral filesystem. The 10 seed problems are
-recreated on every boot, but repositories and accounts created at runtime are
-lost when the service restarts — fine for a public demo; swap the JSON store
-for a database for durable data.
+## Database (durable accounts, repos, and sessions)
+
+Without a database, data lives in a JSON file — fine locally, but on hosts
+with ephemeral disks (like Render's free tier) accounts and community repos
+reset on every restart. Point Sumnia at any Postgres to make everything
+durable, including login sessions:
+
+1. Create a free Postgres — e.g. [Supabase](https://supabase.com) (New
+   project) or [Neon](https://neon.tech). Copy the **connection string**
+   (Supabase: Connect → Session pooler URI, with your database password
+   substituted in).
+2. Set it as the **`DATABASE_URL`** environment variable (Render: service →
+   Environment). The schema is created automatically on first boot, and the
+   10 seed problems load into the vault if it's empty.
+
+With `DATABASE_URL` unset the app falls back to the JSON-file store, so local
+dev needs no setup. The Postgres store is covered by the same test suite via
+PGlite (an in-process Postgres), so `npm test` exercises both backends.
 
 ## User accounts
 

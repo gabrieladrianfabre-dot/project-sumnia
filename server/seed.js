@@ -160,8 +160,8 @@ $$m_{\mathrm{NH_3}} = \frac{10}{3} \times 17 \approx 56.7\ \mathrm{g}.$$`,
   },
 ]
 
-export function seedIfEmpty(store) {
-  if (store.listItems().length > 0) return
-  for (const item of SEED_ITEMS) store.createItem({ ...item, repoId: 'vault' })
+export async function seedIfEmpty(store) {
+  if ((await store.listItems()).length > 0) return
+  for (const item of SEED_ITEMS) await store.createItem({ ...item, repoId: 'vault' })
   console.log(`Seeded ${SEED_ITEMS.length} items`)
 }

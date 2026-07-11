@@ -149,4 +149,17 @@ export class Store {
     if (!data.branches.includes(item.branch)) data.branches.push(item.branch)
     if (!data.topics.includes(item.topic)) data.topics.push(item.topic)
   }
+
+  // Sessions persist in the data file so logins survive server restarts.
+  createSession({ token, kind, userId = null, ttlMs }) {
+    const data = this.#read()
+    data.sessions = (data.sessions ?? []).filter((s) => s.expiresAt > Date.now())
+    data.sessions.push({ token, kind, userId, expiresAt: Date.now() + ttlMs })
+    this.#write(data)
+  }
+
+  getSession(token) {
+    const s = (this.#read().sessions ?? []).find((s) => s.token === token)
+    return s && s.expiresAt > Date.now() ? { token: s.token, kind: s.kind, userId: s.userId } : null
+  }
 }

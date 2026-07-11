@@ -3,13 +3,20 @@ import { existsSync } from 'node:fs'
 import express from 'express'
 import { fileURLToPath } from 'node:url'
 import { Store } from './store.js'
+import { createPgStore } from './pg-store.js'
 import { createApp } from './app.js'
 import { seedIfEmpty } from './seed.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const isDev = process.argv.includes('--dev')
-const store = new Store(path.join(__dirname, 'data', 'items.json'))
-seedIfEmpty(store)
+
+// With DATABASE_URL set (e.g. a Supabase/Neon Postgres), data and sessions are
+// durable. Without it, the JSON-file store keeps local dev zero-setup.
+const store = process.env.DATABASE_URL
+  ? await createPgStore(process.env.DATABASE_URL)
+  : new Store(path.join(__dirname, 'data', 'items.json'))
+console.log(process.env.DATABASE_URL ? 'Store: Postgres' : 'Store: JSON file (dev)')
+await seedIfEmpty(store)
 
 // Set ADMIN_PASSWORD in the environment (locally or on your host) to choose the
 // curator password. The default below is only a placeholder for quick trials.
