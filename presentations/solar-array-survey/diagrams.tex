@@ -15,21 +15,21 @@
 \newcommand{\diagRooftop}{%
 \begin{tikzpicture}[scale=1]
   % roof slab + parapet
-  \fill[solarmist] (0,0) rectangle (9.6,5.6);
-  \draw[solarrule, line width=2pt] (0,0) rectangle (9.6,5.6);
-  \draw[solarrule, line width=0.6pt] (0.18,0.18) rectangle (9.42,5.42);
+  \fill[figpale] (0,0) rectangle (9.6,5.6);
+  \draw[figrule, line width=2pt] (0,0) rectangle (9.6,5.6);
+  \draw[figrule, line width=0.6pt] (0.18,0.18) rectangle (9.42,5.42);
 
   % rooftop plant, to sell "this is a real roof, not a textbook"
   \foreach \x/\y/\w/\h in {6.4/3.7/1.5/1.2, 8.1/1.1/1.0/1.3, 6.6/1.2/0.9/0.7}{
-    \fill[solarslate!25] (\x,\y) rectangle ++(\w,\h);
-    \draw[solarslate!60, line width=0.6pt] (\x,\y) rectangle ++(\w,\h);
+    \fill[figmuted!25] (\x,\y) rectangle ++(\w,\h);
+    \draw[figmuted!60, line width=0.6pt] (\x,\y) rectangle ++(\w,\h);
   }
-  \draw[solarslate!45, line width=2.5pt] (7.15,3.7) -- (7.15,2.6) -- (8.6,2.6) -- (8.6,2.4);
+  \draw[figmuted!45, line width=2.5pt] (7.15,3.7) -- (7.15,2.6) -- (8.6,2.6) -- (8.6,2.4);
   \node[dim, anchor=west] at (6.4,5.05) {existing HVAC plant};
 
   % north arrow
   \begin{scope}[shift={(0.85,4.35)}]
-    \draw[solarslate, line width=0.9pt, -{Stealth[length=5pt]}] (0,0) -- (0,0.85);
+    \draw[figmuted, line width=0.9pt, -{Stealth[length=5pt]}] (0,0) -- (0,0.85);
     \node[dim, above] at (0,0.85) {N};
   \end{scope}
 
@@ -37,8 +37,8 @@
   \coordinate (O) at (2.3,2.6);
   \coordinate (A) at ($(O)+(52:3.045)$);
   \coordinate (B) at ($(O)+(-52:2.394)$);
-  \fill[solaramber!30] (O) -- (A) -- (B) -- cycle;
-  \draw[solaramber!80, line width=0.8pt] (A) -- (B);
+  \fill[figaccent!25] (O) -- (A) -- (B) -- cycle;
+  \draw[figaccent!55, line width=0.8pt] (A) -- (B);
   \draw[beam] (A) -- (O) -- (B);
 
   \foreach \p in {O,A,B}{\node[vertex] at (\p) {};}
@@ -49,7 +49,7 @@
   % side labels ride the outside of each beam, clear of the vertex at O
   \node[dim, rotate=52,  anchor=south, yshift=1pt] at ($(O)!0.62!(A)$) {beam OA · 34.6 m};
   \node[dim, rotate=-52, anchor=north, yshift=-1pt] at ($(O)!0.62!(B)$) {beam OB · 27.2 m};
-  \node[solarnavy, font=\scriptsize\bfseries, align=center]
+  \node[figink, font=\scriptsize\bfseries, align=center]
     at ($(O)!0.72!($(A)!0.5!(B)$)$) {unused\\corner};
 
   \node[dim, anchor=south west] at (0.25,-0.55) {Plan view · warehouse rooftop bounded by two structural beams};
@@ -60,9 +60,9 @@
 \begin{tikzpicture}[scale=1]
   \foreach \cx/\mth/\lab/\name in {0/52/038/A, 4.4/-52/142/B}{
     \begin{scope}[shift={(\cx,0)}]
-      \draw[solarrule, line width=0.8pt] (0,0) circle (1.45);
+      \draw[figrule, line width=0.8pt] (0,0) circle (1.45);
       \foreach \a/\t in {90/N, 0/E, -90/S, 180/W}{
-        \draw[solarrule, line width=0.8pt] (\a:1.32) -- (\a:1.45);
+        \draw[figrule, line width=0.8pt] (\a:1.32) -- (\a:1.45);
         \node[dim] at (\a:1.72) {\t};
       }
       \draw[north] (0,0) -- (90:1.32);
@@ -72,7 +72,7 @@
       \node[vlabel] at (\mth:1.72) {\name};
       % clockwise sweep from north
       \draw[angmark, -{Stealth[length=4pt]}] (90:0.72) arc[start angle=90, end angle=\mth, radius=0.72];
-      \node[solaramber, font=\small\bfseries] at ({(90+\mth)/2}:1.05) {$\lab^\circ$};
+      \node[figalert, font=\small\bfseries] at ({(90+\mth)/2}:1.05) {$\lab^\circ$};
     \end{scope}}
   \node[dim, align=center, text width=8.4cm] at (2.2,-2.35)
     {A bearing is always measured \emph{clockwise from north} --- same origin, same sense, every time.};
@@ -88,7 +88,7 @@
   \draw[north] (O) -- (90:3.3);
   \node[dim, above] at (90:3.3) {N};
 
-  \fill[solaramber!22] (O) -- (52:1.05) arc[start angle=52, end angle=-52, radius=1.05] -- cycle;
+  \fill[figalert!14] (O) -- (52:1.05) arc[start angle=52, end angle=-52, radius=1.05] -- cycle;
 
   \draw[beam] (O) -- (A);
   \draw[beam] (O) -- (B);
@@ -101,13 +101,13 @@
 
   % bearing arcs, nested at different radii so they never collide
   \draw[ray, -{Stealth[length=4pt]}] (90:1.35) arc[start angle=90, end angle=52, radius=1.35];
-  \node[solarteal, font=\small\bfseries] at (71:1.66) {$038^\circ$};
+  \node[figaccent, font=\small\bfseries] at (71:1.66) {$038^\circ$};
   \draw[ray, -{Stealth[length=4pt]}] (90:2.15) arc[start angle=90, end angle=-52, radius=2.15];
-  \node[solarteal, font=\small\bfseries] at (14:2.48) {$142^\circ$};
+  \node[figaccent, font=\small\bfseries] at (14:2.48) {$142^\circ$};
 
   % the included angle: the thing we are actually after
   \draw[angmark] (52:1.05) arc[start angle=52, end angle=-52, radius=1.05];
-  \node[solaramber, font=\bfseries] at (0:0.72) {$104^\circ$};
+  \node[figalert, font=\bfseries] at (0:0.72) {$104^\circ$};
 \end{tikzpicture}}
 
 % === 4. The general rule, including the case that needs adjusting =========
@@ -115,31 +115,31 @@
 \begin{tikzpicture}[scale=0.95]
   % --- case 1: difference under 180, take it as it is
   \begin{scope}
-    \draw[solarrule, line width=0.8pt] (0,0) circle (1.5);
+    \draw[figrule, line width=0.8pt] (0,0) circle (1.5);
     \draw[north] (0,0) -- (90:1.5); \node[dim, above] at (90:1.5) {N};
-    \fill[solaramber!22] (0,0) -- (52:0.85) arc[start angle=52, end angle=-52, radius=0.85] -- cycle;
+    \fill[figalert!14] (0,0) -- (52:0.85) arc[start angle=52, end angle=-52, radius=0.85] -- cycle;
     \draw[ray, -{Stealth[length=4pt]}] (0,0) -- (52:1.5);
     \draw[ray, -{Stealth[length=4pt]}] (0,0) -- (-52:1.5);
     \draw[angmark] (52:0.85) arc[start angle=52, end angle=-52, radius=0.85];
-    \node[solaramber, font=\small\bfseries] at (0:1.12) {$104^\circ$};
+    \node[figalert, font=\small\bfseries] at (0:1.22) {$104^\circ$};
     \node[dim] at (52:1.78) {$038^\circ$};
     \node[dim] at (-52:1.78) {$142^\circ$};
-    \node[solarnavy, font=\small, align=center] at (0,-2.35)
+    \node[figink, font=\small, align=center] at (0,-2.35)
       {$142-38 = 104 < 180$\\[2pt] take it directly};
   \end{scope}
   % --- case 2: difference over 180, take the reflex complement
   \begin{scope}[shift={(6.4,0)}]
-    \draw[solarrule, line width=0.8pt] (0,0) circle (1.5);
+    \draw[figrule, line width=0.8pt] (0,0) circle (1.5);
     \draw[north] (0,0) -- (90:1.5); \node[dim, above] at (90:1.5) {N};
     % bearings 040 and 300 -> tikz 50 and -210 (=150)
-    \fill[solaramber!22] (0,0) -- (50:0.85) arc[start angle=50, end angle=150, radius=0.85] -- cycle;
+    \fill[figalert!14] (0,0) -- (50:0.85) arc[start angle=50, end angle=150, radius=0.85] -- cycle;
     \draw[ray, -{Stealth[length=4pt]}] (0,0) -- (50:1.5);
     \draw[ray, -{Stealth[length=4pt]}] (0,0) -- (150:1.5);
     \draw[angmark] (50:0.85) arc[start angle=50, end angle=150, radius=0.85];
-    \node[solaramber, font=\small\bfseries] at (100:1.15) {$100^\circ$};
+    \node[figalert, font=\small\bfseries] at (100:1.15) {$100^\circ$};
     \node[dim] at (50:1.8) {$040^\circ$};
     \node[dim] at (150:1.85) {$300^\circ$};
-    \node[solarnavy, font=\small, align=center] at (0,-2.35)
+    \node[figink, font=\small, align=center] at (0,-2.35)
       {$300-40 = 260 > 180$\\[2pt] use $360 - 260 = 100^\circ$};
   \end{scope}
 \end{tikzpicture}}
@@ -151,13 +151,13 @@
   \coordinate (A) at (52:3.29);
   \coordinate (B) at (-52:2.58);
 
-  \fill[solaramber!20] (O) -- (A) -- (B) -- cycle;
+  \fill[figaccent!12] (O) -- (A) -- (B) -- cycle;
   \draw[beam] (O) -- (A);
   \draw[beam] (O) -- (B);
-  \draw[solarslate, line width=1pt, dashed] (A) -- (B);
+  \draw[figmuted, line width=1pt, dashed] (A) -- (B);
 
   \draw[angmark] (52:0.8) arc[start angle=52, end angle=-52, radius=0.8];
-  \node[solaramber, font=\bfseries] at (0:1.14) {$104^\circ$};
+  \node[figalert, font=\bfseries] at (0:1.14) {$104^\circ$};
   \node[dim, anchor=east] at (0:0.42) {$C$};
 
   \foreach \p in {O,A,B}{\node[vertex] at (\p) {};}
@@ -165,8 +165,8 @@
   \node[vlabel, above right=1pt] at (A) {A};
   \node[vlabel, below right=1pt] at (B) {B};
 
-  \node[solarnavy, font=\small\bfseries, rotate=52,  anchor=south] at ($(O)!0.58!(A)$) {$b = 34.6$ m};
-  \node[solarnavy, font=\small\bfseries, rotate=-52, anchor=north] at ($(O)!0.58!(B)$) {$a = 27.2$ m};
+  \node[figink, font=\small\bfseries, rotate=52,  anchor=south] at ($(O)!0.58!(A)$) {$b = 34.6$ m};
+  \node[figink, font=\small\bfseries, rotate=-52, anchor=north] at ($(O)!0.58!(B)$) {$a = 27.2$ m};
   \node[dim, anchor=west, align=left, text width=2.6cm] at ($(A)!0.5!(B)+(0.3,0)$)
     {side AB --- never measured, never needed};
 \end{tikzpicture}}
@@ -179,22 +179,22 @@
   \coordinate (A) at (104:3.63);
   \coordinate (F) at (-0.879,0);
 
-  \fill[solaramber!20] (O) -- (A) -- (B) -- cycle;
+  \fill[figaccent!12] (O) -- (A) -- (B) -- cycle;
   \draw[helper, dashed] (F) -- (O);          % base line, extended past O
   \draw[beam] (A) -- (O) -- (B);
-  \draw[solarslate, line width=1pt, dashed] (A) -- (B);
+  \draw[figmuted, line width=1pt, dashed] (A) -- (B);
 
   % the perpendicular height
-  \draw[solarteal, line width=1.2pt, dashed] (A) -- (F);
-  \draw[solarteal, line width=0.8pt] ($(F)+(0.22,0)$) -- ($(F)+(0.22,0.22)$) -- ($(F)+(0,0.22)$);
-  \node[solarteal, font=\small\bfseries, rotate=90, anchor=south] at ($(A)!0.5!(F)$)
+  \draw[figaccent, line width=1.2pt, dashed] (A) -- (F);
+  \draw[figaccent, line width=0.8pt] ($(F)+(0.22,0)$) -- ($(F)+(0.22,0.22)$) -- ($(F)+(0,0.22)$);
+  \node[figaccent, font=\small\bfseries, rotate=90, anchor=south] at ($(A)!0.5!(F)$)
     {$h = b\sin C$};
 
   % angles at O
   \draw[angmark] (0:0.8) arc[start angle=0, end angle=104, radius=0.8];
-  \node[solaramber, font=\small\bfseries] at (52:1.12) {$104^\circ$};
-  \draw[solarteal, line width=1pt] (104:0.42) arc[start angle=104, end angle=180, radius=0.42];
-  \node[solarteal, font=\scriptsize\bfseries] at (142:0.68) {$76^\circ$};
+  \node[figalert, font=\small\bfseries] at (52:1.12) {$104^\circ$};
+  \draw[figaccent, line width=1pt] (104:0.42) arc[start angle=104, end angle=180, radius=0.42];
+  \node[figaccent, font=\scriptsize\bfseries] at (142:0.68) {$76^\circ$};
 
   \foreach \p in {O,A,B}{\node[vertex] at (\p) {};}
   \node[vlabel, below right=1pt] at (O) {O};
@@ -206,10 +206,10 @@
 
   % Two separate nodes rather than one: TikZ's align=left redefines \\, and a
   % \\[dim] nested inside a {...} group within the node text breaks it.
-  \node[solarnavy, anchor=north west, font=\small, align=left] at (3.5,3.35)
+  \node[figink, anchor=north west, font=\small, align=left] at (3.5,3.35)
     {Area $=\tfrac12 \times$ base $\times$ height\\[3pt]
      $\phantom{\text{Area}}=\tfrac12\, a\,(b\sin C)$};
-  \node[solarslate, anchor=north west, font=\scriptsize, align=left] at (3.5,2.3)
+  \node[figmuted, anchor=north west, font=\scriptsize, align=left] at (3.5,2.3)
     {$C$ is obtuse, so the foot lands\\[1pt]
      outside the triangle --- and\\[1pt]
      $\sin 104^\circ = \sin 76^\circ$ still holds.};
@@ -222,7 +222,7 @@
   \coordinate (A) at (52:3.29);
   \coordinate (B) at (-52:2.58);
 
-  \fill[solarmist] (O) -- (A) -- (B) -- cycle;
+  \fill[figpale] (O) -- (A) -- (B) -- cycle;
   \begin{scope}
     \clip (O) -- (A) -- (B) -- cycle;
     \foreach \i in {0,...,8}{
@@ -231,7 +231,7 @@
       }}
   \end{scope}
   \draw[beam] (A) -- (O) -- (B);
-  \draw[solarslate, line width=1pt] (A) -- (B);
+  \draw[figmuted, line width=1pt] (A) -- (B);
   \foreach \p in {O,A,B}{\node[vertex] at (\p) {};}
   \node[vlabel, left=2pt]        at (O) {O};
   \node[vlabel, above right=1pt] at (A) {A};

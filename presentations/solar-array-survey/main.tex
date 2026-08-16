@@ -4,7 +4,7 @@
 % Build:  latexmk -pdf main.tex      (or: pdflatex main.tex, twice)
 % Notes:  uncomment the \setbeameroption line below for a speaker-notes build.
 % ---------------------------------------------------------------------------
-\documentclass[aspectratio=169,11pt]{beamer}
+\documentclass[11pt]{beamer}
 
 \input{preamble}
 \input{diagrams}
@@ -12,176 +12,140 @@
 % \setbeameroption{show notes}            % speaker notes interleaved
 % \setbeameroption{show notes on second screen=right}
 
-\title{Sizing a Rooftop Solar Array}
+% --- TODO: replace the names, institution and date before presenting -------
+\title[Rooftop Solar Array]{Sizing a Rooftop Solar Array}
 \subtitle{Finding the area of an oblique triangle from survey bearings}
-\date{}
+\author[Group N]{First Member \and Second Member \and Third Member}
+\institute[]{Group Activity --- Trigonometry}
+\date{\today}
 
 \begin{document}
 
-% === Title ================================================================
-{
-\setbeamertemplate{footline}{}
-\begin{frame}[plain]
-  % Everything below is placed in absolute cm from the bottom-left of the
-  % 16cm x 9cm page, which keeps the motif and the text from colliding.
-  \begin{tikzpicture}[remember picture, overlay]
-    \fill[solarnavy] (current page.south west) rectangle (current page.north east);
-    \begin{scope}[shift={(current page.south west)}]
-      % sun + rays, lower right
-      \begin{scope}[shift={(13.3,1.9)}]
-        \fill[solaramber] (0,0) circle (0.72);
-        \foreach \a in {0,30,...,330}{
-          \draw[solaramber, line width=1.6pt, line cap=round] (\a:1.05) -- (\a:1.45);}
-      \end{scope}
-      % the survey triangle, upper right, echoing the figures inside the deck
-      \begin{scope}[shift={(11.9,6.2)}]
-        \fill[white, opacity=0.10] (0,0) -- (52:2.0) -- (-52:1.6) -- cycle;
-        \draw[solaramber, line width=1.2pt, opacity=0.8] (52:2.0) -- (0,0) -- (-52:1.6);
-      \end{scope}
-
-      \node[anchor=north west, text=white, align=left, text width=9.5cm,
-            font=\fontsize{30}{34}\selectfont\bfseries] at (1.2,7.6)
-        {Sizing a Rooftop Solar Array};
-      \node[anchor=north west, text=solaramber, font=\large, align=left,
-            text width=9.5cm] at (1.25,4.5)
-        {Finding the area of an oblique triangle from survey bearings};
-      \node[anchor=north west, text=white, opacity=0.7, font=\small,
-            align=left, text width=9.5cm] at (1.25,3.3)
-        {Group activity --- advanced version\\
-         $\tfrac12ab\sin C$ applied to a real total-station survey};
-    \end{scope}
-  \end{tikzpicture}
+\begin{frame}
+  \titlepage
 \end{frame}
-}
 
-% === Where we are going ===================================================
-\begin{frame}{The brief}{One number decides the whole design}
-  \begin{columns}[T]
-    \begin{column}{0.58\textwidth}
-      An engineering firm is scoping a small solar array in an unused
-      triangular corner of a warehouse rooftop, boxed in by two existing
-      structural beams. They need \amber{the enclosed area} --- that is what
-      sets how many panels the site can hold.
-      \medskip
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
 
-      \panel{%
-        The catch: the surveyor never recorded an angle. The field notes
-        contain \teal{two bearings}, which is how rooftop and land surveys
-        are actually reported. So the job splits in two --- recover the
-        angle, then find the area.}
-    \end{column}
-    \begin{column}{0.42\textwidth}
-      \centering
-      \begin{enumerate}
-        \item The site and the field notes
-        \item Bearings $\rightarrow$ included angle
-        \item The triangle, reduced to SAS
-        \item Why $\tfrac12ab\sin C$ works
-        \item The calculation
-        \item The answer, and what it is worth
-      \end{enumerate}
-    \end{column}
-  \end{columns}
+% ===========================================================================
+\section{The problem}
+
+\begin{frame}{The brief}
+  An engineering firm is scoping a small solar array in an unused triangular
+  corner of a warehouse rooftop, boxed in by two existing structural beams.
+  They need \alert{the enclosed area} --- that is what sets how many panels
+  the site can hold.
+
+  \begin{block}{The catch}
+    The surveyor never recorded an angle. The field notes contain
+    \structure{two bearings}, which is how rooftop and land surveys are
+    actually reported.
+  \end{block}
+
+  So the job splits in two: recover the angle, then find the area.
   \note{Open on the practical question, not the formula. The audience should
   want the area before we hand them a method for finding it.}
 \end{frame}
 
-% === The site =============================================================
-\begin{frame}{The site}{Plan view of the rooftop corner}
-  \centering
-  \vspace{-0.15cm}
-  \scalebox{0.82}{\diagRooftop}
+\begin{frame}{The site}
+  \vfill
+  \begin{center}
+    \scalebox{0.85}{\diagRooftop}
+  \end{center}
+  \vfill
   \note{Point out that the two beams are fixed --- the shape is given by the
   building, not chosen. That is why it is an awkward oblique triangle rather
   than a convenient right one.}
 \end{frame}
 
-% === The field notes ======================================================
-\begin{frame}{What the surveyor actually recorded}{Total station, set up over point O}
+% ===========================================================================
+\section{From bearings to an angle}
+
+\begin{frame}{What the surveyor actually recorded}
   \begin{columns}[T]
-    \begin{column}{0.5\textwidth}
-      \panel{%
+    \begin{column}{0.52\textwidth}
+      \begin{block}{Field notes --- station O}
         \small
         \begin{tabular}{@{}ll@{}}
-          \multicolumn{2}{@{}l}{\bfseries Field notes --- station O}\\[3pt]
-          \midrule
-          Beam OA & 34.6 m at bearing $038^\circ$\\
-          Beam OB & 27.2 m at bearing $142^\circ$\\
+          Beam OA & 34.6 m, bearing $038^\circ$\\
+          Beam OB & 27.2 m, bearing $142^\circ$\\[2pt]
           \midrule
           Angle at O & \emph{not recorded}\\
-        \end{tabular}}
-      \medskip
-
-      \small A total station measures \teal{distance and direction}, and
-      direction is logged as a bearing --- nobody stands in the corner with a
-      protractor. \amber{So the included angle has to be derived.}
+        \end{tabular}
+      \end{block}
     \end{column}
-    \begin{column}{0.5\textwidth}
-      \centering
-      \vspace{-0.2cm}
-      \scalebox{0.7}{\diagBearingConvention}
+    \begin{column}{0.48\textwidth}
+      \small A total station measures \structure{distance and direction}, and
+      direction is logged as a bearing --- nobody stands in the corner with a
+      protractor. \alert{So the included angle has to be derived.}
     \end{column}
   \end{columns}
+  \vfill
+  \begin{center}
+    \scalebox{0.70}{\diagBearingConvention}
+  \end{center}
   \note{Budget a beat here. The audience needs to accept that "no angle given"
   is normal survey practice, not a trick in the question.}
 \end{frame}
 
-% === Deriving the angle ===================================================
-\begin{frame}{From two bearings to one angle}{Both are measured from the same point, in the same sense}
+\begin{frame}{From two bearings to one angle}
   \begin{columns}[T]
-    \begin{column}{0.45\textwidth}
+    \begin{column}{0.46\textwidth}
       \small
       Two conditions make this a plain subtraction:
       \begin{itemize}
-        \item both bearings share the \teal{same reference point}, O;
-        \item both are measured \teal{clockwise from north}.
+        \item both bearings share the \structure{same reference point}, O;
+        \item both are measured \structure{clockwise from north}.
       \end{itemize}
       \medskip
 
-      \keypanel{\centering $\angle AOB = 142^\circ - 38^\circ = \mathbf{104^\circ}$}
-      \medskip
+      \begin{alertblock}{Included angle}
+        \centering $\angle AOB = 142^\circ - 38^\circ = 104^\circ$
+      \end{alertblock}
 
       No trigonometry yet --- this step is bookkeeping about how the
       directions were recorded.
     \end{column}
-    \begin{column}{0.55\textwidth}
+    \begin{column}{0.54\textwidth}
       \centering
-      \vspace{-0.3cm}
-      \scalebox{0.78}{\diagBearingSubtraction}
+      \scalebox{0.80}{\diagBearingSubtraction}
     \end{column}
   \end{columns}
   \note{This is the slide that makes the scenario real rather than
   plug-and-chug. Do not rush it.}
 \end{frame}
 
-% === The general rule =====================================================
-\begin{frame}{The rule in general}{Subtraction is not always the whole story}
-  \centering
-  \scalebox{0.86}{\diagBearingRule}
-
-  \vspace{0.25cm}
+\begin{frame}{The rule in general}
+  \vfill
+  \begin{center}
+    \scalebox{0.75}{\diagBearingRule}
+  \end{center}
+  \vfill
   {\small Subtract the bearings; if the result exceeds $180^\circ$ you have
-  measured the \emph{reflex} side, so take $360^\circ$ minus it instead.
-  Here $104^\circ < 180^\circ$, so no adjustment is needed.}
+  measured the \emph{reflex} side, so take $360^\circ$ minus it instead. Here
+  $104^\circ < 180^\circ$, so no adjustment is needed.}
   \note{Include this even though our case does not need it --- it shows the
   method was applied knowingly rather than by luck.}
 \end{frame}
 
-% === SAS ==================================================================
-\begin{frame}{Now it is a standard SAS triangle}{Two sides and the angle between them}
+% ===========================================================================
+\section{Finding the area}
+
+\begin{frame}{Now it is a standard SAS triangle}
   \begin{columns}[T]
     \begin{column}{0.44\textwidth}
-      \vspace{0.2cm}
-      \panel{%
+      \begin{block}{Known}
         \begin{tabular}{@{}ll@{}}
-          $a$ & $=$ OB $= 27.2$ m\\[3pt]
-          $b$ & $=$ OA $= 34.6$ m\\[3pt]
+          $a$ & $=$ OB $= 27.2$ m\\[2pt]
+          $b$ & $=$ OA $= 34.6$ m\\[2pt]
           $C$ & $= 104^\circ$ (derived)\\
-        \end{tabular}}
-      \medskip
-
-      \small The angle sits \amber{between} the two known sides --- exactly the
-      SAS pattern.
+        \end{tabular}
+      \end{block}
+      \small
+      The angle sits \alert{between} the two known sides --- exactly the SAS
+      pattern.
       \medskip
 
       $C$ is obtuse, so the triangle is genuinely oblique: no right angle to
@@ -189,193 +153,171 @@
     \end{column}
     \begin{column}{0.56\textwidth}
       \centering
-      \vspace{-0.15cm}
-      \scalebox{0.8}{\diagSAS}
+      \scalebox{0.80}{\diagSAS}
     \end{column}
   \end{columns}
 \end{frame}
 
-% === Why the formula works ================================================
-\begin{frame}{Why $\tfrac12ab\sin C$ is the right tool}{$\sin C$ recovers the height nobody measured}
-  \centering
-  \vspace{-0.1cm}
-  \scalebox{0.86}{\diagHeight}
-
-  \vspace{-0.15cm}
-  {\small The familiar $\tfrac12\times\text{base}\times\text{height}$ never went
-  away. \amber{$\sin C$ simply supplies the height} from the side and angle we
-  do have.}
+\begin{frame}{Why $\tfrac12ab\sin C$ is the right tool}
+  \vfill
+  \begin{center}
+    \scalebox{0.80}{\diagHeight}
+  \end{center}
+  \vfill
+  {\small The familiar $\tfrac12\times\text{base}\times\text{height}$ never
+  went away. \alert{$\sin C$ simply supplies the height} from the side and
+  angle we do have.}
   \note{The one line worth saying out loud: sin C substitutes for a
   perpendicular height that was never directly measured.}
 \end{frame}
 
-% === The calculation ======================================================
-\begin{frame}{The calculation}{Substitute once, then evaluate}
+\begin{frame}{The calculation}
   \begin{columns}[T]
-    \begin{column}{0.6\textwidth}
-      \vspace{0.1cm}
+    \begin{column}{0.55\textwidth}
       \begin{align*}
-        \text{Area} &= \tfrac12\,ab\sin C\\[4pt]
-                    &= \tfrac12 \times 34.6 \times 27.2 \times \sin 104^\circ\\[4pt]
-                    &= 470.56 \times \sin 104^\circ\\[4pt]
-                    &= 470.56 \times 0.9703\\[4pt]
-                    &\approx \amber{456.58\ \text{m}^2}
+        \text{Area} &= \tfrac12\,ab\sin C\\[3pt]
+                    &= \tfrac12 \times 34.6 \times 27.2 \times \sin 104^\circ\\[3pt]
+                    &= 470.56 \times \sin 104^\circ\\[3pt]
+                    &= 470.56 \times 0.9703\\[3pt]
+                    &\approx 456.58\ \text{m}^2
       \end{align*}
     \end{column}
-    \begin{column}{0.4\textwidth}
-      \vspace{0.3cm}
-      \panel{%
+    \begin{column}{0.45\textwidth}
+      \begin{block}{Watch for}
         \small
-        \textbf{Watch for}\\[4pt]
-        Calculator in \teal{degrees}, not radians.\\[6pt]
+        Calculator in \structure{degrees}, not radians.
+        \medskip
+
         $\sin 104^\circ = \sin 76^\circ = 0.9703$ --- an obtuse angle gives a
-        perfectly ordinary positive sine.\\[6pt]
-        Round only at the \teal{final step}.}
+        perfectly ordinary positive sine.
+        \medskip
+
+        Round only at the \structure{final step}.
+      \end{block}
     \end{column}
   \end{columns}
 \end{frame}
 
-% === Summary table ========================================================
-\begin{frame}{Complete solution}{Every quantity, in order}
-  \centering
-  \vspace{0.1cm}
-  \small
-  \begin{tabular}{@{}ll@{}}
-    \toprule
-    \textbf{Quantity} & \textbf{Value}\\
-    \midrule
-    Side OA ($b$)               & 34.6 m\\
-    Side OB ($a$)               & 27.2 m\\
-    Bearing to A                & $038^\circ$\\
-    Bearing to B                & $142^\circ$\\
-    Included angle $C$          & $142^\circ - 38^\circ = 104^\circ$\\
-    $\sin 104^\circ$            & $\approx 0.9703$\\
-    $\tfrac12 \times$ OA $\times$ OB & 470.56\\
-    \midrule
-    \textbf{Area}               & $\mathbf{\approx 456.58\ \text{m}^2}$\\
-    \bottomrule
-  \end{tabular}
+\begin{frame}{Complete solution}
+  \begin{center}
+    \small
+    \begin{tabular}{@{}ll@{}}
+      \toprule
+      \textbf{Quantity} & \textbf{Value}\\
+      \midrule
+      Side OA ($b$)               & 34.6 m\\
+      Side OB ($a$)               & 27.2 m\\
+      Bearing to A                & $038^\circ$\\
+      Bearing to B                & $142^\circ$\\
+      Included angle $C$          & $142^\circ - 38^\circ = 104^\circ$\\
+      $\sin 104^\circ$            & $\approx 0.9703$\\
+      $\tfrac12 \times$ OA $\times$ OB & 470.56\\
+      \midrule
+      \textbf{Area}               & $\mathbf{\approx 456.58\ \text{m}^2}$\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
 \end{frame}
 
-% === The answer ===========================================================
-\begin{frame}[plain]
-  \begin{tikzpicture}[remember picture, overlay]
-    \fill[solarnavy] (current page.south west) rectangle (current page.north east);
-    \node[anchor=center, text=white, font=\large] at ($(current page.center)+(0,1.75)$)
-      {The triangular rooftop section available for solar panels is};
-    \node[anchor=center, text=solaramber, font=\fontsize{62}{62}\selectfont\bfseries]
-      at ($(current page.center)+(0,0.15)$) {$456.58\ \text{m}^2$};
-    \draw[solaramber, line width=2pt]
-      ($(current page.center)+(-3.0,-1.35)$) -- ($(current page.center)+(3.0,-1.35)$);
-    \node[anchor=center, text=white, opacity=0.8, font=\normalsize]
-      at ($(current page.center)+(0,-2.05)$)
-      {from two beam lengths and two bearings --- no angle ever measured};
-  \end{tikzpicture}
+\begin{frame}{The answer}
+  \begin{alertblock}{Area of the triangular rooftop section}
+    \begin{equation*}
+      \text{Area} = \tfrac12 \times 34.6 \times 27.2 \times \sin 104^\circ
+                  \approx 456.58\ \text{m}^2
+    \end{equation*}
+  \end{alertblock}
+  \vfill
+  \begin{center}
+    From two beam lengths and two bearings --- no angle ever measured.
+  \end{center}
+  \vfill
 \end{frame}
 
-% === Accuracy note ========================================================
-\begin{frame}{A note on rounding}{Where the last decimal comes from}
+% ===========================================================================
+\section{Discussion}
+
+\begin{frame}{A note on rounding}
   \begin{columns}[T]
-    \begin{column}{0.55\textwidth}
-      \vspace{0.2cm}
+    \begin{column}{0.5\textwidth}
+      \small
       $\sin 104^\circ = 0.970296\ldots$, so
       \[470.56 \times 0.970296 = 456.582\ldots\]
-      \medskip
 
       A rounded $0.9709$ would give $456.87\ \text{m}^2$ --- about
-      $0.3\ \text{m}^2$ adrift, roughly \amber{one panel's worth} of area.
+      $0.3\ \text{m}^2$ adrift, roughly \alert{one panel's worth} of area.
       \medskip
 
       Small, but the kind of error that compounds: carry the full value
       through and round once, at the end.
     \end{column}
-    \begin{column}{0.45\textwidth}
-      \vspace{0.4cm}
-      \panel{%
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Sensitivity of the answer}
         \small
         \begin{tabular}{@{}ll@{}}
-          \multicolumn{2}{@{}l}{\bfseries Sensitivity of the answer}\\[4pt]
           \midrule
           $\sin C = 0.9703$ & $456.58\ \text{m}^2$\\
           $\sin C = 0.9709$ & $456.87\ \text{m}^2$\\
           \midrule
-          \multicolumn{2}{@{}l}{\scriptsize difference: $0.29\ \text{m}^2$}\\
-        \end{tabular}}
+          \multicolumn{2}{@{}l}{difference: $0.29\ \text{m}^2$}\\
+        \end{tabular}
+      \end{block}
     \end{column}
   \end{columns}
   \note{Optional slide --- drop it if time is short, but it is cheap
   credibility if a marker checks the arithmetic.}
 \end{frame}
 
-% === Optional extension ===================================================
-\begin{frame}{Optional: what could that area produce?}{Flag this out loud as an estimate}
+\begin{frame}{Optional: what could that area produce?}
   \begin{columns}[T]
     \begin{column}{0.56\textwidth}
       \small
-      Utility-scale arrays are often quoted at roughly
-      $170\ \text{W}$ of installed capacity per square metre:
-      \begin{align*}
-        456.58\ \text{m}^2 \times 170\ \text{W/m}^2
-          &\approx 77\,619\ \text{W} \approx \amber{77.6\ \text{kW}}
-      \end{align*}
-      \medskip
+      Utility-scale arrays are often quoted at roughly $170\ \text{W}$ of
+      installed capacity per square metre:
+      \begin{equation*}
+        456.58 \times 170 \approx 77\,619\ \text{W} \approx 77.6\ \text{kW}
+      \end{equation*}
 
-      \keypanel{%
-        \small
-        \textbf{Say this out loud:} a rough, order-of-magnitude estimate --- not
-        an engineering calculation. It ignores tilt, row spacing, shading and
-        inverter losses, all of which reduce the real figure.}
+      \begin{alertblock}{Say this out loud}
+        \small A rough, order-of-magnitude estimate --- not an engineering
+        calculation. It ignores tilt, row spacing, shading and inverter
+        losses, all of which reduce the real figure.
+      \end{alertblock}
     \end{column}
     \begin{column}{0.44\textwidth}
       \centering
-      \vspace{-0.25cm}
-      \scalebox{0.7}{\diagPanels}
+      \scalebox{0.72}{\diagPanels}
     \end{column}
   \end{columns}
   \note{Not required by the rubric. If you use it, label it as an estimate
   before you say the number, not after.}
 \end{frame}
 
-% === Takeaways ============================================================
-\begin{frame}{What to take away}{Two ideas, one method}
-  \begin{columns}[T]
-    \begin{column}{0.5\textwidth}
-      \panel{%
-        \textbf{1. The angle was earned, not given}\\[5pt]
-        Bearings share a reference direction and a rotational sense, so their
-        difference \emph{is} the angle between the lines. Real survey data
-        arrives this way; converting it is part of the problem.}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \keypanel{%
-        \textbf{2. It is still just base $\times$ height}\\[5pt]
-        $\tfrac12ab\sin C$ is not a new formula to memorise. $\sin C$ stands in
-        for a perpendicular height that was never measured --- which is why
-        SAS is enough.}
-    \end{column}
-  \end{columns}
-  \vspace{0.5cm}
-  \centering
-  {\large From \teal{two distances and two directions} to
-   \amber{$456.58\ \text{m}^2$} --- and a panel count.}
+\begin{frame}{What to take away}
+  \begin{block}{1. The angle was earned, not given}
+    Bearings share a reference direction and a rotational sense, so their
+    difference \emph{is} the angle between the lines. Real survey data arrives
+    this way; converting it is part of the problem.
+  \end{block}
+
+  \begin{block}{2. It is still just base $\times$ height}
+    $\tfrac12ab\sin C$ is not a new formula to memorise. $\sin C$ stands in
+    for a perpendicular height that was never measured --- which is why SAS is
+    enough.
+  \end{block}
+
+  \vfill
+  \begin{center}
+    From \structure{two distances and two directions} to
+    \alert{$456.58\ \text{m}^2$} --- and a panel count.
+  \end{center}
 \end{frame}
 
-% === Closing ==============================================================
-{
-\setbeamertemplate{footline}{}
-\begin{frame}[plain]
-  \begin{tikzpicture}[remember picture, overlay]
-    \fill[solarnavy] (current page.south west) rectangle (current page.north east);
-    \begin{scope}[shift={($(current page.center)+(0,0.15)$)}]
-      \fill[solaramber] (0,0.35) circle (0.66);
-      \foreach \a in {0,30,...,330}{
-        \draw[solaramber, line width=1.8pt, line cap=round]
-          ($(\a:0.95)+(0,0.35)$) -- ($(\a:1.38)+(0,0.35)$);}
-    \end{scope}
-    \node[anchor=north, text=white, font=\Large\bfseries]
-      at ($(current page.center)+(0,-1.15)$) {Questions?};
-  \end{tikzpicture}
+\begin{frame}
+  \vfill
+  \begin{center}
+    \Large Questions?
+  \end{center}
+  \vfill
 \end{frame}
-}
 
 \end{document}

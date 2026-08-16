@@ -1,9 +1,22 @@
 # Sizing a Rooftop Solar Array — Beamer deck
 
-A 15-slide LaTeX Beamer presentation of the *Solar Array Rooftop Survey
+A 16-slide LaTeX Beamer presentation of the *Solar Array Rooftop Survey
 (advanced version)* group activity: recovering an included angle from two
 survey bearings, then finding the area of the resulting oblique triangle with
 ½·a·b·sin C.
+
+Stock `Madrid` theme, 4:3, Computer Modern serif.
+
+## Before presenting
+
+Fill in the title-page fields at the top of `main.tex` — they ship as
+placeholders:
+
+```latex
+\author[Group N]{First Member \and Second Member \and Third Member}
+\institute[]{Group Activity --- Trigonometry}
+\date{\today}
+```
 
 ## Build
 
@@ -29,8 +42,12 @@ apt-get install texlive-latex-base texlive-latex-recommended \
 | File | Contents |
 |---|---|
 | `main.tex` | The slides |
-| `preamble.tex` | Theme, palette, shared TikZ styles |
+| `preamble.tex` | Theme, figure palette, shared TikZ styles |
 | `diagrams.tex` | All seven TikZ figures, one macro each |
+
+The figures use only the theme's own two colours — structure blue for survey
+data, red for the quantity being derived, greys for everything supporting — so
+they sit inside the deck rather than next to it.
 
 ## The diagrams
 
