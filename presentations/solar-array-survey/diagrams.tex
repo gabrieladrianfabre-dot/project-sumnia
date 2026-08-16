@@ -27,16 +27,16 @@
   \draw[figmuted!45, line width=2.5pt] (7.15,3.7) -- (7.15,2.6) -- (8.6,2.6) -- (8.6,2.4);
   \node[dim, anchor=west] at (6.4,5.05) {existing HVAC plant};
 
-  % north arrow, kept clear of the parapet line at y = 5.42
-  \begin{scope}[shift={(0.85,3.35)}]
-    \draw[figmuted, line width=0.9pt, -{Stealth[length=5pt]}] (0,0) -- (0,1.0);
-    \node[dim, above=1pt] at (0,1.0) {N};
-  \end{scope}
-
   % the survey triangle
   \coordinate (O) at (2.3,2.6);
   \coordinate (A) at ($(O)+(52:3.045)$);
   \coordinate (B) at ($(O)+(-52:2.394)$);
+
+  % North is drawn from O, not parked in a corner: it is the reference
+  % direction the two bearings are swung from, so it has to sit at the
+  % station. Same dashed style as the bearing figures later in the deck.
+  \draw[north] (O) -- ($(O)+(0,1.9)$);
+  \node[dim, above=1pt] at ($(O)+(0,1.9)$) {N};
   \fill[figaccent!25] (O) -- (A) -- (B) -- cycle;
   \draw[figaccent!55, line width=0.8pt] (A) -- (B);
   \draw[beam] (A) -- (O) -- (B);
