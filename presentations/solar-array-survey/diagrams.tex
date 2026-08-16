@@ -6,7 +6,7 @@
 %
 %     tikz angle = 90 - bearing
 %
-% Bearing 038 -> 52 degrees, bearing 142 -> -52 degrees. The two beams
+% Bearing 38 -> 52 degrees, bearing 142 -> -52 degrees. The two beams
 % therefore sit symmetrically either side of the east axis, which keeps every
 % figure in this deck consistent with the survey's own orientation.
 % ---------------------------------------------------------------------------
@@ -27,10 +27,10 @@
   \draw[figmuted!45, line width=2.5pt] (7.15,3.7) -- (7.15,2.6) -- (8.6,2.6) -- (8.6,2.4);
   \node[dim, anchor=west] at (6.4,5.05) {existing HVAC plant};
 
-  % north arrow
-  \begin{scope}[shift={(0.85,4.35)}]
-    \draw[figmuted, line width=0.9pt, -{Stealth[length=5pt]}] (0,0) -- (0,0.85);
-    \node[dim, above] at (0,0.85) {N};
+  % north arrow, kept clear of the parapet line at y = 5.42
+  \begin{scope}[shift={(0.85,3.35)}]
+    \draw[figmuted, line width=0.9pt, -{Stealth[length=5pt]}] (0,0) -- (0,1.0);
+    \node[dim, above=1pt] at (0,1.0) {N};
   \end{scope}
 
   % the survey triangle
@@ -58,7 +58,7 @@
 % === 2. What a bearing actually is ========================================
 \newcommand{\diagBearingConvention}{%
 \begin{tikzpicture}[scale=1]
-  \foreach \cx/\mth/\lab/\name in {0/52/038/A, 4.4/-52/142/B}{
+  \foreach \cx/\mth/\lab/\name in {0/52/38/A, 4.4/-52/142/B}{
     \begin{scope}[shift={(\cx,0)}]
       \draw[figrule, line width=0.8pt] (0,0) circle (1.45);
       \foreach \a/\t in {90/N, 0/E, -90/S, 180/W}{
@@ -101,7 +101,7 @@
 
   % bearing arcs, nested at different radii so they never collide
   \draw[ray, -{Stealth[length=4pt]}] (90:1.35) arc[start angle=90, end angle=52, radius=1.35];
-  \node[figaccent, font=\small\bfseries] at (71:1.66) {$038^\circ$};
+  \node[figaccent, font=\small\bfseries] at (71:1.66) {$38^\circ$};
   \draw[ray, -{Stealth[length=4pt]}] (90:2.15) arc[start angle=90, end angle=-52, radius=2.15];
   \node[figaccent, font=\small\bfseries] at (14:2.48) {$142^\circ$};
 
@@ -122,7 +122,7 @@
     \draw[ray, -{Stealth[length=4pt]}] (0,0) -- (-52:1.5);
     \draw[angmark] (52:0.85) arc[start angle=52, end angle=-52, radius=0.85];
     \node[figalert, font=\small\bfseries] at (0:1.22) {$104^\circ$};
-    \node[dim] at (52:1.78) {$038^\circ$};
+    \node[dim] at (52:1.78) {$38^\circ$};
     \node[dim] at (-52:1.78) {$142^\circ$};
     \node[figink, font=\small, align=center] at (0,-2.35)
       {$142-38 = 104 < 180$\\[2pt] take it directly};
@@ -137,7 +137,7 @@
     \draw[ray, -{Stealth[length=4pt]}] (0,0) -- (150:1.5);
     \draw[angmark] (50:0.85) arc[start angle=50, end angle=150, radius=0.85];
     \node[figalert, font=\small\bfseries] at (100:1.15) {$100^\circ$};
-    \node[dim] at (50:1.8) {$040^\circ$};
+    \node[dim] at (50:1.8) {$40^\circ$};
     \node[dim] at (150:1.85) {$300^\circ$};
     \node[figink, font=\small, align=center] at (0,-2.35)
       {$300-40 = 260 > 180$\\[2pt] use $360 - 260 = 100^\circ$};
