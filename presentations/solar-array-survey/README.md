@@ -9,14 +9,9 @@ Stock `Madrid` theme, 4:3, Computer Modern serif.
 
 ## Before presenting
 
-Fill in the title-page fields at the top of `main.tex` — they ship as
-placeholders:
-
-```latex
-\author[Group N]{First Member \and Second Member \and Third Member}
-\institute[]{Group Activity --- Trigonometry}
-\date{\today}
-```
+`\date{\today}` in `main.tex` still needs the real presentation date. The
+short author `[Group MON]` is what shows in the footline; the full name
+`Group Monday Righteous` shows on the title page.
 
 ## Build
 

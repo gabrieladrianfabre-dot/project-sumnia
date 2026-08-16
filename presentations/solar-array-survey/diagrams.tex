@@ -47,12 +47,12 @@
   \node[vlabel, below right=1pt] at (B) {B};
 
   % side labels ride the outside of each beam, clear of the vertex at O
-  \node[dim, rotate=52,  anchor=south, yshift=1pt] at ($(O)!0.62!(A)$) {beam OA · 34.6 m};
-  \node[dim, rotate=-52, anchor=north, yshift=-1pt] at ($(O)!0.62!(B)$) {beam OB · 27.2 m};
+  \node[dim, rotate=52,  anchor=south, yshift=1pt] at ($(O)!0.62!(A)$) {beam OA, 34.6 m};
+  \node[dim, rotate=-52, anchor=north, yshift=-1pt] at ($(O)!0.62!(B)$) {beam OB, 27.2 m};
   \node[figink, font=\scriptsize\bfseries, align=center]
     at ($(O)!0.72!($(A)!0.5!(B)$)$) {unused\\corner};
 
-  \node[dim, anchor=south west] at (0.25,-0.55) {Plan view · warehouse rooftop bounded by two structural beams};
+  \node[dim, anchor=south west] at (0.25,-0.55) {Plan view of the warehouse rooftop, bounded by two structural beams};
 \end{tikzpicture}}
 
 % === 2. What a bearing actually is ========================================
@@ -74,8 +74,8 @@
       \draw[angmark, -{Stealth[length=4pt]}] (90:0.72) arc[start angle=90, end angle=\mth, radius=0.72];
       \node[figalert, font=\small\bfseries] at ({(90+\mth)/2}:1.05) {$\lab^\circ$};
     \end{scope}}
-  \node[dim, align=center, text width=8.4cm] at (2.2,-2.35)
-    {A bearing is always measured \emph{clockwise from north} --- same origin, same sense, every time.};
+  \node[dim, align=center, text width=12cm] at (2.2,-2.35)
+    {A bearing is always measured \emph{clockwise from north}, from the same origin each time.};
 \end{tikzpicture}}
 
 % === 3. Subtracting the bearings to get the included angle ================
@@ -168,7 +168,7 @@
   \node[figink, font=\small\bfseries, rotate=52,  anchor=south] at ($(O)!0.58!(A)$) {$b = 34.6$ m};
   \node[figink, font=\small\bfseries, rotate=-52, anchor=north] at ($(O)!0.58!(B)$) {$a = 27.2$ m};
   \node[dim, anchor=west, align=left, text width=2.6cm] at ($(A)!0.5!(B)+(0.3,0)$)
-    {side AB --- never measured, never needed};
+    {side AB, never measured and never needed};
 \end{tikzpicture}}
 
 % === 6. Where sin C comes from: it is the height you never measured =======
@@ -211,7 +211,7 @@
      $\phantom{\text{Area}}=\tfrac12\, a\,(b\sin C)$};
   \node[figmuted, anchor=north west, font=\scriptsize, align=left] at (3.5,2.3)
     {$C$ is obtuse, so the foot lands\\[1pt]
-     outside the triangle --- and\\[1pt]
+     outside the triangle, and\\[1pt]
      $\sin 104^\circ = \sin 76^\circ$ still holds.};
 \end{tikzpicture}}
 
@@ -236,5 +236,5 @@
   \node[vlabel, left=2pt]        at (O) {O};
   \node[vlabel, above right=1pt] at (A) {A};
   \node[vlabel, below right=1pt] at (B) {B};
-  \node[dim, align=center, anchor=north] at (1.6,-3.0) {schematic only --- tilt, row spacing\\and shading are not modelled};
+  \node[dim, align=center, anchor=north] at (1.6,-3.0) {schematic only, ignoring tilt, row\\spacing and shading};
 \end{tikzpicture}}

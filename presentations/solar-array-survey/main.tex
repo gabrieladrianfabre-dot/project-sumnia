@@ -12,12 +12,11 @@
 % \setbeameroption{show notes}            % speaker notes interleaved
 % \setbeameroption{show notes on second screen=right}
 
-% --- TODO: replace the names, institution and date before presenting -------
 \title[Rooftop Solar Array]{Sizing a Rooftop Solar Array}
 \subtitle{Finding the area of an oblique triangle from survey bearings}
-\author[Group N]{First Member \and Second Member \and Third Member}
-\institute[]{Group Activity --- Trigonometry}
-\date{\today}
+\author[Group MON]{Group Monday Righteous}
+\institute[]{Trigonometry Group Activity}
+\date{\today}   % TODO: set the presentation date
 
 \begin{document}
 
@@ -35,8 +34,8 @@
 \begin{frame}{The brief}
   An engineering firm is scoping a small solar array in an unused triangular
   corner of a warehouse rooftop, boxed in by two existing structural beams.
-  They need \alert{the enclosed area} --- that is what sets how many panels
-  the site can hold.
+  They need \alert{the enclosed area}, which is what sets how many panels the
+  site can hold.
 
   \begin{block}{The catch}
     The surveyor never recorded an angle. The field notes contain
@@ -55,18 +54,20 @@
     \scalebox{0.85}{\diagRooftop}
   \end{center}
   \vfill
-  \note{Point out that the two beams are fixed --- the shape is given by the
-  building, not chosen. That is why it is an awkward oblique triangle rather
-  than a convenient right one.}
+  \note{Point out that the two beams are fixed, so the building gives the
+  shape and nobody chose it. That is why it is an awkward oblique triangle
+  instead of a convenient right one.}
 \end{frame}
 
 % ===========================================================================
 \section{From bearings to an angle}
 
 \begin{frame}{What the surveyor actually recorded}
-  \begin{columns}[T]
-    \begin{column}{0.52\textwidth}
-      \begin{block}{Field notes --- station O}
+  % widths deliberately sum to less than 1 so the block and the text beside it
+  % are not shoulder to shoulder
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Field notes at station O}
         \small
         \begin{tabular}{@{}ll@{}}
           Beam OA & 34.6 m, bearing $038^\circ$\\
@@ -76,10 +77,11 @@
         \end{tabular}
       \end{block}
     \end{column}
-    \begin{column}{0.48\textwidth}
+    \hfill
+    \begin{column}{0.44\textwidth}
       \small A total station measures \structure{distance and direction}, and
-      direction is logged as a bearing --- nobody stands in the corner with a
-      protractor. \alert{So the included angle has to be derived.}
+      direction is logged as a bearing. Nobody stands in the corner with a
+      protractor, so \alert{the included angle has to be derived.}
     \end{column}
   \end{columns}
   \vfill
@@ -105,8 +107,8 @@
         \centering $\angle AOB = 142^\circ - 38^\circ = 104^\circ$
       \end{alertblock}
 
-      No trigonometry yet --- this step is bookkeeping about how the
-      directions were recorded.
+      No trigonometry yet. This step is bookkeeping about how the directions
+      were recorded.
     \end{column}
     \begin{column}{0.54\textwidth}
       \centering
@@ -126,7 +128,7 @@
   {\small Subtract the bearings; if the result exceeds $180^\circ$ you have
   measured the \emph{reflex} side, so take $360^\circ$ minus it instead. Here
   $104^\circ < 180^\circ$, so no adjustment is needed.}
-  \note{Include this even though our case does not need it --- it shows the
+  \note{Include this even though our case does not need it. It shows the
   method was applied knowingly rather than by luck.}
 \end{frame}
 
@@ -144,8 +146,8 @@
         \end{tabular}
       \end{block}
       \small
-      The angle sits \alert{between} the two known sides --- exactly the SAS
-      pattern.
+      The angle sits \alert{between} the two known sides, which is exactly the
+      SAS pattern.
       \medskip
 
       $C$ is obtuse, so the triangle is genuinely oblique: no right angle to
@@ -188,7 +190,7 @@
         Calculator in \structure{degrees}, not radians.
         \medskip
 
-        $\sin 104^\circ = \sin 76^\circ = 0.9703$ --- an obtuse angle gives a
+        $\sin 104^\circ = \sin 76^\circ = 0.9703$. An obtuse angle gives a
         perfectly ordinary positive sine.
         \medskip
 
@@ -228,7 +230,7 @@
   \end{alertblock}
   \vfill
   \begin{center}
-    From two beam lengths and two bearings --- no angle ever measured.
+    From two beam lengths and two bearings, with no angle ever measured.
   \end{center}
   \vfill
 \end{frame}
@@ -243,7 +245,7 @@
       $\sin 104^\circ = 0.970296\ldots$, so
       \[470.56 \times 0.970296 = 456.582\ldots\]
 
-      A rounded $0.9709$ would give $456.87\ \text{m}^2$ --- about
+      A rounded $0.9709$ would give $456.87\ \text{m}^2$, about
       $0.3\ \text{m}^2$ adrift, roughly \alert{one panel's worth} of area.
       \medskip
 
@@ -263,8 +265,8 @@
       \end{block}
     \end{column}
   \end{columns}
-  \note{Optional slide --- drop it if time is short, but it is cheap
-  credibility if a marker checks the arithmetic.}
+  \note{Optional slide. Drop it if time is short, but it is cheap credibility
+  if a marker checks the arithmetic.}
 \end{frame}
 
 \begin{frame}{Optional: what could that area produce?}
@@ -278,7 +280,7 @@
       \end{equation*}
 
       \begin{alertblock}{Say this out loud}
-        \small A rough, order-of-magnitude estimate --- not an engineering
+        \small A rough, order-of-magnitude estimate, not an engineering
         calculation. It ignores tilt, row spacing, shading and inverter
         losses, all of which reduce the real figure.
       \end{alertblock}
@@ -301,21 +303,21 @@
 
   \begin{block}{2. It is still just base $\times$ height}
     $\tfrac12ab\sin C$ is not a new formula to memorise. $\sin C$ stands in
-    for a perpendicular height that was never measured --- which is why SAS is
+    for a perpendicular height that was never measured, which is why SAS is
     enough.
   \end{block}
 
   \vfill
   \begin{center}
     From \structure{two distances and two directions} to
-    \alert{$456.58\ \text{m}^2$} --- and a panel count.
+    \alert{$456.58\ \text{m}^2$}, and a panel count.
   \end{center}
 \end{frame}
 
 \begin{frame}
   \vfill
   \begin{center}
-    \Large Questions?
+    \Large That's all!
   \end{center}
   \vfill
 \end{frame}
