@@ -1,0 +1,99 @@
+% ---------------------------------------------------------------------------
+% preamble.tex — theme, colours, and reusable TikZ styles for the deck.
+% Kept separate from main.tex so the slides themselves stay readable.
+% ---------------------------------------------------------------------------
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{angles,quotes,calc,arrows.meta,positioning,patterns,decorations.pathreplacing}
+
+% --- Palette --------------------------------------------------------------
+\definecolor{solarnavy}{RGB}{26,42,66}     % headings, structure
+\definecolor{solarslate}{RGB}{74,90,112}   % secondary text
+\definecolor{solaramber}{RGB}{233,157,42}  % the "solar" accent
+\definecolor{solarteal}{RGB}{31,133,136}   % second accent (bearings)
+\definecolor{solarmist}{RGB}{240,243,247}  % panel backgrounds
+\definecolor{solarrule}{RGB}{206,214,224}  % hairlines
+
+% --- Beamer theme ---------------------------------------------------------
+\usetheme{default}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{}
+\setbeamercolor{normal text}{fg=solarnavy}
+\setbeamercolor{structure}{fg=solarteal}
+\setbeamercolor{frametitle}{fg=solarnavy}
+\setbeamercolor{framesubtitle}{fg=solarslate}
+\setbeamercolor{alerted text}{fg=solaramber}
+\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+\setbeamerfont{framesubtitle}{size=\small,series=\mdseries}
+\setbeamerfont{title}{size=\huge,series=\bfseries}
+
+\setbeamertemplate{itemize item}{\color{solaramber}\rule[0.35ex]{0.5em}{0.5em}}
+\setbeamertemplate{itemize subitem}{\color{solarteal}\rule[0.35ex]{0.35em}{0.35em}}
+\setbeamertemplate{enumerate item}{\color{solarteal}\bfseries\insertenumlabel.}
+\setbeamercolor{itemize/enumerate body}{fg=solarnavy}
+
+\makeatletter
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip
+  \begin{beamercolorbox}[wd=\paperwidth,sep=0pt,leftskip=0.9cm,rightskip=0.9cm]{frametitle}
+    \vskip0.35cm
+    {\usebeamerfont{frametitle}\insertframetitle\par}%
+    \ifx\insertframesubtitle\@empty\else
+      {\vskip1pt\usebeamerfont{framesubtitle}\usebeamercolor[fg]{framesubtitle}%
+       \insertframesubtitle\par}%
+    \fi
+    \vskip4pt{\color{solaramber}\rule{2.4em}{2pt}}\par\vskip0.05cm
+  \end{beamercolorbox}%
+}
+\makeatother
+
+\setbeamersize{text margin left=0.9cm, text margin right=0.9cm}
+
+\setbeamertemplate{footline}{%
+  \hbox{}\hfill
+  \begin{beamercolorbox}[wd=\paperwidth,ht=2.4ex,dp=1.6ex,leftskip=0.9cm,rightskip=0.9cm]{}
+    {\color{solarslate}\scriptsize\insertshorttitle}\hfill
+    {\color{solarslate}\scriptsize\insertframenumber}
+  \end{beamercolorbox}%
+}
+
+% --- Reusable bits --------------------------------------------------------
+
+% A soft callout panel: \panel{content}
+\newcommand{\panel}[1]{%
+  \begingroup\setlength{\fboxsep}{8pt}%
+  \colorbox{solarmist}{\parbox{\dimexpr\textwidth-16pt\relax}{#1}}%
+  \endgroup}
+
+% Same, but flagged with an amber edge for the "read this twice" boxes
+\newcommand{\keypanel}[1]{%
+  \begingroup\setlength{\fboxsep}{8pt}%
+  \colorbox{solaramber!18}{\parbox{\dimexpr\textwidth-16pt\relax}{#1}}%
+  \endgroup}
+
+% Inline emphasis in the accent colours. Mode-aware so the same macro can be
+% used inside an align* body as well as in running text.
+\newcommand{\amber}[1]{{\color{solaramber}\ifmmode\mathbf{#1}\else\bfseries #1\fi}}
+\newcommand{\teal}[1]{{\color{solarteal}\ifmmode\mathbf{#1}\else\bfseries #1\fi}}
+
+% --- Shared TikZ styles ---------------------------------------------------
+\tikzset{
+  beam/.style   = {solarnavy, line width=1.4pt, line cap=round},
+  ray/.style    = {solarteal, line width=1.1pt, line cap=round},
+  north/.style  = {solarslate, line width=0.8pt, dashed, -{Stealth[length=4pt]}},
+  helper/.style = {solarrule, line width=0.7pt},
+  vertex/.style = {circle, fill=solarnavy, inner sep=1.5pt},
+  vlabel/.style = {solarnavy, font=\small\bfseries},
+  dim/.style    = {solarslate, font=\scriptsize},
+  angmark/.style= {solaramber, line width=1pt},
+  panelcell/.style = {fill=solarnavy!85, draw=solarmist, line width=0.3pt},
+}
+
+% Small reusable north arrow: \northarrow{<length in cm>}
+\newcommand{\northarrow}[1]{%
+  \draw[north] (0,0) -- (90:#1) node[above, dim] {N};}

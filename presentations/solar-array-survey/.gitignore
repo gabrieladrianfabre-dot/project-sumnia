@@ -1,0 +1,9 @@
+# LaTeX build artefacts — the PDF is committed, the intermediates are not.
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.vrb
+main-notes.*
