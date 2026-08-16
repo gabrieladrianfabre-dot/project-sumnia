@@ -22,6 +22,10 @@
 % --- Beamer theme ---------------------------------------------------------
 \usetheme{default}
 \usecolortheme{default}
+% Computer Modern serif throughout, in place of Beamer's sans default. The
+% lmodern package above supplies Latin Modern Roman: the same Knuth letterforms
+% redrawn with a full T1 glyph set, so accents and hyphenation behave.
+\usefonttheme{serif}
 \setbeamertemplate{navigation symbols}{}
 \setbeamercolor{normal text}{fg=solarnavy}
 \setbeamercolor{structure}{fg=solarteal}
@@ -64,16 +68,17 @@
 
 % --- Reusable bits --------------------------------------------------------
 
-% A soft callout panel: \panel{content}
+% A soft callout panel: \panel{content}. Ragged right inside — these boxes are
+% narrow enough that justified serif text opens up ugly interword gaps.
 \newcommand{\panel}[1]{%
   \begingroup\setlength{\fboxsep}{8pt}%
-  \colorbox{solarmist}{\parbox{\dimexpr\textwidth-16pt\relax}{#1}}%
+  \colorbox{solarmist}{\parbox{\dimexpr\textwidth-16pt\relax}{\raggedright #1}}%
   \endgroup}
 
 % Same, but flagged with an amber edge for the "read this twice" boxes
 \newcommand{\keypanel}[1]{%
   \begingroup\setlength{\fboxsep}{8pt}%
-  \colorbox{solaramber!18}{\parbox{\dimexpr\textwidth-16pt\relax}{#1}}%
+  \colorbox{solaramber!18}{\parbox{\dimexpr\textwidth-16pt\relax}{\raggedright #1}}%
   \endgroup}
 
 % Inline emphasis in the accent colours. Mode-aware so the same macro can be
