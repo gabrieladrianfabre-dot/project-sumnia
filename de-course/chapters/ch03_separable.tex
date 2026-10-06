@@ -1,0 +1,589 @@
+% ============================================================
+%  Chapter 3 — Separable equations
+% ============================================================
+\chapter{Separable Equations}\label{ch:ch03}
+
+\begin{diagnostic}
+  \item Compute $\displaystyle\int\frac{\mathrm{d}y}{y(1-y)}$ on each of the
+        intervals $y<0$, $0<y<1$, $y>1$.
+  \item If $\ln|y| = x^2 + C$, what are \emph{all} the functions $y$ this
+        allows? Is $y\equiv 0$ among them?
+  \item Let $H$ be differentiable and $y = y(x)$ differentiable. Compute
+        $\der{}{x}H(y(x))$ and name the rule.
+\end{diagnostic}
+
+% ------------------------------------------------------------
+\section{Motivation}\label{sec:ch03-motivation}
+
+Chapter~2 left two equations unsolved:
+\[
+  m\dot v = mg - kv^2\quad\text{(quadratic drag)}, \qquad
+  \der{P}{t} = rP\Bigl(1 - \frac PK\Bigr)\quad\text{(logistic growth, Ch.~7)} .
+\]
+Neither is linear, so \cref{cor:ch02-affine} does not apply. Both have a
+right side that is a function of the unknown alone, times (trivially) a
+function of $t$. That product structure is enough to reduce the equation to
+two ordinary integrals. The method is ancient and usually taught as
+``multiply by $\mathrm{d}x$ and integrate''. We do it properly: the honest
+version tells you exactly which solutions the formal manipulation loses and on
+which interval the answer is valid.
+
+% ------------------------------------------------------------
+\section{The theorem behind separation of variables}\label{sec:ch03-theory}
+
+\begin{definition}[Separable]\label{def:ch03-separable}
+A first-order equation is \emph{separable} if it can be written
+\begin{equation}\label{eq:ch03-separable}
+  \der{y}{x} = g(x)\,h(y).
+\end{equation}
+\end{definition}
+
+Throughout: $g$ is continuous on an open interval $I$, $h$ is continuous on an
+open interval $J$, and $x_0\in I$, $y_0\in J$.
+
+\begin{proposition}[Equilibria]\label{prop:ch03-equilibria}
+If $h(y^*) = 0$, then the constant function $y\equiv y^*$ is a solution of
+\eqref{eq:ch03-separable} on $I$.
+\end{proposition}
+\begin{proof}
+Both sides vanish: $\der{}{x}y^* = 0 = g(x)h(y^*)$.
+\end{proof}
+
+When $h(y_0)\neq 0$, let $J_0$ be the \emph{largest open interval containing
+$y_0$ on which $h\neq 0$}. Define
+\begin{equation}\label{eq:ch03-HG}
+  H(y) = \int_{y_0}^{y}\frac{\mathrm{d}s}{h(s)}\quad (y\in J_0),\qquad
+  G(x) = \int_{x_0}^{x}g(s)\,\mathrm{d}s\quad (x\in I).
+\end{equation}
+
+\begin{theorem}[Separation of variables]\label{thm:ch03-separation}
+Assume $h(y_0)\neq 0$, with $J_0$, $H$, $G$ as above.
+\begin{enumerate}[label=(\alph*)]
+  \item $H$ is differentiable and strictly monotone on $J_0$, and $H(J_0)$ is
+        an open interval containing $0$.
+  \item Let $I'\subseteq I$ be an open interval containing $x_0$ and
+        $\varphi: I'\to J_0$. Then $\varphi$ solves the IVP
+        $\der{y}{x} = g(x)h(y)$, $y(x_0) = y_0$, iff
+        \begin{equation}\label{eq:ch03-implicit}
+          H(\varphi(x)) = G(x)\qquad\text{for all } x\in I'.
+        \end{equation}
+  \item Let $I^*$ be the largest open interval containing $x_0$ on which
+        $G(x)\in H(J_0)$. Then $\varphi^* = H^{-1}\circ G$ is a solution of the
+        IVP on $I^*$ with values in $J_0$, and every solution with values in
+        $J_0$ on an interval $I'\ni x_0$ satisfies $I'\subseteq I^*$ and
+        $\varphi = \varphi^*$ on $I'$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(a) By the fundamental theorem of calculus, $H' = 1/h$ on $J_0$. Since $h$ is
+continuous and never zero on the interval $J_0$, the intermediate value
+theorem forces $h$ to have one sign there; so $H'$ has one sign and $H$ is
+strictly monotone. A continuous strictly monotone function maps an open
+interval onto an open interval, and $H(y_0) = 0$.
+
+(b) ($\Rightarrow$) Suppose $\varphi$ solves the IVP with values in $J_0$.
+\begin{align*}
+  \der{}{x}H(\varphi(x)) &= H'(\varphi(x))\,\der{\varphi}{x}
+     \why{chain rule}\\
+  &= \frac{1}{h(\varphi(x))}\,g(x)\,h(\varphi(x)) = g(x) = \der{G}{x}
+     \why{$h(\varphi(x))\neq 0$}.
+\end{align*}
+So $H\circ\varphi - G$ has zero derivative on the interval $I'$ and vanishes at
+$x_0$; by \cref{thm:ch01-antiderivative} it is identically $0$.
+
+($\Leftarrow$) If $H(\varphi(x)) = G(x)$, then $\varphi = H^{-1}\circ G$. Since
+$H$ is strictly monotone with nonzero derivative, $H^{-1}$ is differentiable
+with $(H^{-1})'(u) = 1/H'(H^{-1}(u)) = h(H^{-1}(u))$ (one-variable inverse
+function theorem). By the chain rule
+$\varphi'(x) = h(\varphi(x))\,g(x)$, and $\varphi(x_0) = H^{-1}(0) = y_0$.
+
+(c) On $I^*$, $G(x)\in H(J_0)$, so $\varphi^* = H^{-1}\circ G$ is defined,
+takes values in $J_0$, and solves the IVP by (b, $\Leftarrow$). If $\varphi$ is
+any solution on $I'$ with values in $J_0$, then by (b, $\Rightarrow$)
+$G(x) = H(\varphi(x))\in H(J_0)$ for every $x\in I'$; hence the interval
+$I'$ lies in $I^*$, and applying $H^{-1}$ gives $\varphi = \varphi^*$.
+\end{proof}
+
+\paragraph{What the theorem says, and what it does not.} Within the strip
+$J_0$ where $h\neq 0$, the IVP has exactly one solution, given implicitly by
+\eqref{eq:ch03-implicit}, and its interval is decided by when $G(x)$ leaves the
+range of $H$. The theorem says nothing about solutions that \emph{leave}
+$J_0$, which can only happen by reaching a zero of $h$ (or the edge of $J$).
+Whether that is possible depends on how fast $h$ vanishes.
+
+\begin{proposition}[Lipschitz zeros are never reached]\label{prop:ch03-lipschitz-zero}
+Let $y^*$ be an endpoint of $J_0$ with $h(y^*) = 0$, and suppose there are
+$L,\delta>0$ with
+\[
+  |h(y)|\le L\,|y - y^*|\qquad\text{for } y\in J_0,\ |y - y^*|<\delta .
+\]
+Let $\varphi$ be a solution of \eqref{eq:ch03-separable} on an interval
+$(\alpha,\beta)$ with values in $J_0$. If $\beta\in I$, then $\varphi(x)$ does
+not tend to $y^*$ as $x\to\beta^-$; similarly at $\alpha$.
+\end{proposition}
+
+\begin{proof}
+Say $y^*$ is the right endpoint of $J_0$ (the left endpoint is symmetric), and
+suppose $\varphi(x)\to y^*$ as $x\to\beta^-$. Choose $x_1\in(\alpha,\beta)$ so
+close to $\beta$ that $y^*-\delta<\varphi(x)<y^*$ for all $x\in[x_1,\beta)$.
+By \cref{thm:ch03-separation}(b) with base point $(x_1,\varphi(x_1))$,
+\[
+  \int_{\varphi(x_1)}^{\varphi(x)}\frac{\mathrm{d}s}{h(s)}
+  = \int_{x_1}^{x}g(s)\,\mathrm{d}s\qquad (x_1\le x<\beta).
+\]
+The right side stays bounded as $x\to\beta^-$, since $g$ is continuous on the
+closed interval $[x_1,\beta]\subset I$. On the left, $1/h$ has constant sign on
+$(y^*-\delta,y^*)$ and $\bigl|1/h(s)\bigr|\ge 1/\bigl(L(y^*-s)\bigr)$ there, so
+\[
+  \Bigl|\int_{\varphi(x_1)}^{\varphi(x)}\frac{\mathrm{d}s}{h(s)}\Bigr|
+  \ge \Bigl|\int_{\varphi(x_1)}^{\varphi(x)}\frac{\mathrm{d}s}{L(y^*-s)}\Bigr|
+  = \frac1L\Bigl|\ln\frac{y^*-\varphi(x_1)}{y^*-\varphi(x)}\Bigr|
+  \;\longrightarrow\;\infty .
+\]
+This contradiction proves the claim.
+\end{proof}
+
+\begin{corollary}\label{cor:ch03-trapped}
+If every endpoint of $J_0$ that lies in $J$ is a zero of $h$ satisfying the
+Lipschitz bound of \cref{prop:ch03-lipschitz-zero}, then every solution of the
+IVP with $y(x_0) = y_0\in J_0$ takes values in $J_0$ for as long as it exists
+inside $I$ and $J$. In particular the solution is the one given by
+\cref{thm:ch03-separation}(c).
+\end{corollary}
+\begin{proof}
+If $\varphi(x_2)\notin J_0$ for some $x_2>x_0$, let $\beta$ be the infimum of
+such $x_2$. By continuity $\varphi(\beta)$ is an endpoint $y^*$ of $J_0$ and
+$\varphi\in J_0$ on $(x_0,\beta)$, so $\varphi(x)\to y^*$ as $x\to\beta^-$,
+contradicting \cref{prop:ch03-lipschitz-zero}. Argue symmetrically for
+$x<x_0$.
+\end{proof}
+
+Any $h$ that is differentiable at $y^*$ satisfies the Lipschitz bound there
+(by the definition of the derivative). The bound fails for $h(y) = 3y^{2/3}$
+at $y^* = 0$, and indeed solutions reach $0$ in finite time
+(\cref{ex:ch01-cube}): $\int_0^1 \mathrm{d}s/s^{2/3} = 3$ is \emph{finite}.
+This is the first appearance of the hypothesis that makes Chapter~8's
+uniqueness theorem work.
+
+\paragraph{The working method.} In practice we write the same computation in
+the Leibniz shorthand, and the theorem tells us what to check afterwards:
+\begin{enumerate}[label=(\arabic*)]
+  \item Find all $y^*$ with $h(y^*) = 0$: these are constant solutions.
+  \item On each interval where $h\neq0$, write
+        $\displaystyle\int\frac{\mathrm{d}y}{h(y)} = \int g(x)\,\mathrm{d}x$,
+        integrate, and impose the initial condition.
+  \item Solve for $y$ if possible, choosing branches by the initial condition.
+  \item Determine the interval: where the formula is defined, differentiable,
+        satisfies the equation, and stays in $J_0$.
+\end{enumerate}
+
+% ------------------------------------------------------------
+\section{Worked examples}\label{sec:ch03-examples}
+
+\begin{example}[Needs care: the lost solution and the hidden interval]\label{ex:ch03-xy2}
+Solve $\der{y}{x} = xy^2$: find all solutions, then the solution with
+$y(0) = 1$.
+
+\emph{Solution.} \emph{Equilibria:} $h(y) = y^2 = 0$ gives $y\equiv 0$.
+
+\emph{On $y\neq 0$:}
+\begin{align*}
+  \int y^{-2}\,\mathrm{d}y &= \int x\,\mathrm{d}x \why{separate}\\
+  -\frac1y &= \frac{x^2}{2} + C \why{integrate}\\
+  y &= \frac{-2}{x^2 + 2C} \why{solve for $y$}.
+\end{align*}
+The family never produces $y\equiv0$: dividing by $y^2$ in the first line
+lost it. Since $h(y) = y^2$ is differentiable, \cref{cor:ch03-trapped} shows
+no other solution is a hybrid of the two.
+
+\emph{IVP $y(0)=1$:} $-1 = 0 + C$, so $C = -1$ and $y = \dfrac{2}{2 - x^2}$. Now
+the interval. The formula is defined for $x\neq\pm\sqrt2$, and the solution's
+interval must contain $0$, so it is $(-\sqrt2,\sqrt2)$. As
+$x\to\pm\sqrt2$, $y\to+\infty$. In the language of
+\cref{thm:ch03-separation}: $J_0 = (0,\infty)$,
+$H(y) = \int_1^y s^{-2}\,\mathrm{d}s = 1 - \frac1y$ has range $(-\infty, 1)$, and
+$G(x) = \frac{x^2}{2}$ lies in that range iff $|x|<\sqrt2$.
+\end{example}
+
+\begin{example}[An interval decided by the range of $\arctan$]\label{ex:ch03-arctan}
+Solve $\der{y}{x} = (1 + y^2)e^x$, $y(0) = 0$.
+
+\emph{Solution.} $h(y) = 1 + y^2$ never vanishes, so there are no equilibria
+and $J_0 = \R$.
+\begin{align*}
+  \int\frac{\mathrm{d}y}{1+y^2} &= \int e^x\,\mathrm{d}x \why{separate}\\
+  \arctan y &= e^x + C,\qquad 0 = 1 + C\;\Rightarrow\;C = -1
+     \why{initial condition}\\
+  \arctan y &= e^x - 1 .
+\end{align*}
+Here $H = \arctan$ has range $(-\frac\pi2,\frac\pi2)$. The condition
+$-\frac\pi2 < e^x - 1 < \frac\pi2$ holds iff $x<\ln\bigl(1 + \frac\pi2\bigr)$
+(the left inequality is automatic since $e^x - 1 > -1 > -\frac\pi2$). So
+\[
+  y = \tan\bigl(e^x - 1\bigr),\qquad -\infty<x<\ln\Bigl(1 + \frac\pi2\Bigr)\approx 0.944 .
+\]
+Writing ``$y = \tan(e^x - 1)$ for all $x$'' would be wrong:
+$\tan(e^x-1)$ is defined again for larger $x$, but those pieces are not
+connected to the initial point.
+\end{example}
+
+\begin{example}[The logistic equation, all initial values]\label{ex:ch03-logistic}
+Solve $\der{y}{t} = y(1 - y)$, $y(0) = y_0$, for every real $y_0$, and find the
+maximal interval in each case.
+
+\emph{Solution.} Equilibria: $y\equiv0$ and $y\equiv1$. Both zeros of
+$h(y) = y(1-y)$ are Lipschitz ($h$ is a polynomial), so by
+\cref{cor:ch03-trapped} a solution starting in one of $(-\infty,0)$, $(0,1)$,
+$(1,\infty)$ stays there. On each, use the partial fractions
+(\cref{thm:ch00-split}) $\frac{1}{y(1-y)} = \frac1y + \frac{1}{1-y}$:
+\begin{align*}
+  \int\Bigl(\frac1y + \frac1{1-y}\Bigr)\mathrm{d}y &= \int\mathrm{d}t \why{separate}\\
+  \ln|y| - \ln|1-y| &= t + C \why{note the sign of $\int\tfrac{\mathrm{d}y}{1-y}$}\\
+  \frac{y}{1-y} &= Ae^{t},\qquad A = \frac{y_0}{1-y_0}
+     \why{exponentiate; $A$'s sign is fixed by $y_0$}.
+\end{align*}
+The sign of $\frac{y}{1-y}$ is constant along the solution (it never crosses
+$0$ or $1$), which is why one constant $A$ of the right sign replaces
+``$\pm e^C$''. Solving $y = Ae^t(1-y)$ for $y$:
+\[
+  y(t) = \frac{Ae^t}{1 + Ae^t} = \frac{y_0e^t}{1 - y_0 + y_0e^t}.
+\]
+This formula also gives the equilibria for $y_0\in\{0,1\}$. The interval is
+decided by the denominator $D(t) = 1 - y_0 + y_0e^t$:
+\begin{itemize}
+  \item $0<y_0<1$: $D>0$ for all $t$, interval $\R$; $y\to1$ as $t\to\infty$
+        and $y\to 0$ as $t\to-\infty$.
+  \item $y_0>1$: $D = 0$ at $t = \ln\bigl(1 - \frac1{y_0}\bigr)<0$; interval
+        $\bigl(\ln(1 - \frac{1}{y_0}),\infty\bigr)$. The solution decreases to
+        $1$, and blows up \emph{backward} in time.
+  \item $y_0<0$: $D = 0$ at $t = \ln\bigl(1 - \frac1{y_0}\bigr)>0$; interval
+        $\bigl(-\infty,\ln(1-\frac{1}{y_0})\bigr)$; $y\to-\infty$ in finite time.
+\end{itemize}
+\Cref{fig:ch03-logistic} shows all three regimes.
+\end{example}
+
+\begin{figure}[ht]
+  \centering
+  \input{figures/ch03_logistic}
+  \caption{Direction field of $\der{y}{t} = y(1-y)$ with solutions for
+  $y_0\in\{-0.05, 0.1, 0.5, 1.5, 2.5\}$ and the equilibria $y = 0$, $y = 1$
+  (dashed). Solutions never cross the equilibria (\cref{cor:ch03-trapped}).}
+  \label{fig:ch03-logistic}
+\end{figure}
+
+\begin{example}[Quadratic drag, solved]\label{ex:ch03-drag}
+\notation{Newton for the physics: a body falls from rest with
+$m\dot v = mg - kv^2$, $v>0$ downward.} Write $v_T = \sqrt{mg/k}$, so the
+equation is $\dot v = g\bigl(1 - v^2/v_T^2\bigr)$.
+
+\notation{Leibniz to separate.} $h(v) = 1 - v^2/v_T^2$ vanishes at $\pm v_T$,
+both Lipschitz zeros, and $v(0) = 0\in J_0 = (-v_T, v_T)$; so
+$|v|<v_T$ for all time by \cref{cor:ch03-trapped}. Substituting
+$u = v/v_T$ (so $\mathrm{d}v = v_T\,\mathrm{d}u$):
+\begin{align*}
+  \int_0^{v}\frac{\mathrm{d}s}{1 - s^2/v_T^2}
+  &= v_T\int_0^{v/v_T}\frac{\mathrm{d}u}{1 - u^2} \why{substitution}\\
+  &= \frac{v_T}{2}\ln\frac{1 + v/v_T}{1 - v/v_T} = v_T\operatorname{artanh}\frac{v}{v_T}
+     \why{$\tfrac{1}{1-u^2} = \tfrac12\bigl(\tfrac1{1-u} + \tfrac1{1+u}\bigr)$}\\
+  v_T\operatorname{artanh}\frac{v}{v_T} &= gt \why{$\int_0^t g\,\mathrm{d}s$}.
+\end{align*}
+Therefore $v(t) = v_T\tanh\bigl(gt/v_T\bigr)$ for all $t\in\R$; it increases to
+$v_T$ as $t\to\infty$ but never reaches it, exactly as
+\cref{cor:ch03-trapped} predicted before we integrated anything.
+\end{example}
+
+\begin{example}[An implicit solution and where it ends]\label{ex:ch03-implicit}
+Solve $\der{y}{x} = \dfrac{x^2}{1 - y^2}$, $y(0) = 0$.
+
+\emph{Solution.} Here $g(x) = x^2$ and $h(y) = \frac{1}{1-y^2}$, continuous on
+$J = (-1,1)$ and never zero, so $J_0 = (-1,1)$.
+\begin{align*}
+  \int_0^y(1 - s^2)\,\mathrm{d}s &= \int_0^x s^2\,\mathrm{d}s \why{\eqref{eq:ch03-implicit}}\\
+  y - \frac{y^3}{3} &= \frac{x^3}{3}
+     \;\Longleftrightarrow\; 3y - y^3 = x^3 .
+\end{align*}
+$H(y) = y - y^3/3$ is increasing on $(-1,1)$ with range
+$\bigl(-\frac23,\frac23\bigr)$. So the solution exists exactly while
+$\bigl|\frac{x^3}{3}\bigr|<\frac23$, i.e.\ on $\bigl(-2^{1/3},2^{1/3}\bigr)$. As
+$x\to 2^{1/3}$, $y\to 1$ and $\der{y}{x}\to\infty$: the solution curve turns
+vertical and the equation (whose right side is undefined at $y=\pm1$) stops.
+We never needed an explicit formula for $y$; the cubic could be solved with
+Cardano's formula, but nothing would be gained.
+\end{example}
+
+\begin{example}[Needs care: when separation finds too few solutions]\label{ex:ch03-cube-again}
+For $\der{y}{x} = 3y^{2/3}$ (real cube root), separation on $y\neq0$ gives
+$\int\frac{\mathrm{d}y}{3y^{2/3}} = y^{1/3} = x - c$, i.e.\ $y = (x-c)^3$, and the
+equilibrium is $y\equiv 0$. But these are \emph{not} all the solutions: the
+hybrids of \cref{ex:ch01-cube} exist because the zero $y^* = 0$ violates the
+Lipschitz bound, so \cref{cor:ch03-trapped} does not apply and solutions
+\emph{can} enter and leave the equilibrium. Whenever a zero of $h$ is not
+Lipschitz, you must check by hand whether solutions can be glued to the
+equilibrium.
+\end{example}
+
+% ------------------------------------------------------------
+\section{Pitfalls}\label{sec:ch03-pitfalls}
+
+\begin{pitfall}[Dividing by $h(y)$ and forgetting the equilibria]\label{pit:ch03-equilibria}
+Every zero of $h$ is a solution that the integral formula cannot produce
+(\cref{ex:ch03-xy2}). Always list the equilibria \emph{before} dividing.
+\end{pitfall}
+
+\begin{pitfall}[Mishandling $\pm e^{C}$]\label{pit:ch03-plusminus}
+From $\ln|y| = G(x) + C$ you get $|y| = e^Ce^{G(x)}$, then $y = Ae^{G(x)}$ with
+$A\neq0$ \emph{because $y$ has constant sign on its interval} (it cannot cross
+the equilibrium $0$ when $0$ is a Lipschitz zero). Only then may you add $A=0$,
+and only because $y\equiv0$ was checked separately. ``$e^{x+C} = e^x + e^C$'' is
+simply false.
+\end{pitfall}
+
+\begin{pitfall}[Wrong branch of a square root]\label{pit:ch03-branch}
+$y\der{y}{x} = x$, $y(1) = -2$ gives $y^2 = x^2 + 3$, and the solution is
+$y = -\sqrt{x^2+3}$; the initial condition chooses the branch, and the branch
+cannot switch because $y = 0$ is never reached.
+\end{pitfall}
+
+\begin{pitfall}[A formula valid beyond its interval]\label{pit:ch03-interval}
+$y = \tan(e^x - 1)$ is a solution only for $x<\ln(1+\pi/2)$
+(\cref{ex:ch03-arctan}). Whenever you invert $H$, ask where $G(x)$ lies in the
+range of $H$.
+\end{pitfall}
+
+\begin{pitfall}[Seeing separability where there is none]\label{pit:ch03-not-separable}
+$\der{y}{x} = x + y$ is not separable (it is linear: Chapter~4), whereas
+$\der{y}{x} = xy + x + y + 1 = (x+1)(y+1)$ is. Factor before deciding.
+\end{pitfall}
+
+% ------------------------------------------------------------
+\section{Problems}\label{sec:ch03-problems}
+
+\subsection*{Warm-up}
+
+\begin{problem}{W}\label{prob:ch03-w1}
+Solve $\der{y}{x} = y\cos x$, $y(0) = 2$, and state the interval.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch03-w2}
+Solve $\der{y}{x} = \dfrac{x}{y}$, $y(1) = -2$, and state the interval.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch03-w3}
+Which are separable? (a) $\der{y}{x} = e^{x+y}$; (b) $\der{y}{x} = x + y$;
+(c) $\der{y}{x} = xy - 2x + 3y - 6$; (d) $\der{y}{x} = \sin(xy)$;
+(e) $\der{y}{x} = \dfrac{y\ln x}{x}$.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch03-w4}
+Solve $\der{y}{t} = -2ty^2$, $y(0) = 1$, and state the interval.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch03-w5}
+Find all constant solutions of $\der{y}{x} = (y^2 - 1)\sin x$, and explain why
+no nonconstant solution can cross them.
+\end{problem}
+
+\subsection*{Core}
+
+\begin{problem}{C}\label{prob:ch03-c1}
+Solve $\der{y}{x} = \dfrac{1 + y^2}{1 + x^2}$, $y(0) = 1$, explicitly, and find
+the maximal interval.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch03-c2}
+For $\der{y}{t} = y(1-y)$, $y(0) = -1$, find the solution, its maximal
+interval, and $\lim_{t\to-\infty}y(t)$.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch03-c3}
+A ball is thrown \emph{upward} with speed $v_0$ under quadratic drag; with $x$
+upward and $v>0$ while rising, $\dot v = -g\bigl(1 + v^2/v_T^2\bigr)$. Find
+$v(t)$ while rising and the time to reach the top. Compare with the
+drag-free time $v_0/g$.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch03-c4}
+(Torricelli.) Water drains from a tank through a hole at the bottom, and the
+depth satisfies $\der{h}{t} = -k\sqrt h$, $h(0) = H>0$. Find $h(t)$ and the time
+$t_e$ at which the tank empties. Show that extending by $h\equiv0$ for $t\ge t_e$
+gives a solution on $[0,\infty)$. Then show that the IVP $h(T) = 0$ (with
+$T>0$) has infinitely many solutions on $[0,T]$, and interpret physically.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch03-c5}
+Solve $\der{y}{x} = \dfrac{2x + 1}{3y^2 + 1}$, $y(0) = 0$, implicitly. Prove that
+the solution exists on all of $\R$ even though you cannot (easily) write it
+explicitly.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch03-c6}
+Solve $\der{y}{x} = y^2 - 4$, $y(0) = 0$, explicitly. Then describe, without
+further computation, the solutions with $y(0) = 3$ and $y(0) = -3$ using
+\cref{cor:ch03-trapped}.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch03-c7}
+Solve $\der{y}{x} = e^{-y}(2x - 4)$, $y(5) = 0$, and find the maximal interval.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch03-c8}
+Consider $\der{y}{x} = \sqrt{1 - y^2}$ on $J = [-1,1]$ (extend the definition of
+solution to allow values $\pm1$).
+\begin{enumerate}[label=(\alph*)]
+  \item Find the solution with $y(0) = 0$ on $\R$ and prove it is unique.
+  \item Show the IVP $y(0) = 1$ has infinitely many solutions on $\R$.
+  \item Reconcile (a) and (b) with \cref{prop:ch03-lipschitz-zero}.
+\end{enumerate}
+\end{problem}
+
+\subsection*{Hard}
+
+\begin{problem}{H}\label{prob:ch03-h1}
+(Osgood's criterion, scalar autonomous case.) Let $h$ be continuous on
+$[0,\delta]$ with $h(0) = 0$ and $h>0$ on $(0,\delta]$. Prove that a solution of
+$\der{y}{x} = h(y)$ with $0<y(x_0)<\delta$ can reach $0$ (going backward in
+$x$) at a finite $x$ if and only if $\displaystyle\int_0^\delta\frac{\mathrm{d}s}{h(s)}<\infty$.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch03-h2}
+Describe all solutions on $\R$ of $\der{y}{x} = x\sqrt{|y|}$ with $y(0) = 0$,
+and prove your description is complete.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch03-h3}
+Let $h$ be continuous and positive on $\R$. Prove that the solution of
+$\der{y}{x} = h(y)$, $y(0) = 0$, exists on all of $\R$ iff
+$\int_0^\infty\frac{\mathrm{d}s}{h(s)} = \int_{-\infty}^0\frac{\mathrm{d}s}{h(s)} = \infty$.
+Decide for $h(y) = 1 + |y|$ and $h(y) = 1 + y^2$.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch03-h4}
+(Gompertz growth.) Solve $\der{P}{t} = rP\ln\dfrac{K}{P}$, $P(0) = P_0>0$
+($r, K>0$). Prove that the solution exists for all $t\in\R$, that $P\to K$ as
+$t\to\infty$, and find the population at which growth is fastest.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch03-h5}
+For every real $y_0$, solve $\der{y}{x} = \dfrac{1 + y^2}{1 + x^2}$, $y(0) = y_0$,
+and determine the maximal interval exactly. (Your answer to \cref{prob:ch03-c1}
+is the case $y_0 = 1$.)
+\end{problem}
+
+\subsection*{Putnam/olympiad-style}
+
+\begin{problem}{P}\label{prob:ch03-p1}
+For which real $\alpha>0$ does there exist a differentiable $f:\R\to\R$, not
+identically zero, with $f'(x) = |f(x)|^{\alpha}$ for all $x$?
+\end{problem}
+
+\begin{problem}{P}[the tractrix]\label{prob:ch03-p2}
+Find all curves in the upper half-plane with the property that the segment of
+each tangent line from the point of tangency to the $x$-axis has constant
+length $a$.
+\end{problem}
+
+\begin{problem}{P}\label{prob:ch03-p3}
+Let $y$ solve $\der{y}{x} = x^2 + y^2$, $y(0) = 0$, on $[0,b)$. This equation
+is not separable. Nevertheless, prove that $0\le y(x)\le\tan x$ for
+$0\le x<\min(b,1)$, and that $b\le 1 + \frac\pi2$.
+\end{problem}
+
+% ------------------------------------------------------------
+\section{Hints}\label{sec:ch03-hints}
+
+\paragraph{Warm-up and core.}
+\cref{prob:ch03-w3}: try to factor each right side as $g(x)h(y)$.
+\cref{prob:ch03-c1}: $\tan(a + \frac\pi4)$; the interval ends where
+$\arctan x + \frac\pi4$ reaches $\frac\pi2$.
+\cref{prob:ch03-c4}: $h = 0$ is a non-Lipschitz zero of $\sqrt h$.
+\cref{prob:ch03-c5}: what is the range of $y\mapsto y^3 + y$?
+\cref{prob:ch03-c8}: in (a), $y$ is nondecreasing and cannot exceed $1$.
+
+\hintfor{prob:ch03-h1}
+\begin{hintlevels}
+  \item Use \cref{thm:ch03-separation}(b) on the part of the solution in
+        $(0,\delta)$.
+  \item The $x$-time to go from $y(x_0)$ down to $\varepsilon$ is
+        $\int_\varepsilon^{y(x_0)}\frac{\mathrm{d}s}{h(s)}$.
+  \item Let $\varepsilon\to0^+$; for the converse, construct the solution that
+        reaches $0$ and check differentiability there.
+\end{hintlevels}
+
+\hintfor{prob:ch03-h2}
+\begin{hintlevels}
+  \item On intervals where $y>0$ use $u = \sqrt y$; where $y<0$ use
+        $u = \sqrt{-y}$. What ODE does $u$ satisfy in each case?
+  \item In $y>0$ regions, $u$ is increasing for $x>0$ and decreasing for $x<0$.
+        Can a positive excursion start at a point $x_1<0$ and move right?
+  \item Show negative excursions are impossible when $y(0) = 0$, then show
+        the zero set is a closed interval containing $0$ and describe each end
+        separately.
+\end{hintlevels}
+
+\hintfor{prob:ch03-h3}
+\begin{hintlevels}
+  \item $J_0 = \R$; the formula $H(y) = G(x) = x$ holds while the solution
+        exists.
+  \item The solution exists on all $x\ge 0$ iff $x$ stays in the range of $H$
+        for all $x\ge0$.
+  \item The range of $H$ on $[0,\infty)$ is $[0,\int_0^\infty\frac{\mathrm{d}s}{h(s)})$.
+\end{hintlevels}
+
+\hintfor{prob:ch03-h4}
+\begin{hintlevels}
+  \item Substitute $u = \ln(P/K)$.
+  \item $\der{u}{t} = -ru$; apply \cref{lem:ch02-exp}.
+  \item For fastest growth, maximize $f(P) = rP\ln(K/P)$ over $P>0$.
+\end{hintlevels}
+
+\hintfor{prob:ch03-h5}
+\begin{hintlevels}
+  \item $\arctan y = \arctan x + \arctan y_0$.
+  \item The solution exists while $\arctan x + \arctan y_0\in(-\frac\pi2,\frac\pi2)$.
+  \item Split into $y_0>0$, $y_0 = 0$, $y_0<0$ and solve the inequality using
+        $\tan(\frac\pi2 - \theta) = \cot\theta$.
+\end{hintlevels}
+
+\hintfor{prob:ch03-p1}
+\begin{hintlevels}
+  \item Construct examples for some $\alpha$ by gluing to $0$ (compare
+        \cref{ex:ch01-cube}).
+  \item For the other $\alpha$, where $f\neq0$ the equation is separable;
+        compute $\int\mathrm{d}s/s^\alpha$ near $0$ and near $\infty$.
+  \item If $f(x_0)>0$, follow the solution forward; if $f(x_0)<0$, follow it
+        backward. Which integral being finite causes a contradiction?
+\end{hintlevels}
+
+\hintfor{prob:ch03-p2}
+\begin{hintlevels}
+  \item The tangent at $(x,y)$ meets the $x$-axis at horizontal distance
+        $y/|y'|$ from the point.
+  \item Pythagoras gives $\bigl(\der{y}{x}\bigr)^2 = \frac{y^2}{a^2 - y^2}$.
+  \item Treat $x$ as a function of $y$: $\der{x}{y} = \pm\frac{\sqrt{a^2-y^2}}{y}$,
+        and integrate with $y = a\sin\theta$ or $y = a\operatorname{sech}u$.
+\end{hintlevels}
+
+\hintfor{prob:ch03-p3}
+\begin{hintlevels}
+  \item Compare with separable equations: on $[0,1]$, $x^2\le 1$; on
+        $[1,b)$, $x^2\ge 1$.
+  \item Compute $\der{}{x}\arctan y(x) = \frac{x^2 + y^2}{1 + y^2}$ and bound it
+        above or below by $1$.
+  \item Integrate the inequality on $[1,x]$ and use that $\arctan$ is bounded.
+\end{hintlevels}
+
+% ------------------------------------------------------------
+\section{Further reading}\label{sec:ch03-reading}
+
+\begin{itemize}
+  \item \textcite[\S2.2]{BoyceDiPrima}: separable equations, with many
+        applications.
+  \item \textcite[\S1.3]{Teschl}: first-order autonomous equations and the
+        integral $\int\mathrm{d}y/f(y)$, including when solutions reach
+        equilibria.
+  % VERIFY: Teschl §1.3 title "First order autonomous equations".
+  \item \textcite[\S2.5]{Strogatz}: existence and uniqueness, and the example
+        $\dot x = x^{1/3}$.
+  \item \textcite[Ch.~1]{Simmons}: separable equations with historical notes.
+\end{itemize}
