@@ -37,6 +37,10 @@ explain why it is wrong, and show a better approach. Direct, not harsh.
    *is* stating a conversion, e.g. `y' = \der{y}{x}`, in Ch 1 or when a switch is
    announced). When unclear, use Leibniz. Any operator shorthand (e.g. `D`) must
    be defined in terms of the notations above before first use.
+   *Named functions:* the derivative of a named function of one variable
+   ($f'(x)$, $\varphi'$, $H'$, $\mu'$) is ordinary function notation and may be
+   used anywhere; the rule governs derivatives of the *unknown* in equations
+   (stated in Ch 1, §1.2).
    **Settled decisions (student delegated these):**
    - *PDE subscripts.* From Ch 25 on, subscript partials (`u_t`, `u_{xx}`,
      `u_{xy}`) are a fourth notation, **PDE chapters only (Ch 25–27)**. Ch 25

@@ -6,21 +6,22 @@
 |---|---|
 | Phase 0 — toolchain | Done. TeX Live 2023 (pdfTeX 1.40.25), latexmk 4.83, biber 2.19, pgfplots 1.18.1; Python 3.11 with SymPy 1.14, NumPy 2.4, SciPy 1.17, Matplotlib 3.11. |
 | Phase 1 — scaffold | Done. Stub compiles; `make check` clean. Smoke test of every environment, macro, cross-reference, citation, and a pgfplots slope field passed with zero warnings. |
-| **Next** | Ch 0 — Prerequisites check (waiting for `next`). |
+| Phase 2 — Ch 0–8 | Done (student asked for Ch 0 through the end of Part II in one go). Each chapter compiled with `make check` clean; every example, problem, and figure verified privately with SymPy/SciPy in the scratchpad (not in the repo). 104-page PDF. |
+| **Next** | Ch 9 — Structure theory of linear equations (waiting for `next`). |
 
 ## Chapters
 
 | Ch | Title | Status | Notes |
 |---|---|---|---|
-| 0 | Prerequisites check | not started | |
-| 1 | What a differential equation is | not started | |
-| 2 | Modeling | not started | |
-| 3 | Separable equations | not started | |
-| 4 | Linear first-order, integrating factor | not started | |
-| 5 | Exact equations | not started | |
-| 6 | Substitution methods | not started | |
-| 7 | Autonomous equations | not started | |
-| 8 | Existence and uniqueness | not started | |
+| 0 | Prerequisites check | done, verified | partial fractions proved via Bézout; Euler from series; diagonalization |
+| 1 | What a differential equation is | done, verified | three notations; solutions need intervals; Clairaut envelope |
+| 2 | Modeling | done, verified | one lemma + shift solves all; 2 VERIFY |
+| 3 | Separable equations | done, verified | rigorous separation theorem; Lipschitz zeros never reached |
+| 4 | Linear first-order, integrating factor | done, verified | global existence; superposition; transients |
+| 5 | Exact equations | done, verified | exactness test on rectangles; angle-form counterexample |
+| 6 | Substitution methods | done, verified | substitution principle; Bernoulli n=1/2 non-uniqueness; Riccati |
+| 7 | Autonomous equations | done, verified | phase-line theorems proved; harvesting saddle-node; 2 Putnam |
+| 8 | Existence and uniqueness | done, verified | Picard–Lindelöf (2 proofs), Gronwall, blow-up alternative |
 | 9 | Structure theory of linear equations | not started | |
 | 10 | Constant coefficients | not started | |
 | 11 | Nonhomogeneous equations | not started | |
@@ -44,7 +45,23 @@
 
 ## Open `% VERIFY` items
 
-None yet.
+Citation details I could not confirm (network access to the books was blocked;
+chapter-level citations were confirmed by search where noted in the commit log):
+
+- Rudin, 3rd ed.: theorem numbers 9.28 (implicit function thm), 3.50 (Mertens),
+  9.35–9.36 (determinants), 9.41–9.42 (mixed partials; differentiation under the
+  integral), 7.10/7.12/7.15 (M-test; uniform limits; completeness of C(X)).
+- Tenenbaum & Pollard: scope of Ch. 1; titles of Lessons 7, 8, 10.
+  (Lessons 9, 11, 62 were confirmed.)
+- Simmons, 2nd ed.: section numbers for orthogonal trajectories and falling
+  bodies (Ch. 13 §§69–70 were confirmed).
+- Teschl: §1.3 title; §2.7 title (Peano); printed numbering of Lemmas 2.5/2.7
+  (Thm 2.2 = Picard–Lindelöf was confirmed).
+- Coddington & Levinson Ch. 1 contains Peano's theorem.
+- Arnold Ch. 4 title "Proofs of the Main Theorems".
+- Strogatz §4.3 covers ghosts/bottlenecks.
+- Boyce & DiPrima 10e: location of homogeneous/Bernoulli/Riccati exercises.
+- Attribution of the snowplow problem to R. P. Agnew (1942).
 
 ## Decisions log
 

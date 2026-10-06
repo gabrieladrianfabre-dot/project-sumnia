@@ -86,7 +86,7 @@ $C = y_0$. Divide by $\mu>0$ to get \eqref{eq:ch04-formula}.
 \emph{The formula is a solution on all of $I$.} The right side of
 \eqref{eq:ch04-formula} is defined and differentiable on all of $I$ because
 $p$ and $q$ are continuous there. Reversing the computation:
-$\der{}{x}(\mu y) = \mu q$, i.e.\ $\mu y' + \mu p y = \mu q$, and dividing by
+$\der{}{x}(\mu y) = \mu q$, i.e.\ $\mu\der{y}{x} + \mu p y = \mu q$, and dividing by
 $\mu$ gives the equation; $y(x_0) = y_0$ by inspection.
 \end{proof}
 
@@ -100,6 +100,9 @@ interval of a nonlinear one is not.
 \end{remark}
 
 \subsection{Structure of the solution set}
+
+\notation{Lagrange ($y'$) in this subsection and the next, for compact algebra
+with several functions at once.}
 
 \begin{proposition}[Superposition]\label{prop:ch04-superposition}
 If $y_1$ solves $y' + py = q_1$ and $y_2$ solves $y' + py = q_2$ on $I$, then
@@ -245,7 +248,7 @@ Now glue. Any function
 \[
   y = \begin{cases}x^3 + C_1x^2, & x\ge0,\\ x^3 + C_2x^2, & x<0,\end{cases}
 \]
-is differentiable at $0$ with $y(0) = 0$ and $y'(0) = 0$ (both one-sided
+is differentiable at $0$ with $y(0) = 0$ and $\der{y}{x}(0) = 0$ (both one-sided
 derivatives vanish), and satisfies the \emph{original} equation at $x = 0$:
 $0\cdot0 - 2\cdot0 = 0$. So:
 the IVP $y(0) = 0$ has infinitely many solutions on $\R$ (two free constants),
@@ -298,7 +301,7 @@ assumes the coefficient of $\der{y}{x}$ is $1$.
 
 \begin{pitfall}[Multiplying only the left side]\label{pit:ch04-rhs}
 After multiplying by $\mu$, the right side is $\mu q$, not $q$. Writing
-$(\mu y)' = q$ is the single most common error in this chapter.
+$\der{}{x}(\mu y) = q$ is the single most common error in this chapter.
 \end{pitfall}
 
 \begin{pitfall}[Losing the constant]\label{pit:ch04-constant}
@@ -424,7 +427,7 @@ prove that any continuous solution is differentiable.)
 
 \begin{problem}{H}\label{prob:ch04-h5}
 (Stability of linear equations under perturbation.) Let $p\ge 0$ on $[0,X]$,
-and let $y, z$ solve $y' + py = q_1$ and $z' + pz = q_2$ there. Prove
+and let $y, z$ solve $\der{y}{x} + py = q_1$ and $\der{z}{x} + pz = q_2$ there. Prove
 \[
   |y(x) - z(x)|\le |y(0) - z(0)| + \int_0^x|q_1(s) - q_2(s)|\,\mathrm{d}s
   \qquad(0\le x\le X).
@@ -502,7 +505,7 @@ homogeneous solution.
 
 \hintfor{prob:ch04-h5}
 \begin{hintlevels}
-  \item $w = y - z$ solves $w' + pw = q_1 - q_2$.
+  \item $w = y - z$ solves $\der{w}{x} + pw = q_1 - q_2$.
   \item Use \eqref{eq:ch04-formula} for $w$ and $e^{-P(x)+P(s)}\le 1$ for
         $s\le x$.
   \item Take absolute values inside the integral.

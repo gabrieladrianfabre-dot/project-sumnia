@@ -1,0 +1,14 @@
+% Picard iterates for y' = y, y(0) = 1: partial sums of e^x.
+\begin{tikzpicture}
+\begin{axis}[deplot, xmin=-2, xmax=2, ymin=-1, ymax=7.5,
+  xlabel={$x$}, ylabel={$y$}, height=0.45\linewidth]
+  \addplot[gray, thin, samples=2, domain=-2:2] {1};
+  \addplot[gray, thin, samples=2, domain=-2:2] {1 + x};
+  \addplot[gray, thin, samples=60, domain=-2:2] {1 + x + x^2/2};
+  \addplot[gray, thin, samples=60, domain=-2:2] {1 + x + x^2/2 + x^3/6};
+  \addplot[blue, very thick, samples=80, domain=-2:2] {exp(x)};
+  \node[font=\scriptsize, anchor=west] at (axis cs:1.55,1) {$y_0$};
+  \node[font=\scriptsize, anchor=west] at (axis cs:1.55,2.7) {$y_1$};
+  \node[font=\scriptsize, anchor=south] at (axis cs:1.75,6.1) {$e^x$};
+\end{axis}
+\end{tikzpicture}

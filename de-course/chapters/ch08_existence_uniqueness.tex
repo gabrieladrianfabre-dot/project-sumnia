@@ -1,0 +1,727 @@
+% ============================================================
+%  Chapter 8 — Existence and uniqueness
+% ============================================================
+\chapter{Existence and Uniqueness}\label{ch:ch08}
+
+\begin{diagnostic}
+  \item State the definition of uniform convergence of a sequence of functions
+        $g_n\to g$ on an interval, and the Weierstrass $M$-test.
+  \item Is $f(y) = |y|$ Lipschitz on $\R$? Is $f(y) = \sqrt{|y|}$ Lipschitz on
+        $[-1,1]$? Prove both answers.
+  \item If $\pder{f}{y}$ is continuous on $[a,b]\times[c,d]$, show with the mean
+        value theorem that $|f(x,y_1) - f(x,y_2)|\le K|y_1 - y_2|$ for some $K$.
+\end{diagnostic}
+
+% ------------------------------------------------------------
+\section{Motivation}\label{sec:ch08-motivation}
+
+Seven chapters have quietly depended on two facts that we have not proved in
+general: that an initial value problem \emph{has} a solution, and that it has
+\emph{only one}. We have seen both fail. $\der{y}{x} = 3y^{2/3}$, $y(0) = 0$ has
+infinitely many solutions (\cref{ex:ch01-cube}). An equation with a
+discontinuous right side can have none (\cref{ex:ch08-no-solution} below). And
+solutions of $\der{y}{x} = y^2$ exist only on a bounded interval, though the
+right side is a polynomial.
+
+Uniqueness is not a technicality. It is what makes a differential equation a
+\emph{deterministic} model: the present state fixes the future. It is also what
+a numerical solver (Chapter~23) silently assumes: if two solutions pass
+through your initial point, which one is the computer approximating? This
+chapter proves the central theorem of the subject, under a hypothesis we have
+already met in Chapters 3 and 7: the Lipschitz condition.
+
+\notation{Leibniz $\der{y}{x}$ in statements; the proofs work with the
+equivalent integral equation, where no derivative notation is needed.}
+
+% ------------------------------------------------------------
+\section{The integral equation and Picard iteration}\label{sec:ch08-picard}
+
+Throughout, $f$ is continuous on the closed rectangle
+\begin{equation}\label{eq:ch08-rectangle}
+  R = \bigl\{(x,y): |x - x_0|\le a,\ |y - y_0|\le b\bigr\},
+\end{equation}
+and we study the IVP $\der{y}{x} = f(x,y)$, $y(x_0) = y_0$. A solution on a
+closed interval has one-sided derivatives at the endpoints.
+
+\begin{lemma}[Integral formulation]\label{lem:ch08-integral}
+Let $J$ be an interval containing $x_0$ and $\varphi$ continuous on $J$ with
+graph in $R$. Then $\varphi$ solves the IVP on $J$ iff
+\begin{equation}\label{eq:ch08-integral}
+  \varphi(x) = y_0 + \int_{x_0}^{x}f\bigl(s,\varphi(s)\bigr)\,\mathrm{d}s
+  \qquad\text{for all } x\in J .
+\end{equation}
+\end{lemma}
+\begin{proof}
+($\Rightarrow$) $\varphi' = f(x,\varphi(x))$ is continuous (a composition of
+continuous functions), so the fundamental theorem of calculus gives
+$\varphi(x) - \varphi(x_0) = \int_{x_0}^x f(s,\varphi(s))\,\mathrm{d}s$.
+($\Leftarrow$) The integrand is continuous, so the right side is differentiable
+with derivative $f(x,\varphi(x))$; and $\varphi(x_0) = y_0$.
+\end{proof}
+
+The integral equation needs only continuity of $\varphi$, not differentiability;
+that is why it is the right setting for limits. It also suggests an iteration:
+feed a guess into the right side and see what comes out.
+
+\begin{definition}[Picard iterates]\label{def:ch08-picard}
+$y_0(x)\equiv y_0$ and
+$\displaystyle y_{n+1}(x) = y_0 + \int_{x_0}^{x}f\bigl(s,y_n(s)\bigr)\,\mathrm{d}s$.
+\end{definition}
+
+\begin{example}[Picard iterates rebuild the exponential]\label{ex:ch08-picard-exp}
+For $\der{y}{x} = y$, $y(0) = 1$:
+\begin{align*}
+  y_1 &= 1 + \int_0^x 1\,\mathrm{d}s = 1 + x,\qquad
+  y_2 = 1 + \int_0^x(1 + s)\,\mathrm{d}s = 1 + x + \frac{x^2}{2},
+\end{align*}
+and by induction $y_n = \sum_{k=0}^n\frac{x^k}{k!}$: the partial sums of $e^x$,
+which converge uniformly on every bounded interval (\cref{fig:ch08-picard}).
+\end{example}
+
+\begin{figure}[ht]
+  \centering
+  \input{figures/ch08_picard}
+  \caption{Picard iterates $y_0,\dots,y_3$ for $\der{y}{x} = y$, $y(0) = 1$
+  (thin), and the solution $e^x$ (thick).}
+  \label{fig:ch08-picard}
+\end{figure}
+
+\begin{example}[Iterates for a nonlinear equation]\label{ex:ch08-picard-riccati}
+For $\der{y}{x} = x^2 + y^2$, $y(0) = 0$ (the equation of \cref{prob:ch03-p3}):
+\begin{align*}
+  y_1 &= \int_0^x s^2\,\mathrm{d}s = \frac{x^3}{3},\qquad
+  y_2 = \int_0^x\Bigl(s^2 + \frac{s^6}{9}\Bigr)\mathrm{d}s = \frac{x^3}{3} + \frac{x^7}{63},\\
+  y_3 &= \int_0^x\Bigl(s^2 + \Bigl(\frac{s^3}{3} + \frac{s^7}{63}\Bigr)^2\Bigr)\mathrm{d}s
+       = \frac{x^3}{3} + \frac{x^7}{63} + \frac{2x^{11}}{2079} + \frac{x^{15}}{59535}.
+\end{align*}
+There is no closed form for the limit (\cref{prob:ch06-p1} shows it is not
+rational), but the theorem below proves the iterates converge to the unique
+solution near $0$.
+\end{example}
+
+% ------------------------------------------------------------
+\section{The Lipschitz condition}\label{sec:ch08-lipschitz}
+
+\begin{definition}[Lipschitz in $y$]\label{def:ch08-lipschitz}
+$f$ is \emph{Lipschitz in $y$ on $R$} with constant $L\ge0$ if
+\[
+  |f(x,y_1) - f(x,y_2)|\le L\,|y_1 - y_2|\qquad\text{for all } (x,y_1),(x,y_2)\in R .
+\]
+\end{definition}
+
+\begin{lemma}\label{lem:ch08-c1-lipschitz}
+If $\pder{f}{y}$ exists and is continuous on $R$, then $f$ is Lipschitz in $y$ on
+$R$ with $L = \max_R\bigl|\pder{f}{y}\bigr|$.
+\end{lemma}
+\begin{proof}
+$R$ is compact, so the maximum exists. For fixed $x$ the segment between
+$(x,y_1)$ and $(x,y_2)$ lies in $R$; by the mean value theorem in $y$,
+$f(x,y_1) - f(x,y_2) = \pder{f}{y}(x,\eta)(y_1 - y_2)$ for some $\eta$ between them.
+\end{proof}
+
+\begin{example}[Which functions are Lipschitz?]\label{ex:ch08-lipschitz}
+\begin{itemize}
+  \item $f = y^2$ on $|y|\le b$: Lipschitz with $L = 2b$ (\cref{lem:ch08-c1-lipschitz}),
+        but not on all of $\R$: $\frac{|y_1^2 - y_2^2|}{|y_1 - y_2|} = |y_1 + y_2|$ is
+        unbounded. ``Locally but not globally Lipschitz'' is exactly the
+        situation in which blow-up can occur.
+  \item $f = |y|$: Lipschitz with $L = 1$ by the reverse triangle inequality
+        $\bigl||y_1| - |y_2|\bigr|\le|y_1 - y_2|$, although not differentiable at $0$.
+        Lipschitz is weaker than $C^1$.
+  \item $f = \sqrt{|y|}$ on $|y|\le 1$: not Lipschitz, since
+        $\frac{\sqrt{|y|} - 0}{|y - 0|} = |y|^{-1/2}\to\infty$ as $y\to0$.
+\end{itemize}
+\end{example}
+
+% ------------------------------------------------------------
+\section{Gronwall's inequality}\label{sec:ch08-gronwall}
+
+\begin{lemma}[Gronwall]\label{lem:ch08-gronwall}
+Let $u$ be continuous and nonnegative on $[x_0,x_1]$, and let $C,L\ge0$. If
+\[
+  u(x)\le C + L\int_{x_0}^{x}u(s)\,\mathrm{d}s\qquad (x_0\le x\le x_1),
+\]
+then $u(x)\le Ce^{L(x - x_0)}$ on $[x_0,x_1]$. In particular, $C = 0$ forces
+$u\equiv0$.
+\end{lemma}
+\begin{proof}
+Let $U(x) = C + L\int_{x_0}^xu(s)\,\mathrm{d}s$. Then $U$ is differentiable,
+$U(x_0) = C$, and $u\le U$. Hence
+\begin{align*}
+  \der{U}{x} &= Lu(x)\le LU(x) \why{FTC; hypothesis}\\
+  \der{}{x}\Bigl(e^{-L(x - x_0)}U(x)\Bigr) &= e^{-L(x-x_0)}\Bigl(\der{U}{x} - LU\Bigr)\le 0
+     \why{product rule}.
+\end{align*}
+A function with nonpositive derivative is nonincreasing (mean value theorem),
+so $e^{-L(x-x_0)}U(x)\le U(x_0) = C$. Therefore
+$u(x)\le U(x)\le Ce^{L(x-x_0)}$.
+\end{proof}
+
+This is the integrating-factor argument of \cref{lem:ch02-exp}, run on an
+\emph{inequality}. The same trick appears again and again: a differential
+inequality is controlled by the corresponding equation.
+
+% ------------------------------------------------------------
+\section{The Picard--Lindel\"of theorem}\label{sec:ch08-pl}
+
+\begin{theorem}[Picard--Lindel\"of]\label{thm:ch08-pl}
+Let $f$ be continuous on the rectangle $R$ of \eqref{eq:ch08-rectangle} and
+Lipschitz in $y$ there with constant $L$. Let $M>0$ satisfy $|f|\le M$ on $R$,
+and put
+\[
+  h = \min\Bigl(a,\ \frac{b}{M}\Bigr),\qquad I = [x_0 - h,\ x_0 + h].
+\]
+Then:
+\begin{enumerate}[label=(\alph*)]
+  \item the Picard iterates are defined on $I$, have graphs in $R$, and
+        converge uniformly on $I$ to a function $y$;
+  \item $y$ solves the IVP on $I$;
+  \item if $z$ solves the IVP on any interval $J\subseteq I$ containing $x_0$,
+        then $z = y$ on $J$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\emph{Step 1 (the iterates stay in $R$).} By induction on $n$: if $y_n$ is
+continuous on $I$ with graph in $R$, then $f(s,y_n(s))$ is continuous and
+bounded by $M$, so $y_{n+1}$ is defined, continuous, and
+\[
+  |y_{n+1}(x) - y_0|\le\Bigl|\int_{x_0}^{x}M\,\mathrm{d}s\Bigr| = M|x - x_0|\le Mh\le b .
+\]
+The base case $y_0(x)\equiv y_0$ is clear. (This is where $h\le b/M$ is used:
+it keeps the iterates inside the region where we have bounds.)
+
+\emph{Step 2 (successive differences).} We claim, for $n\ge0$ and $x\in I$,
+\begin{equation}\label{eq:ch08-differences}
+  |y_{n+1}(x) - y_n(x)|\le\frac{ML^n|x - x_0|^{n+1}}{(n+1)!}.
+\end{equation}
+For $n = 0$ this is Step 1. If it holds for $n-1$, then for $x\ge x_0$
+(the case $x\le x_0$ is symmetric)
+\begin{align*}
+  |y_{n+1}(x) - y_n(x)|
+  &\le\int_{x_0}^{x}\bigl|f(s,y_n(s)) - f(s,y_{n-1}(s))\bigr|\,\mathrm{d}s
+     \why{subtract the definitions}\\
+  &\le L\int_{x_0}^{x}|y_n(s) - y_{n-1}(s)|\,\mathrm{d}s
+     \why{Lipschitz; both graphs in $R$}\\
+  &\le L\int_{x_0}^{x}\frac{ML^{n-1}(s - x_0)^{n}}{n!}\,\mathrm{d}s
+     = \frac{ML^n(x - x_0)^{n+1}}{(n+1)!}
+     \why{induction hypothesis}.
+\end{align*}
+
+\emph{Step 3 (uniform convergence).} Write
+$y_n = y_0 + \sum_{k=0}^{n-1}(y_{k+1} - y_k)$. By \eqref{eq:ch08-differences}
+the $k$th term is bounded on $I$ by the constant $\frac{ML^kh^{k+1}}{(k+1)!}$,
+and these constants have a finite sum (it is at most $\frac{M}{L}(e^{Lh} - 1)$
+when $L>0$). By the Weierstrass $M$-test the series converges uniformly on
+$I$, so $y_n\to y$ uniformly, and $y$ is continuous as a uniform limit of
+continuous functions \parencite[Ch.~7]{Rudin}. Since every $y_n$ has graph in
+the closed set $R$, so does $y$.
+% VERIFY: Rudin Ch. 7, Thm 7.10 (M-test) and Thm 7.12 (uniform limits of continuous functions).
+
+\emph{Step 4 (the limit solves the IVP).} For $s\in I$,
+$|f(s,y_n(s)) - f(s,y(s))|\le L|y_n(s) - y(s)|\le L\varepsilon_n$, where
+$\varepsilon_n = \max_I|y_n - y|\to0$. Hence
+\[
+  \Bigl|\int_{x_0}^{x}f(s,y_n(s))\,\mathrm{d}s - \int_{x_0}^{x}f(s,y(s))\,\mathrm{d}s\Bigr|
+  \le Lh\,\varepsilon_n\to0 .
+\]
+Letting $n\to\infty$ in $y_{n+1}(x) = y_0 + \int_{x_0}^xf(s,y_n(s))\,\mathrm{d}s$
+gives \eqref{eq:ch08-integral} for $y$, and \cref{lem:ch08-integral} shows $y$
+solves the IVP.
+
+\emph{Step 5 (uniqueness).} Let $z$ solve the IVP on $J\subseteq I$. First,
+$z$ has graph in $R$: otherwise, take the first $x_1>x_0$ in $J$ (say) with
+$|z(x_1) - y_0| = b$; on $[x_0,x_1]$ the graph is in $R$, so
+$b = |z(x_1) - y_0|\le M(x_1 - x_0)$, which forces $x_1 = x_0 + h$ and
+$Mh = b$; then $x_1$ is the right end of $I$ and the graph is still in $R$.
+Now let $w = |y - z|$ on $J\cap[x_0,\infty)$. By \cref{lem:ch08-integral} and
+the Lipschitz condition,
+\[
+  w(x) = \Bigl|\int_{x_0}^{x}\bigl(f(s,y(s)) - f(s,z(s))\bigr)\,\mathrm{d}s\Bigr|
+  \le L\int_{x_0}^{x}w(s)\,\mathrm{d}s ,
+\]
+so $w\equiv0$ by \cref{lem:ch08-gronwall} with $C = 0$. For $x<x_0$ apply the
+same argument to $\tilde w(t) = w(x_0 - t)$, $t\ge0$.
+\end{proof}
+
+\begin{remark}[What the theorem does and does not say]\label{rem:ch08-local}
+The theorem is \emph{local}: $h$ may be much smaller than $a$. For
+\cref{ex:ch08-picard-riccati} with $a = b = 1$: $M = \max(x^2 + y^2) = 2$, so
+$h = \min(1,\frac12) = \frac12$. A numerical computation (Chapter~23) shows
+the solution actually exists up to about $x\approx2.003$, and
+\cref{prob:ch03-p3} proved it cannot go past $1 + \frac\pi2$. The theorem
+gives a guaranteed interval, not the true one.
+\end{remark}
+
+\begin{corollary}[Continuous dependence on initial data]\label{cor:ch08-dependence}
+Let $f$ be Lipschitz in $y$ with constant $L$ on a region containing the graphs
+of two solutions $y, z$ on an interval $J\ni x_0$. Then
+\[
+  |y(x) - z(x)|\le|y(x_0) - z(x_0)|\,e^{L|x - x_0|}\qquad (x\in J).
+\]
+\end{corollary}
+\begin{proof}
+For $x\ge x_0$, by \cref{lem:ch08-integral} (applied to each solution) and the
+Lipschitz bound,
+$|y(x) - z(x)|\le|y(x_0) - z(x_0)| + L\int_{x_0}^x|y - z|\,\mathrm{d}s$. Apply
+\cref{lem:ch08-gronwall} with $C = |y(x_0) - z(x_0)|$. Argue symmetrically for
+$x<x_0$.
+\end{proof}
+
+\begin{example}[The bound is sharp, and it can be pessimistic]\label{ex:ch08-sharp}
+For $\der{y}{x} = y$ ($L = 1$), solutions with $y(0) = y_0$ and $z(0) = z_0$
+differ by exactly $|y_0 - z_0|e^{x}$: equality in
+\cref{cor:ch08-dependence}. For $\der{y}{x} = -y$, also $L = 1$, they differ by
+$|y_0 - z_0|e^{-x}$: the bound $e^{x}$ is far too pessimistic for $x>0$. The
+corollary uses only $|f_y|\le L$, not the sign of $f_y$; Chapter~24's notion of
+stiffness lives exactly in this gap.
+\end{example}
+
+% ------------------------------------------------------------
+\section{A second proof: contraction mapping}\label{sec:ch08-contraction}
+
+The same theorem has a shorter proof once one abstract result is in place.
+It is worth knowing both: the first gives explicit error bounds
+(\cref{prob:ch08-h5}), the second generalizes to systems, PDEs, and much of
+analysis.
+
+\begin{theorem}[Banach fixed-point theorem]\label{thm:ch08-banach}
+Let $(X,d)$ be a nonempty complete metric space and $T:X\to X$ satisfy
+$d(Tu,Tv)\le q\,d(u,v)$ for all $u,v$, with a fixed $q<1$. Then $T$ has exactly
+one fixed point $u^*$, and for every $u\in X$, $T^nu\to u^*$.
+\end{theorem}
+\begin{proof}
+Let $u_n = T^nu$. Then $d(u_{n+1},u_n)\le q^nd(u_1,u_0)$, so for $m>n$,
+\[
+  d(u_m,u_n)\le\sum_{k=n}^{m-1}q^kd(u_1,u_0)\le\frac{q^n}{1-q}\,d(u_1,u_0)\to0 .
+\]
+So $(u_n)$ is Cauchy and converges to some $u^*$ by completeness. Since $T$ is
+continuous (it is Lipschitz), $Tu^* = \lim Tu_n = \lim u_{n+1} = u^*$. If $v^*$
+is another fixed point, $d(u^*,v^*) = d(Tu^*,Tv^*)\le q\,d(u^*,v^*)$, forcing
+$d(u^*,v^*) = 0$.
+\end{proof}
+
+\begin{proof}[Second proof of \cref{thm:ch08-pl}(a)--(b)]
+Let $X$ be the set of continuous $\varphi:I\to\R$ with $|\varphi - y_0|\le b$,
+and define $(T\varphi)(x) = y_0 + \int_{x_0}^xf(s,\varphi(s))\,\mathrm{d}s$. By
+Step 1 above, $T$ maps $X$ into $X$. A fixed point of $T$ is exactly a solution
+(\cref{lem:ch08-integral}).
+
+\emph{The trick: a weighted norm.} With the sup norm, $T$ is a contraction only
+if $Lh<1$. Instead use
+\[
+  \|\varphi\|_* = \max_{x\in I}e^{-2L|x - x_0|}\,|\varphi(x)| ,
+\]
+which satisfies $e^{-2Lh}\|\varphi\|_\infty\le\|\varphi\|_*\le\|\varphi\|_\infty$. The
+two norms have the same Cauchy sequences and the same limits, and
+$C(I)$ is complete under the sup norm \parencite[Ch.~7]{Rudin}; $X$ is a closed
+subset; so $X$ is complete under $d(\varphi,\psi) = \|\varphi - \psi\|_*$. For
+$x\ge x_0$:
+\begin{align*}
+  |T\varphi(x) - T\psi(x)|
+  &\le L\int_{x_0}^{x}|\varphi(s) - \psi(s)|\,\mathrm{d}s
+     \why{Lipschitz}\\
+  &\le L\,\|\varphi - \psi\|_*\int_{x_0}^{x}e^{2L(s - x_0)}\,\mathrm{d}s
+     \why{definition of $\|\cdot\|_*$}\\
+  &\le \tfrac12\,\|\varphi - \psi\|_*\,e^{2L(x - x_0)} .
+\end{align*}
+Multiplying by $e^{-2L(x - x_0)}$ and arguing symmetrically for $x<x_0$:
+$\|T\varphi - T\psi\|_*\le\frac12\|\varphi - \psi\|_*$. (If $L = 0$, $T$ is constant
+and trivially has a fixed point.) \Cref{thm:ch08-banach} gives a unique fixed
+point in $X$, and the iterates $T^n y_0$ are the Picard iterates.
+\end{proof}
+% VERIFY: Rudin Ch. 7, Thm 7.15 (completeness of C(X) with the sup norm).
+
+% ------------------------------------------------------------
+\section{When the hypotheses fail}\label{sec:ch08-failure}
+
+\begin{example}[Continuity without Lipschitz: existence, no uniqueness]\label{ex:ch08-sqrt}
+$\der{y}{x} = \sqrt{|y|}$, $y(0) = 0$. Besides $y\equiv0$, for any $c\ge0$
+\[
+  y_c(x) = \begin{cases}0, & x\le c,\\ \frac{(x - c)^2}{4}, & x>c\end{cases}
+\]
+is a solution: for $x>c$, $\der{}{x}\frac{(x-c)^2}{4} = \frac{x - c}{2} = \sqrt{\frac{(x-c)^2}{4}}$,
+and both one-sided derivatives vanish at $c$. Solutions may also leave $0$ to
+the left, as $-\frac{(x + c')^2}{4}$ for $x<-c'$ (check the sign!). The
+failure is exactly that $\sqrt{|y|}$ is not Lipschitz at $0$
+(\cref{ex:ch08-lipschitz}). See \cref{fig:ch08-sqrt}.
+\end{example}
+
+\begin{figure}[ht]
+  \centering
+  \input{figures/ch08_sqrt_funnel}
+  \caption{Some of the infinitely many solutions of $\der{y}{x} = \sqrt{|y|}$
+  with $y(0) = 0$: each waits at $0$ and then leaves along a parabola.}
+  \label{fig:ch08-sqrt}
+\end{figure}
+
+Continuity alone still guarantees existence.
+
+\begin{theorem}[Peano]\label{thm:ch08-peano}
+If $f$ is continuous on $R$ with $|f|\le M$, the IVP has at least one solution
+on $[x_0 - h, x_0 + h]$, $h = \min(a, b/M)$.
+\end{theorem}
+\noindent\emph{Proof deferred} to \textcite[Ch.~1]{CoddingtonLevinson} and
+\textcite[\S2.7]{Teschl}; it constructs Euler polygons (Chapter~23) and
+extracts a convergent subsequence with the Arzel\`a--Ascoli theorem.
+% VERIFY: Coddington & Levinson Ch. 1 (Peano's theorem) and Teschl §2.7 title.
+
+\begin{example}[No continuity: no solution]\label{ex:ch08-no-solution}
+Let $f(y) = 1$ for $y\le0$ and $f(y) = -1$ for $y>0$. Then
+$\der{y}{x} = f(y)$, $y(0) = 0$ has no solution on any interval $[0,\varepsilon)$.
+
+\emph{Proof.} Suppose $y$ is one. Then $\der{y}{x}(0) = f(0) = 1>0$, so
+$\frac{y(x) - y(0)}{x}\to 1$ and $y(x)>0$ for $0<x<\delta$ (some $\delta>0$).
+On $(0,\delta)$, $\der{y}{x} = f(y) = -1$. For $0<x'<x<\delta$, the mean value theorem
+gives $y(x) - y(x') = -(x - x')$. Let $x'\to0^+$: by continuity
+$y(x) = y(0) - x = -x<0$, contradicting $y(x)>0$. $\qed$
+\end{example}
+
+% ------------------------------------------------------------
+\section{Maximal solutions and the blow-up alternative}\label{sec:ch08-maximal}
+
+\Cref{thm:ch08-pl} is local. How far does a solution go? From now on let $D$
+be an open subset of $\R^2$ and assume $f$ and $\pder{f}{y}$ are continuous on
+$D$. Then around every point of $D$ there is a closed rectangle inside $D$ on
+which \cref{thm:ch08-pl} applies (by \cref{lem:ch08-c1-lipschitz}).
+
+\begin{proposition}[Global uniqueness]\label{prop:ch08-global-unique}
+Two solutions of the IVP (graphs in $D$) defined on intervals $J_1,J_2\ni x_0$
+agree on $J_1\cap J_2$.
+\end{proposition}
+\begin{proof}
+Let $S = \{x\in J_1\cap J_2: y_1(x) = y_2(x)\}$. It contains $x_0$, and it is
+closed in $J_1\cap J_2$ (by continuity). It is also open: if $y_1(\xi) = y_2(\xi)$,
+both solve the IVP with data at $\xi$, so they agree near $\xi$ by
+\cref{thm:ch08-pl}(c) on a rectangle around $(\xi,y_1(\xi))$. A nonempty subset
+of an interval that is both open and closed in it is the whole interval.
+\end{proof}
+
+Taking the union of the intervals of all solutions, and defining $y$ there by
+any of them (consistent by \cref{prop:ch08-global-unique}), gives the
+\emph{maximal solution}, defined on an open \emph{maximal interval}
+$(\alpha,\beta)\ni x_0$; every solution of the IVP is a restriction of it.
+
+\begin{theorem}[The solution leaves every compact set]\label{thm:ch08-escape}
+Let $y$ be the maximal solution on $(\alpha,\beta)$. If $\beta<\infty$, then for
+every compact $K\subset D$ there is $x_K<\beta$ such that $(x,y(x))\notin K$ for
+all $x\in(x_K,\beta)$. The same holds at $\alpha$.
+\end{theorem}
+\begin{proof}
+Suppose not: there are $x_n\to\beta^-$ with $(x_n,y(x_n))\in K$. Since $K$ is
+compact and $D$ open, there is $\delta>0$ such that the closed set
+$K' = \{(x,y): |x - \xi|\le\delta,\ |y - \eta|\le\delta \text{ for some } (\xi,\eta)\in K\}$
+lies in $D$; $K'$ is compact. Let $M = 1 + \max_{K'}|f|$ and
+$L = \max_{K'}\bigl|\pder{f}{y}\bigr|$. For every $(\xi,\eta)\in K$, the square of
+half-side $\delta$ centred there lies in $K'$, so \cref{thm:ch08-pl} gives a
+solution through $(\xi,\eta)$ on $[\xi - h,\xi + h]$ with the \emph{same}
+$h = \min(\delta,\delta/M)$ for all such points. Choose $n$ with
+$\beta - x_n<h/2$ and let $z$ be the solution through $(x_n,y(x_n))$. By
+\cref{prop:ch08-global-unique}, $z = y$ where both are defined, so gluing
+gives a solution of the original IVP on $(\alpha, x_n + h)$, and
+$x_n + h>\beta$. This contradicts maximality.
+\end{proof}
+
+\begin{corollary}[Blow-up alternative]\label{cor:ch08-blowup}
+If $D = \R^2$ and $\beta<\infty$, then $|y(x)|\to\infty$ as $x\to\beta^-$.
+\end{corollary}
+\begin{proof}
+Apply \cref{thm:ch08-escape} to $K = [x_0,\beta]\times[-R,R]$ for each $R>0$:
+for $x$ close enough to $\beta$, $(x,y(x))\notin K$, i.e.\ $|y(x)|>R$.
+\end{proof}
+
+So for an equation defined on the whole plane, \emph{a solution can only end by
+blowing up}. To prove global existence, it suffices to prove an a priori bound.
+
+\begin{example}[Using the alternative]\label{ex:ch08-alternative}
+For $\der{y}{x} = y^2$, $y(0) = 1$: the maximal solution is $1/(1-x)$ on
+$(-\infty,1)$, and $|y|\to\infty$ at $\beta = 1$, as the corollary demands.
+For $\der{y}{x} = -y^3$, $y(0) = y_0$: $\der{}{x}(y^2) = -2y^4\le0$, so
+$|y(x)|\le|y_0|$ for $x\ge0$ in the maximal interval; $|y|$ cannot blow up
+forward, hence $\beta = \infty$, with no formula needed.
+\end{example}
+
+These results finally justify, in general, what Chapters 3, 4 and 7 proved
+case by case: Lipschitz zeros are never reached (uniqueness), linear equations
+live on their whole interval (no blow-up: \cref{prob:ch08-c6}), and bounded
+autonomous solutions exist for all time.
+
+% ------------------------------------------------------------
+\section{Pitfalls}\label{sec:ch08-pitfalls}
+
+\begin{pitfall}[Confusing Lipschitz with differentiable]\label{pit:ch08-lip-diff}
+$|y|$ is Lipschitz but not differentiable; uniqueness holds for
+$\der{y}{x} = |y|$. Differentiability of $f$ in $y$ is sufficient for the
+theorem (\cref{lem:ch08-c1-lipschitz}), not necessary.
+\end{pitfall}
+
+\begin{pitfall}[Non-Lipschitz does not imply non-unique]\label{pit:ch08-not-converse}
+The Lipschitz condition is sufficient, not necessary. $\der{y}{x} = \sqrt{|y|}$
+with $y(0) = 1$ has a unique solution near $0$, because the solution stays
+away from $y = 0$ where the condition fails. Nonuniqueness needs an initial
+point where the failure actually bites.
+\end{pitfall}
+
+\begin{pitfall}[Reading ``$h$'' as the interval of existence]\label{pit:ch08-h}
+$h = \min(a,b/M)$ is a guaranteed lower bound, often very conservative
+(\cref{rem:ch08-local}); it is not where the solution ends. The maximal
+interval is determined by \cref{thm:ch08-escape}.
+\end{pitfall}
+
+\begin{pitfall}[Pointwise convergence of the iterates]\label{pit:ch08-uniform}
+Step 4 of the proof needs \emph{uniform} convergence to pass the limit through
+the integral. Pointwise convergence of $y_n$ would not justify
+$\int f(s,y_n)\to\int f(s,y)$ in general.
+\end{pitfall}
+
+\begin{pitfall}[Applying Gronwall with the wrong sign]\label{pit:ch08-gronwall-sign}
+Gronwall requires $L\ge0$ and an inequality of the form $u\le C + L\int u$.
+From $u'\ge Lu$ you get a \emph{lower} bound, not an upper one; check the
+direction before quoting the lemma.
+\end{pitfall}
+
+% ------------------------------------------------------------
+\section{Problems}\label{sec:ch08-problems}
+
+\subsection*{Warm-up}
+
+\begin{problem}{W}\label{prob:ch08-w1}
+Compute the Picard iterates $y_1,y_2,y_3$ for $\der{y}{x} = 2x(1 + y)$, $y(0) = 0$.
+Guess $y_n$, find the limit, and verify it solves the IVP.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch08-w2}
+Is $f$ Lipschitz in $y$ on the given set? Prove each answer.
+(a) $y^2$ on $[-1,1]\times[-2,2]$;
+(b) $y^{2/3}$ on $[0,1]\times[-1,1]$;
+(c) $|y|$ on $\R^2$;
+(d) $\dfrac{x}{1 + y^2}$ on $[-3,3]\times\R$, and on $\R^2$.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch08-w3}
+For $\der{y}{x} = 1 + y^2$, $y(0) = 0$, with $a = b = 1$, compute the $h$ of
+\cref{thm:ch08-pl} and compare with the true maximal interval.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch08-w4}
+Show that $y\equiv0$ and $y = x^3$ both solve $\der{y}{x} = 3y^{2/3}$, $y(0) = 0$,
+and identify precisely which hypothesis of \cref{thm:ch08-pl} fails.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch08-w5}
+Let $u\ge0$ be continuous on $[0,1]$ with $u(x)\le2\int_0^xu(s)\,\mathrm{d}s$.
+Prove $u\equiv0$.
+\end{problem}
+
+\subsection*{Core}
+
+\begin{problem}{C}\label{prob:ch08-c1}
+For $\der{y}{x} = x^2 + y^2$, $y(0) = 0$, maximize the guaranteed half-length
+$h = \min\bigl(a,\, b/(a^2 + b^2)\bigr)$ over all rectangles $a,b>0$.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch08-c2}
+Compute $y_1, y_2$ for $\der{y}{x} = y^2$, $y(0) = 1$, and compare with the
+Taylor series of the exact solution. Which coefficients are already correct
+in $y_2$? Compute the $h$ of \cref{thm:ch08-pl} for a good rectangle and
+compare with the radius of convergence of the Taylor series.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch08-c3}
+Find a two-parameter family of solutions of $\der{y}{x} = \sqrt{|y|}$, $y(0) = 0$,
+on $\R$ (one parameter for each side) and verify differentiability at every
+gluing point.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch08-c4}
+With $f$ as in \cref{ex:ch08-no-solution}, solve $\der{y}{x} = f(y)$, $y(0) = 1$,
+and find its maximal interval. Why does it end, although $y$ stays bounded?
+Why does this not contradict \cref{cor:ch08-blowup}?
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch08-c5}
+Show that any two solutions of $\der{y}{x} = \sin y + x$ on an interval
+containing $0$ satisfy $|y(x) - z(x)|\le|y(0) - z(0)|e^{|x|}$.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch08-c6}
+(Linear growth implies global existence.) Suppose $f,\pder{f}{y}$ are continuous
+on $\R^2$ and $|f(x,y)|\le A + B|y|$. Prove every maximal solution exists on
+all of $\R$. Deduce again the global existence part of \cref{thm:ch04-main}
+(for $p,q$ continuous on $\R$).
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch08-c7}
+Solve $\der{y}{x} = |y|$, $y(0) = -1$, and prove the solution is unique on $\R$,
+although $f$ is not differentiable on the line $y = 0$.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch08-c8}
+Prove that the solution of $\der{y}{x} = x - y^2$, $y(0) = 0$, satisfies
+$0\le y(x)\le\sqrt x$ for all $x\ge0$ in its maximal interval, and conclude
+that it exists for all $x\ge0$.
+\end{problem}
+
+\subsection*{Hard}
+
+\begin{problem}{H}\label{prob:ch08-h1}
+(Generalized Gronwall.) Let $u,\beta$ be continuous on $[x_0,x_1]$ with
+$\beta\ge0$, and $\alpha$ nondecreasing. Prove that
+$u(x)\le\alpha(x) + \int_{x_0}^x\beta(s)u(s)\,\mathrm{d}s$ implies
+$u(x)\le\alpha(x)\exp\bigl(\int_{x_0}^x\beta(s)\,\mathrm{d}s\bigr)$.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch08-h2}
+(Global Picard--Lindel\"of on a strip.) Suppose $f$ is continuous on
+$S = [x_0 - a, x_0 + a]\times\R$ and Lipschitz in $y$ on all of $S$. Prove the
+IVP has a unique solution on the \emph{whole} interval $[x_0 - a, x_0 + a]$.
+(Adapt the weighted-norm proof; note there is no $b$ to respect.)
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch08-h3}
+(Osgood's uniqueness theorem.) Suppose
+$|f(x,y_1) - f(x,y_2)|\le\omega(|y_1 - y_2|)$ where $\omega$ is continuous,
+increasing, $\omega(0) = 0$, $\omega>0$ on $(0,\infty)$, and
+$\int_0^\varepsilon\frac{\mathrm{d}r}{\omega(r)} = \infty$. Prove uniqueness for the
+IVP. Show that $\omega(r) = r\,|\ln r|$ (near $0$) qualifies though it is not
+Lipschitz.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch08-h4}
+(One-sided uniqueness.) Let $f(y) = -\operatorname{sgn}(y)\sqrt{|y|}$. Prove that
+for every initial value, $\dot y = f(y)$ has exactly one solution \emph{forward}
+in time ($t\ge t_0$), but that $y(0) = 0$ has infinitely many solutions on
+$t\le 0$. Identify the property of $f$ that gives forward uniqueness.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch08-h5}
+(Error of the Picard iterates.) Under the hypotheses of \cref{thm:ch08-pl} with
+$L>0$, prove
+\[
+  \max_I|y - y_n|\le\frac{M}{L}\,\frac{(Lh)^{n+1}}{(n+1)!}\,e^{Lh}.
+\]
+How many iterates guarantee an error below $10^{-6}$ for
+\cref{ex:ch08-picard-riccati} with $a = b = 1$?
+\end{problem}
+
+\subsection*{Putnam/olympiad-style}
+
+\begin{problem}{P}[classical]\label{prob:ch08-p1}
+Let $f:\R\to\R$ be differentiable with $f(0) = 0$ and $|f'(x)|\le|f(x)|$ for all
+$x$. Prove that $f\equiv0$.
+\end{problem}
+
+\begin{problem}{P}\label{prob:ch08-p2}
+Let $0<\alpha<1$. Determine the set of all possible values of $f(1)$, where
+$f:[0,1]\to\R$ is differentiable with $f(0) = 0$ and $f'(x) = |f(x)|^\alpha$ for
+all $x$.
+\end{problem}
+
+\begin{problem}{P}\label{prob:ch08-p3}
+Let $y:[0,\infty)\to\R$ be differentiable with $y(0) = 0$ and
+$|y'(x)|\le|y(x)| + x^2$ for all $x\ge0$. Prove that
+$|y(x)|\le 2e^x - x^2 - 2x - 2$ for all $x\ge0$, and that the bound is
+attained. (Beware: $|y|$ need not be differentiable.)
+\end{problem}
+
+% ------------------------------------------------------------
+\section{Hints}\label{sec:ch08-hints}
+
+\paragraph{Warm-up and core.}
+\cref{prob:ch08-w1}: compare the iterates with the series of $e^{x^2}$.
+\cref{prob:ch08-w2}(d): $\bigl|\pder{}{y}\frac{x}{1+y^2}\bigr| = \frac{2|x||y|}{(1+y^2)^2}$;
+maximize over $y$.
+\cref{prob:ch08-c1}: for fixed $a$, maximize $b/(a^2 + b^2)$ over $b$ first.
+\cref{prob:ch08-c4}: where does the solution reach $y = 0$, and what does
+\cref{ex:ch08-no-solution} say about continuing from there? Which hypothesis of
+the corollary is missing?
+\cref{prob:ch08-c6}: on $[x_0,\beta)$, $|y(x)|\le|y_0| + A(x - x_0) + B\int|y|$.
+\cref{prob:ch08-c8}: at a point where $y = 0$ (with $x>0$), what is $\der{y}{x}$?
+At a point where $y = \sqrt x$, compare $\der{y}{x}$ with $\der{}{x}\sqrt x$.
+
+\hintfor{prob:ch08-h1}
+\begin{hintlevels}
+  \item Fix $X\in[x_0,x_1]$ and use $\alpha(x)\le\alpha(X)$ for $x\le X$.
+  \item Let $V(x) = \int_{x_0}^x\beta u$; show
+        $V'\le\beta\,(\alpha(X) + V)$ on $[x_0,X]$.
+  \item Multiply by $\exp\bigl(-\int_{x_0}^x\beta\bigr)$, integrate, and set $x = X$.
+\end{hintlevels}
+
+\hintfor{prob:ch08-h2}
+\begin{hintlevels}
+  \item Work in $X = C([x_0 - a,x_0 + a])$, all continuous functions.
+  \item $T$ maps $X$ to $X$ with no bound on $f$ needed.
+  \item The contraction estimate with $\|\cdot\|_*$ used only the Lipschitz
+        condition.
+\end{hintlevels}
+
+\hintfor{prob:ch08-h3}
+\begin{hintlevels}
+  \item Let $w = |y - z|$ and suppose $w>0$ somewhere to the right of $x_0$.
+  \item Let $W(x) = \int_{x_0}^x\omega(w(s))\,\mathrm{d}s$. Show $w\le W$ and
+        $W'\le\omega(W)$.
+  \item Where $W>0$, $\der{}{x}\int_{W(x)}^{c}\frac{\mathrm{d}r}{\omega(r)}\ge-1$;
+        integrate from just after the last point where $W = 0$ and use the
+        divergence of the integral.
+\end{hintlevels}
+
+\hintfor{prob:ch08-h4}
+\begin{hintlevels}
+  \item $f$ is decreasing. Compute $\der{}{t}(y - z)^2$ for two solutions.
+  \item $(y - z)\bigl(f(y) - f(z)\bigr)\le0$ for a decreasing $f$.
+  \item For $t\le0$, construct solutions that reach $0$ at any time $c\le 0$
+        and stay there (compare \cref{ex:ch07-reach}).
+\end{hintlevels}
+
+\hintfor{prob:ch08-h5}
+\begin{hintlevels}
+  \item Write $y - y_n = \sum_{k\ge n}(y_{k+1} - y_k)$.
+  \item Use \eqref{eq:ch08-differences} with $|x - x_0|\le h$.
+  \item Bound the tail $\sum_{j\ge n+1}\frac{t^j}{j!}$ by
+        $\frac{t^{n+1}}{(n+1)!}e^t$.
+\end{hintlevels}
+
+\hintfor{prob:ch08-p1}
+\begin{hintlevels}
+  \item This is a uniqueness statement in disguise.
+  \item For $x\ge0$, $|f(x)|\le\int_0^x|f'|\le\int_0^x|f|$.
+  \item Apply \cref{lem:ch08-gronwall} with $C = 0$; handle $x<0$ by reflection.
+\end{hintlevels}
+
+\hintfor{prob:ch08-p2}
+\begin{hintlevels}
+  \item $f'\ge0$, so $f\ge0$ on $[0,1]$. Where $f>0$, separate variables.
+  \item Every solution is $0$ up to some point $c$ and then follows one explicit
+        curve (compare \cref{ex:ch08-sqrt}).
+  \item Optimize over $c\in[0,1]$, and check that every value in between is
+        attained (continuity in $c$).
+\end{hintlevels}
+
+\hintfor{prob:ch08-p3}
+\begin{hintlevels}
+  \item Avoid differentiating $|y|$: integrate instead.
+        $|y(x)|\le\int_0^x|y'|\le\int_0^x\bigl(|y| + s^2\bigr)\,\mathrm{d}s$.
+  \item Let $u = 2e^x - x^2 - 2x - 2$; it satisfies $u = \int_0^x(u + s^2)\,\mathrm{d}s$.
+        Study $w = |y| - u$.
+  \item $w\le\int_0^xw$; apply \cref{lem:ch08-gronwall} to the positive part
+        $\max(w,0)$, or adapt its proof.
+\end{hintlevels}
+
+% ------------------------------------------------------------
+\section{Further reading}\label{sec:ch08-reading}
+
+\begin{itemize}
+  \item \textcite[\S\S2.1--2.2]{Teschl}: fixed-point theorems and the basic
+        existence and uniqueness result (Picard--Lindel\"of, Thm.~2.2), with
+        Gronwall's inequality and its generalization.
+  % VERIFY: Teschl theorem/lemma numbering (Thm 2.2; Gronwall Lemmas 2.5/2.7) in the printed AMS edition.
+  \item \textcite[Ch.~1]{CoddingtonLevinson}: the classical, complete
+        treatment, including Peano's theorem and continuation of solutions.
+  \item \textcite[Ch.~13, \S\S69--70]{Simmons}: the method of successive
+        approximations and Picard's theorem, gently.
+  \item \textcite[\S2.8]{BoyceDiPrima}: the existence and uniqueness theorem
+        with worked Picard iterations.
+  \item \textcite[Ch.~4]{Arnold}: the contraction-mapping proof from a
+        geometric point of view.
+  % VERIFY: Arnold (Springer 1992), Ch. 4 title "Proofs of the Main Theorems".
+\end{itemize}

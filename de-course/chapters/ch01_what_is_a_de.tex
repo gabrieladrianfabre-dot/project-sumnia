@@ -59,6 +59,13 @@ Lagrange's prime hides the independent variable (is $y'$ a derivative in $x$
 or in $t$?), so it is used only when that variable is fixed and obvious.
 Newton's dot always means $\der{}{t}$ with $t$ time.
 
+\paragraph{Named functions.} The derivative of a \emph{named} function of one
+variable ($f$, $g$, $\varphi$, $H$, $\mu$, \dots) is written $f'(x)$, as in any
+calculus text. This is function notation, not a choice of how to write the
+unknown of a differential equation, and it is used freely. The three-notation
+rule governs how we write derivatives of the \emph{unknown} ($y$, $x(t)$,
+$u$, \dots) in equations.
+
 \paragraph{Why Leibniz is the default.} Leibniz notation makes the chain rule
 look like cancellation, and that is \emph{exactly} what you need for
 substitutions. If $y$ depends on $x$ and $x$ on $t$,
@@ -462,6 +469,9 @@ those conditions for every $c$).
 % ------------------------------------------------------------
 \section{Problems}\label{sec:ch01-problems}
 
+\notation{Lagrange in \cref{prob:ch01-w2,prob:ch01-w3,prob:ch01-c1}, where the
+algebra is that of \cref{ex:ch01-ivp}; Leibniz elsewhere.}
+
 \subsection*{Warm-up}
 
 \begin{problem}{W}\label{prob:ch01-w1}
@@ -657,7 +667,7 @@ derivative.
 
 \hintfor{prob:ch01-h5}
 \begin{hintlevels}
-  \item Differentiate $\tfrac12(y')^2 - F(y)$ with respect to $x$.
+  \item Differentiate $\tfrac12\bigl(\der{y}{x}\bigr)^2 - F(y)$ with respect to $x$.
   \item With $F(y) = \tfrac12y^4$ and the initial data, $E = 0$, so
         $\bigl(\der{y}{x}\bigr)^2 = y^4$.
   \item $\der{y}{x} = y^2$ or $-y^2$: which does the initial condition force,

@@ -318,7 +318,7 @@ $y = y_1 + 1/u$ never equals $y_1$. Always add $y_1$ back to the list.
 \end{pitfall}
 
 \begin{pitfall}[``Homogeneous'' means two things]\label{pit:ch06-homog-name}
-$\der{y}{x} = F(y/x)$ (this chapter) and $y' + py = 0$ (Chapter~4) are different
+$\der{y}{x} = F(y/x)$ (this chapter) and $\der{y}{x} + py = 0$ (Chapter~4) are different
 notions. When you write ``homogeneous'' in a solution, say which.
 \end{pitfall}
 
@@ -381,7 +381,8 @@ $\der{y}{x} = e^{2x} + (1 + 2e^x)y + y^2$, and find all solutions.
 \end{problem}
 
 \begin{problem}{C}\label{prob:ch06-c6}
-Show that $y = u'/u$ transforms $y' + y^2 + 1 = 0$ into $u'' + u = 0$. Using
+\notation{Lagrange, as in \eqref{eq:ch06-riccati-second}.} Show that
+$y = u'/u$ transforms $y' + y^2 + 1 = 0$ into $u'' + u = 0$. Using
 $u = \cos(x - c)$, recover a one-parameter family of solutions and explain how
 the poles of $y$ correspond to zeros of $u$. Which solution of the Riccati
 equation is missing from this family, if any?
@@ -449,7 +450,7 @@ $\displaystyle f(x)^2 = \int_0^x t\,f(t)\,\mathrm{d}t$ for all $x\ge0$.
 \end{problem}
 
 \begin{problem}{P}\label{prob:ch06-p3}
-Let $q$ be continuous on $[0,\infty)$. Assume (Chapter~9) that
+\notation{Lagrange.} Let $q$ be continuous on $[0,\infty)$. Assume (Chapter~9) that
 $u'' = qu$, $u(0) = 1$, $u'(0) = 0$ has a $C^2$ solution on $[0,\infty)$.
 \begin{enumerate}[label=(\alph*)]
   \item Prove that if $q\ge 0$, the Riccati IVP $y' + y^2 = q$, $y(0) = 0$, has a
@@ -461,6 +462,8 @@ $u'' = qu$, $u(0) = 1$, $u'(0) = 0$ has a $C^2$ solution on $[0,\infty)$.
 
 % ------------------------------------------------------------
 \section{Hints}\label{sec:ch06-hints}
+
+\notation{The hints use Lagrange primes for brevity.}
 
 \paragraph{Warm-up and core.}
 \cref{prob:ch06-w4}: $u = x - y + 1$ has equilibria $u = \pm1$.
