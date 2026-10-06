@@ -1,0 +1,623 @@
+% ============================================================
+%  Chapter 2 — Modeling
+% ============================================================
+\chapter{Modeling}\label{ch:ch02}
+
+\begin{diagnostic}
+  \item If a quantity $Q$ is measured in kilograms and $t$ in minutes, what
+        are the units of $\der{Q}{t}$? Of $\int_0^5 Q(t)\,\mathrm{d}t$?
+  \item Solve $e^{-3k} = 0.4$ for $k$ exactly, then to three significant
+        figures.
+  \item State Newton's second law for a body of constant mass $m$ moving on a
+        line, and say what sign conventions you must choose before using it.
+\end{diagnostic}
+
+% ------------------------------------------------------------
+\section{Motivation: from an assumption to an equation}\label{sec:ch02-motivation}
+
+A forensic team finds a body at $10$\,pm with temperature $30^\circ$C; an hour
+later it is $28^\circ$C, and the room is held at $20^\circ$C. When did death
+occur? No formula for ``temperature of a cooling body'' was handed to anyone.
+What we have is a physical \emph{assumption} about \emph{rates}: a body loses
+heat faster the hotter it is relative to its surroundings. Turning such an
+assumption into a differential equation, solving it, and checking the result
+against data is \emph{modeling}. This chapter does it five times, and solves
+every resulting equation with one lemma (\cref{lem:ch02-exp}) plus a shift.
+Equations that need more (variable volume, quadratic drag) are derived here
+and solved in Chapters 3--4.
+
+\paragraph{The modeling loop.}
+\begin{enumerate}[label=(\arabic*)]
+  \item Name the state variable(s), their units, and the independent variable.
+  \item State the assumptions in words, then as a \emph{balance law}:
+        rate of change $=$ rate in $-$ rate out.
+  \item Check units in every term.
+  \item Solve, and check the solution against limiting cases and data.
+  \item Ask which assumption is most likely to fail first.
+\end{enumerate}
+
+% ------------------------------------------------------------
+\section{The one lemma we need}\label{sec:ch02-lemma}
+
+\begin{lemma}[Exponential solutions]\label{lem:ch02-exp}
+Let $k\in\R$ and let $I$ be an open interval. The solutions of
+$\der{y}{t} = ky$ on $I$ are exactly $y = Ce^{kt}$, $C\in\R$.
+\end{lemma}
+\begin{proof}
+Each $Ce^{kt}$ is a solution: $\der{}{t}\bigl(Ce^{kt}\bigr) = kCe^{kt}$.
+Conversely let $y$ be any solution and set $h(t) = e^{-kt}y(t)$. Then
+\begin{align*}
+  \der{h}{t} &= -ke^{-kt}y + e^{-kt}\der{y}{t} \why{product rule}\\
+             &= -ke^{-kt}y + e^{-kt}ky = 0 \why{the equation}.
+\end{align*}
+By \cref{thm:ch01-antiderivative} (with $g\equiv 0$), $h$ is a constant $C$ on
+$I$, so $y = Ce^{kt}$.
+\end{proof}
+
+Notice what the proof did \emph{not} do: it never divided by $y$. The
+``separation'' argument $\frac{\mathrm{d}y}{y} = k\,\mathrm{d}t$ would have
+had to treat $y = 0$ separately (Chapter~3).
+
+\begin{corollary}[Affine right-hand side]\label{cor:ch02-affine}
+Let $a\in\R$ and $b\neq 0$. The solutions of $\der{y}{t} = a - by$ on an
+interval are exactly
+\[
+  y = \frac{a}{b} + Ce^{-bt},\qquad C\in\R .
+\]
+The solution with $y(t_0) = y_0$ is
+$y = \frac{a}{b} + \bigl(y_0 - \frac{a}{b}\bigr)e^{-b(t - t_0)}$. If $b>0$,
+every solution tends to the equilibrium $a/b$ as $t\to\infty$.
+\end{corollary}
+\begin{proof}
+Shift by the equilibrium: $u = y - \frac ab$ satisfies
+$\der{u}{t} = \der{y}{t} = a - b\bigl(u + \frac ab\bigr) = -bu$. Apply
+\cref{lem:ch02-exp} with $k = -b$, then fit $C$ to $y(t_0) = y_0$. For $b>0$,
+$e^{-bt}\to 0$.
+\end{proof}
+
+The number $1/b$ has the units of time and is called the \emph{time constant}:
+after each time $1/b$, the distance to equilibrium shrinks by a factor $e$.
+
+\paragraph{From increments to derivatives.} Assumptions are usually stated
+about small time intervals: ``in a short time $\Delta t$, a fraction
+$\lambda\Delta t$ of the nuclei decay''. The step to an ODE is the definition
+of the derivative.
+
+\begin{proposition}\label{prop:ch02-increments}
+Let $Q$ be differentiable, and suppose that for every $t$ and small $\Delta t$,
+\[
+  Q(t + \Delta t) - Q(t) = R(t, Q(t))\,\Delta t + E(t,\Delta t),
+  \qquad \lim_{\Delta t\to0}\frac{E(t,\Delta t)}{\Delta t} = 0 .
+\]
+Then $\der{Q}{t} = R(t, Q)$.
+\end{proposition}
+\begin{proof}
+Divide by $\Delta t$ and let $\Delta t\to 0$: the left side tends to
+$\der{Q}{t}(t)$, the error term to $0$.
+\end{proof}
+
+The hypothesis that $Q$ is differentiable is itself a modeling assumption: a
+population of rabbits is an integer and jumps. We replace it by a smooth
+function when it is large enough that individual jumps are negligible.
+
+% ------------------------------------------------------------
+\section{Growth and decay}\label{sec:ch02-growth}
+
+\paragraph{Assumptions.} A population $P(t)$ (individuals; $t$ in years). In a
+short interval $\Delta t$, births are $\beta P\,\Delta t$ and deaths
+$\delta P\,\Delta t$, up to errors of smaller order, with constant per-capita
+rates $\beta,\delta$ (units: $\text{year}^{-1}$). By
+\cref{prop:ch02-increments},
+\begin{equation}\label{eq:ch02-malthus}
+  \der{P}{t} = (\beta - \delta)P = kP,
+\end{equation}
+so $P = P_0e^{kt}$ by \cref{lem:ch02-exp}. Units check: $\der{P}{t}$ is
+individuals/year, $kP$ is year$^{-1}\cdot$individuals. \checkmark
+
+\paragraph{Radioactive decay.} Each nucleus decays, independently of age and of
+the others, with probability $\lambda\Delta t$ in a short interval. Then
+$\der{N}{t} = -\lambda N$ and $N = N_0e^{-\lambda t}$. The \emph{half-life}
+$T_{1/2}$ solves $e^{-\lambda T_{1/2}} = \frac12$:
+\[
+  T_{1/2} = \frac{\ln 2}{\lambda}.
+\]
+
+\begin{example}[Radiocarbon dating]\label{ex:ch02-carbon}
+Carbon-14 has a half-life of about $5730$ years. A sample of charcoal has
+$20\%$ of the $^{14}$C per gram found in living wood. Estimate its age.
+
+\emph{Solution.}
+\begin{align*}
+  \lambda &= \frac{\ln 2}{5730}\ \text{year}^{-1} \why{half-life formula}\\
+  e^{-\lambda t} &= 0.2 \why{fraction remaining}\\
+  t &= \frac{\ln 5}{\lambda} = 5730\cdot\frac{\ln 5}{\ln 2}
+     \approx 5730\cdot 2.3219 \approx 1.33\times10^4\ \text{years}.
+\end{align*}
+\emph{Which assumption fails first?} That the atmospheric $^{14}$C fraction was
+the same when the wood was alive as today. It was not, which is why real
+radiocarbon ages are calibrated against independent records.
+\end{example}
+
+The Malthus model fails for long times: no population grows exponentially
+forever. Chapter~7 replaces the constant rate $k$ by a rate that decreases as
+$P$ grows (the logistic model).
+
+% ------------------------------------------------------------
+\section{Newton's law of cooling}\label{sec:ch02-cooling}
+
+\paragraph{Assumption.} A body of temperature $T(t)$ in surroundings held at
+constant $T_{\mathrm{a}}$ (ambient) changes temperature at a rate proportional
+to the difference:
+\begin{equation}\label{eq:ch02-cooling}
+  \der{T}{t} = -k\,(T - T_{\mathrm{a}}),\qquad k>0 .
+\end{equation}
+The sign is forced: if $T > T_{\mathrm{a}}$ the body cools. This is reasonable
+when the body's temperature is nearly uniform and heat leaves mainly by
+conduction or gentle convection; it fails for strong radiation (rate then
+depends on $T^4$) and for bodies with large internal temperature gradients.
+
+By \cref{cor:ch02-affine} (with $a = kT_{\mathrm{a}}$, $b = k$):
+$T(t) = T_{\mathrm{a}} + (T_0 - T_{\mathrm{a}})e^{-kt}$.
+
+\begin{example}[Coffee]\label{ex:ch02-coffee}
+Coffee at $90^\circ$C is left in a $20^\circ$C room; after $5$ minutes it is
+$70^\circ$C. When is it $40^\circ$C?
+
+\emph{Solution.} Let $u = T - 20$ (the excess temperature), so $u_0 = 70$.
+\begin{align*}
+  u(5) &= 70e^{-5k} = 50 \why{data at $t=5$}\\
+  k &= \frac15\ln\frac{70}{50} = \frac15\ln\frac75\ \text{min}^{-1}
+       \approx 0.0673\ \text{min}^{-1}\\
+  70e^{-kt} &= 20 \why{$T = 40$ means $u = 20$}\\
+  t &= \frac{\ln(7/2)}{k} = \frac{5\ln 3.5}{\ln 1.4}\approx 18.6\ \text{min}.
+\end{align*}
+Notice that only \emph{ratios} of excess temperatures entered. That is a
+consequence of the model's linearity in $u$, and a useful check.
+\end{example}
+
+% ------------------------------------------------------------
+\section{Mixing}\label{sec:ch02-mixing}
+
+\paragraph{Assumptions.} A tank holds $V(t)$ litres of brine containing $Q(t)$
+kg of salt. Brine of concentration $c_{\mathrm{in}}$ (kg/L) flows in at
+$r_{\mathrm{in}}$ L/min; the tank is kept \emph{perfectly mixed}, so the
+outflow, at $r_{\mathrm{out}}$ L/min, has the tank's concentration $Q/V$. The
+balance law ``rate of change $=$ rate in $-$ rate out'' gives
+\begin{equation}\label{eq:ch02-mixing}
+  \der{Q}{t} = c_{\mathrm{in}}\,r_{\mathrm{in}} - \frac{Q}{V(t)}\,r_{\mathrm{out}},
+  \qquad
+  \der{V}{t} = r_{\mathrm{in}} - r_{\mathrm{out}} .
+\end{equation}
+Units: $\frac{\text{kg}}{\text{L}}\cdot\frac{\text{L}}{\text{min}}
+= \frac{\text{kg}}{\text{min}}$ in each term. \checkmark
+
+\begin{example}[Constant volume]\label{ex:ch02-mix}
+A $100$\,L tank initially holds $5$\,kg of salt. Brine with $0.2$\,kg/L enters
+at $3$\,L/min and the mixture leaves at $3$\,L/min. Find $Q(t)$ and the
+long-run amount.
+
+\emph{Solution.} $V\equiv 100$, so
+\begin{align*}
+  \der{Q}{t} &= (0.2)(3) - \frac{Q}{100}(3) = 0.6 - 0.03\,Q \why{by \eqref{eq:ch02-mixing}}\\
+  Q &= \frac{0.6}{0.03} + Ce^{-0.03t} = 20 + Ce^{-0.03t} \why{\cref{cor:ch02-affine}}\\
+  Q(0) &= 20 + C = 5 \;\Rightarrow\; C = -15 .
+\end{align*}
+So $Q(t) = 20 - 15e^{-0.03t}$ kg and $Q\to 20$\,kg, i.e.\ the tank's
+concentration tends to $20/100 = 0.2$\,kg/L, the inflow concentration, as it
+must. The time constant is $1/0.03\approx 33$ minutes: the volume divided by
+the flow rate.
+\end{example}
+
+\begin{example}[Needs care: changing volume]\label{ex:ch02-mix-variable}
+Same tank, but the outflow is only $2$\,L/min. Derive the equation and say why
+\cref{cor:ch02-affine} no longer applies.
+
+\emph{Solution.} Now $\der{V}{t} = 3 - 2 = 1$, so $V = 100 + t$, and
+\[
+  \der{Q}{t} = 0.6 - \frac{2Q}{100 + t},\qquad Q(0) = 5 .
+\]
+The coefficient of $Q$ depends on $t$, so this is linear but not of the form
+$a - bQ$ with constant $b$; it is solved by an integrating factor in
+Chapter~4. It also has a built-in end: if the tank's capacity is $500$\,L, the
+model is valid only for $0\le t\le 400$. Had the outflow \emph{exceeded} the
+inflow, $V$ would hit $0$ in finite time and the term $Q/V$ would blow up: the
+equation itself tells you when the model stops making sense.
+\end{example}
+
+% ------------------------------------------------------------
+\section{Falling bodies with drag}\label{sec:ch02-drag}
+
+\notation{Newton: $v = \dot{x}$ is velocity and $\dot v = \ddot{x}$ acceleration,
+since these are time derivatives in mechanics.}
+
+\paragraph{Assumptions.} A body of mass $m$ moves vertically; take $x$ positive
+\emph{downward}. Forces: gravity $mg$ (down) and air resistance opposing the
+motion. Two standard laws:
+\begin{itemize}
+  \item \emph{linear drag} $F = -cv$ (small, slow objects in viscous fluid);
+  \item \emph{quadratic drag} $F = -kv|v|$ (large or fast objects in air).
+\end{itemize}
+Newton's second law $m\dot v = \sum F$ gives
+\begin{equation}\label{eq:ch02-drag}
+  m\dot{v} = mg - cv
+  \qquad\text{or}\qquad
+  m\dot{v} = mg - kv|v| .
+\end{equation}
+Units: $c$ in kg/s and $k$ in kg/m, so $m/c$ is a time and $\sqrt{m/(gk)}$ is
+a time, too.
+
+\begin{example}[Linear drag]\label{ex:ch02-linear-drag}
+Solve $m\dot v = mg - cv$, $v(0) = v_0$, and find the terminal velocity.
+
+\emph{Solution.} \notation{Leibniz for the solution step, since we invoke
+\cref{cor:ch02-affine}.} Dividing by $m$, $\der{v}{t} = g - \frac cm v$, which
+is the corollary's form with $a = g$, $b = c/m$:
+\[
+  v(t) = \frac{mg}{c} + \Bigl(v_0 - \frac{mg}{c}\Bigr)e^{-ct/m}.
+\]
+As $t\to\infty$, $v\to v_T = mg/c$, the \emph{terminal velocity}, at which drag
+balances weight. A body launched faster than $v_T$ slows down to it; one
+released from rest speeds up to it (\cref{fig:ch02-drag}). The time
+constant $m/c$ is how quickly this happens.
+\end{example}
+
+\begin{figure}[ht]
+  \centering
+  \input{figures/ch02_linear_drag}
+  \caption{Linear drag, in units with $g = 1$, $m/c = 1$ (so $v_T = 1$):
+  $v(t) = 1 + (v_0 - 1)e^{-t}$ for $v_0\in\{0, 0.5, 1.5, 2\}$.}
+  \label{fig:ch02-drag}
+\end{figure}
+
+\begin{example}[Quadratic drag: what we can say before solving]\label{ex:ch02-quadratic}
+For a body falling \emph{downward} ($v>0$), $m\dot v = mg - kv^2$. Setting
+$\dot v = 0$ gives the terminal velocity $v_T = \sqrt{mg/k}$ without solving
+anything. The solution itself (a hyperbolic tangent) is obtained by separation
+of variables in Chapter~3. Do not write $m\dot v = mg - kv^2$ for a body moving
+\emph{upward}: see \cref{pit:ch02-drag-sign}.
+\end{example}
+
+% ------------------------------------------------------------
+\section{Orthogonal trajectories}\label{sec:ch02-orthogonal}
+
+Given a one-parameter family of curves (say, isotherms), the curves that cross
+every member at right angles (heat-flow lines) are its \emph{orthogonal
+trajectories}.
+
+\begin{proposition}\label{prop:ch02-orthogonal}
+Suppose the family consists of solution curves of $\der{y}{x} = f(x,y)$. At a
+point where $f(x,y)\neq 0$, a curve crosses the family at right angles iff its
+slope there is $-1/f(x,y)$. Hence, on any region where $f\neq0$, the
+orthogonal trajectories are the solution curves of
+\[
+  \der{y}{x} = -\frac{1}{f(x,y)}.
+\]
+\end{proposition}
+\begin{proof}
+Lines of slopes $m_1, m_2$ have direction vectors $(1,m_1)$ and $(1,m_2)$;
+they are perpendicular iff the dot product $1 + m_1m_2$ vanishes, i.e.\
+$m_2 = -1/m_1$ (possible only if $m_1\neq 0$). Where $f = 0$, the family is
+horizontal and the orthogonal curve must be vertical, which no graph
+$y = y(x)$ can be.
+\end{proof}
+
+\paragraph{Procedure.} (1) Write the family $G(x,y,c) = 0$. (2) Differentiate
+implicitly and eliminate $c$ to get $\der{y}{x} = f(x,y)$. (3) Replace $f$ by
+$-1/f$. (4) Solve.
+
+\begin{example}[Parabolas and ellipses]\label{ex:ch02-orth-parabola}
+Find the orthogonal trajectories of the parabolas $y = cx^2$.
+
+\emph{Solution.}
+\begin{align*}
+  \der{y}{x} &= 2cx \why{differentiate the family}\\
+  c &= \frac{y}{x^2} \;\Rightarrow\; \der{y}{x} = \frac{2y}{x}
+     \why{eliminate $c$, $x\neq0$}\\
+  \der{y}{x} &= -\frac{x}{2y} \why{\cref{prop:ch02-orthogonal}, $y\neq 0$}\\
+  2y\der{y}{x} + x &= 0
+     \;\Longleftrightarrow\; \der{}{x}\Bigl(y^2 + \frac{x^2}{2}\Bigr) = 0
+     \why{chain rule}.
+\end{align*}
+So the trajectories are the ellipses $\frac{x^2}{2} + y^2 = K$, $K>0$
+(\cref{fig:ch02-orthogonal}). \emph{Care at the excluded points:} the family
+$y = cx^2$ all passes through the origin with slope $0$, and $c = 0$ gives the
+$x$-axis, where the formula $-x/(2y)$ is undefined. The ellipses cross the
+$x$-axis vertically, consistent with the proof of
+\cref{prop:ch02-orthogonal}.
+\end{example}
+
+\begin{figure}[ht]
+  \centering
+  \input{figures/ch02_orthogonal}
+  \caption{Parabolas $y = cx^2$ (blue) and their orthogonal trajectories,
+  the ellipses $x^2/2 + y^2 = K$ (red).}
+  \label{fig:ch02-orthogonal}
+\end{figure}
+
+This also finishes the motivation of Chapter~1: the circles
+$x^2 + y^2 = r^2$ satisfy $\der{y}{x} = -x/y$, so their orthogonal
+trajectories satisfy $\der{y}{x} = y/x$, the tangent-through-the-origin
+equation; the trajectories are lines through the origin.
+
+% ------------------------------------------------------------
+\section{Pitfalls}\label{sec:ch02-pitfalls}
+
+\begin{pitfall}[Unit-inconsistent equations]\label{pit:ch02-units}
+Writing $\der{Q}{t} = 3 - Q$ for a mixing problem with $Q$ in kg and flow in
+L/min adds kg/min to kg. The correct term is $\frac{Q}{V}r_{\mathrm{out}}$.
+Checking units in every term catches most modeling errors before any calculus.
+\end{pitfall}
+
+\begin{pitfall}[A drag law that pushes the wrong way]\label{pit:ch02-drag-sign}
+With $x$ positive downward, $m\dot v = mg - kv^2$ is correct only while
+$v>0$. For a ball thrown upward ($v<0$), drag must also point down, i.e.\ be
+\emph{positive}, but $-kv^2$ is negative. The law $-kv|v|$ has the right sign
+for both directions. Linear drag $-cv$ never has this problem.
+\end{pitfall}
+
+\begin{pitfall}[Using the outflow concentration of the inflow]\label{pit:ch02-mixing}
+The outflow carries the \emph{tank's} concentration $Q/V$, not $c_{\mathrm{in}}$;
+otherwise the equation says salt leaves at a rate independent of how much is
+in the tank, and $Q$ can go negative.
+\end{pitfall}
+
+\begin{pitfall}[Treating the model as the truth]\label{pit:ch02-model}
+Every model above has a regime of validity. Exponential growth fails for large
+$P$; Newton cooling fails for strong radiation; perfect mixing fails for large
+tanks with slow stirring. A correct solution of a wrong model is still wrong:
+always state which assumption you would test first.
+\end{pitfall}
+
+% ------------------------------------------------------------
+\section{Problems}\label{sec:ch02-problems}
+
+\subsection*{Warm-up}
+
+\begin{problem}{W}\label{prob:ch02-w1}
+A substance loses $10\%$ of its mass in $3$ days by radioactive decay. Find
+its half-life.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch02-w2}
+A population growing according to \eqref{eq:ch02-malthus} doubles every $20$
+years. How long does it take to triple?
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch02-w3}
+In $m\ddot{x} = -c\dot{x} - \kappa x$ ($x$ in metres, $t$ in seconds, $m$ in
+kg), find the units of $c$ and $\kappa$, and show that $m/c$ and
+$\sqrt{m/\kappa}$ are times.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch02-w4}
+A $50$\,L tank of pure water receives brine with $0.1$\,kg/L at $2$\,L/min,
+and the well-mixed solution leaves at $2$\,L/min. Derive the equation for
+$Q(t)$ and solve it.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch02-w5}
+Find the orthogonal trajectories of the family $y = ce^x$.
+\end{problem}
+
+\subsection*{Core}
+
+\begin{problem}{C}\label{prob:ch02-c1}
+Solve the motivating problem of \cref{sec:ch02-motivation}, assuming the body
+was at $37^\circ$C at death. Then identify the assumption you trust least and
+explain how it biases your estimate.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch02-c2}
+A tank holds $100$\,L of brine with $10$\,kg of salt. Brine with $0.5$\,kg/L
+enters at $4$\,L/min; the well-mixed solution leaves at $2$\,L/min.
+\begin{enumerate}[label=(\alph*)]
+  \item Derive the IVP for $Q(t)$.
+  \item Find the constant $\kappa$ for which $Q = (50 + t) + \kappa/(50+t)$
+        satisfies your IVP. (Chapter~4 will show it is the only solution.)
+  \item Find the concentration when the tank holds $200$\,L.
+\end{enumerate}
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch02-c3}
+A ball of mass $m$ is thrown upward with speed $v_0$, subject to linear drag
+$-c\dot{x}$. Take $x$ positive \emph{upward}. Find the time to reach the top
+and the maximum height. Check that your height tends to $v_0^2/(2g)$ as
+$c\to 0^+$.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch02-c4}
+Explain, with a careful force diagram, why $m\dot v = -mg - kv|v|$ ($x$
+positive upward) describes quadratic drag for both rising and falling
+motion. Find the terminal velocity on the way down. Is there an ``upward
+terminal velocity''?
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch02-c5}
+Show that the orthogonal trajectories of the circles $x^2 + y^2 = 2cx$ are
+the circles $x^2 + y^2 = 2Ky$. (Use \cref{prob:ch01-c8}.) Sketch both families.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch02-c6}
+A loan of $200{,}000$ accrues interest continuously at $6\%$ per year, and is
+repaid continuously at a constant rate of $p$ per year. Derive
+$\der{B}{t} = 0.06B - p$, solve it, and find $p$ so the loan is paid off in
+exactly $30$ years.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch02-c7}
+Isotope $A$ decays to $B$ with rate constant $k_1$, and $B$ decays (to a
+stable $C$) with rate constant $k_2\neq k_1$. Initially there are $A_0$ atoms
+of $A$ and none of $B$. Derive equations for $A(t)$ and $B(t)$, solve for
+$A$, and find the constant $\gamma$ for which
+$B = \gamma\bigl(e^{-k_1t} - e^{-k_2t}\bigr)$ is a solution.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch02-c8}
+A pendulum is a mass $m$ on a massless rod of length $L$, at angle $\theta$
+from the downward vertical. Derive $\ddot\theta = -\frac{g}{L}\sin\theta$ from
+Newton's second law along the tangent to the circle. Then, assuming only that
+the period $T$ of small oscillations depends on $m$, $L$, $g$, use units to
+show $T = C\sqrt{L/g}$ for a dimensionless constant $C$.
+\end{problem}
+
+\subsection*{Hard}
+
+\begin{problem}{H}\label{prob:ch02-h1}
+(Memorylessness forces the exponential.) Let $P:\R\to(0,\infty)$ satisfy
+$P(t + s)P(0) = P(t)P(s)$ for all $t,s$, and suppose $P$ is differentiable
+\emph{at $0$ only}. Prove that $P$ is differentiable everywhere and
+$P(t) = P(0)e^{\lambda t}$ for some $\lambda$.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch02-h2}
+A body falls from rest with $m\dot v = mg - kv^2$. Without solving the
+equation, prove that $0<v(t)<v_T = \sqrt{mg/k}$ for all $t>0$ in the interval
+of existence, and that $v$ is increasing there.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch02-h3}
+For a polar curve $r = r(\theta)$, let $\psi$ be the angle from the radius
+vector to the tangent. Show $\tan\psi = r\big/\der{r}{\theta}$. Deduce that
+two curves through a point meet at right angles iff
+$\Bigl(\frac{1}{r_1}\der{r_1}{\theta}\Bigr)\Bigl(\frac{1}{r_2}\der{r_2}{\theta}\Bigr) = -1$
+there, and use this to show that the orthogonal trajectories of the
+cardioids $r = c(1 + \cos\theta)$ are the cardioids $r = K(1 - \cos\theta)$.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch02-h4}
+Two tanks of volumes $V_1\neq V_2$ are connected in series: fresh water enters
+tank 1 at rate $r$, tank 1 drains into tank 2 at rate $r$, and tank 2 drains at
+rate $r$. Initially tank 1 has $Q_0$ kg of salt and tank 2 has none. Find
+$Q_2(t)$, prove your answer is the only solution using \cref{lem:ch02-exp},
+and find when the salt in tank 2 is largest.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch02-h5}
+A rocket coasts radially away from a planet of radius $R$ with
+$\ddot{x} = -gR^2/x^2$, starting at $x = R$ with speed $v_0>0$. Prove that it
+escapes to infinity iff $v_0\ge\sqrt{2gR}$, and otherwise find its maximum
+distance from the centre.
+\end{problem}
+
+\subsection*{Putnam/olympiad-style}
+
+\begin{problem}{P}[the classical snowplow problem]\label{prob:ch02-p1}
+% VERIFY: attribution of the snowplow problem to R. P. Agnew, Differential Equations (1942).
+Snow begins to fall at some time before noon at a constant rate. A snowplow
+starts at noon; it removes a constant volume of snow per unit time, so its
+speed is inversely proportional to the depth of snow. It travels $2$\,km in
+the first hour and $1$\,km in the second. When did it start snowing?
+\end{problem}
+
+\begin{problem}{P}\label{prob:ch02-p2}
+Find all continuously differentiable $f:[0,\infty)\to[1,\infty)$ with $f(0) = 1$
+such that, for every $x>0$, the area under the graph of $f$ over $[0,x]$
+equals the arc length of the graph over $[0,x]$.
+\end{problem}
+
+\begin{problem}{P}\label{prob:ch02-p3}
+Find all curves $y = y(x)$ in the upper half-plane with the property that every
+ray of light emitted from the origin is reflected by the curve into a ray
+parallel to the positive $x$-axis.
+\end{problem}
+
+% ------------------------------------------------------------
+\section{Hints}\label{sec:ch02-hints}
+
+\paragraph{Warm-up and core.}
+\cref{prob:ch02-w1}: $0.9 = e^{-3\lambda}$.
+\cref{prob:ch02-w5}: after eliminating $c$, the family satisfies a very simple
+equation.
+\cref{prob:ch02-c1}: put $t = 0$ at $10$\,pm and let death be at $t = -s$.
+\cref{prob:ch02-c2}: $V(t) = 100 + 2t$.
+\cref{prob:ch02-c3}: with $x$ up, gravity is $-mg$ and drag is $-c\dot x$; the top
+is where $\dot x = 0$. To get the height, integrate $v$.
+\cref{prob:ch02-c7}: $A$ obeys \cref{lem:ch02-exp}; $B$ gains what $A$ loses.
+\cref{prob:ch02-c8}: the tangential component of gravity is $-mg\sin\theta$;
+arc length is $L\theta$.
+
+\hintfor{prob:ch02-h1}
+\begin{hintlevels}
+  \item Write the difference quotient of $P$ at $t$ in terms of the one at $0$.
+  \item $P(t+h) - P(t) = P(t)\,\dfrac{P(h) - P(0)}{P(0)}$.
+  \item Conclude $P'(t) = \lambda P(t)$ with $\lambda = P'(0)/P(0)$, then apply
+        \cref{lem:ch02-exp}.
+\end{hintlevels}
+
+\hintfor{prob:ch02-h2}
+\begin{hintlevels}
+  \item Study $w = v_T - v$, the gap to terminal velocity.
+  \item Show $\dot w = -\frac{k}{m}(v_T + v)\,w$.
+  \item With $\Phi(t) = \int_0^t \frac km(v_T + v)\,\mathrm{d}s$, show
+        $\der{}{t}\bigl(e^{\Phi}w\bigr) = 0$, so $w$ never changes sign. Then
+        read off the sign of $\dot v$.
+\end{hintlevels}
+
+\hintfor{prob:ch02-h3}
+\begin{hintlevels}
+  \item Write the curve as $(r\cos\theta, r\sin\theta)$ and compute the
+        tangent vector; compare with the radial and angular unit vectors.
+  \item Two curves are orthogonal iff $\psi_2 = \psi_1\pm\frac\pi2$, i.e.\
+        $\tan\psi_1\tan\psi_2 = -1$.
+  \item For the cardioid, $\frac{1}{r}\der{r}{\theta} = \frac{-\sin\theta}{1+\cos\theta}$;
+        multiply numerator and denominator by $1 - \cos\theta$.
+\end{hintlevels}
+
+\hintfor{prob:ch02-h4}
+\begin{hintlevels}
+  \item Tank 1 is \cref{lem:ch02-exp}; tank 2 satisfies
+        $\der{Q_2}{t} = \frac{r}{V_1}Q_1 - \frac{r}{V_2}Q_2$.
+  \item Guess $Q_2 = \gamma\bigl(e^{-\alpha t} - e^{-\beta t}\bigr)$ with
+        $\alpha = r/V_1$, $\beta = r/V_2$.
+  \item The difference of two solutions with the same initial value solves
+        $\der{w}{t} = -\beta w$, $w(0) = 0$.
+\end{hintlevels}
+
+\hintfor{prob:ch02-h5}
+\begin{hintlevels}
+  \item Find the conserved quantity as in \cref{ex:ch01-v-dvdx}.
+  \item $\tfrac12\dot x^2 - \frac{gR^2}{x}$ is constant; evaluate it at launch.
+  \item If the constant is $\ge 0$, can $\dot x$ ever reach $0$? If it is
+        negative, where must $\dot x$ vanish? Make ``escapes'' precise.
+\end{hintlevels}
+
+\hintfor{prob:ch02-p1}
+\begin{hintlevels}
+  \item Let snow start at time $-T$ (hours, noon $= 0$). Depth is
+        proportional to $t + T$.
+  \item The plow's position satisfies $\der{x}{t} = \dfrac{K}{t+T}$; integrate
+        with \cref{thm:ch01-antiderivative}.
+  \item The two data give two equations; eliminate $K$ by dividing them.
+\end{hintlevels}
+
+\hintfor{prob:ch02-p2}
+\begin{hintlevels}
+  \item Differentiate the identity between the two integrals.
+  \item You get $f = \sqrt{1 + (f')^2}$. Where $f>1$, compute
+        $\der{}{x}\operatorname{arccosh} f$.
+  \item Do not lose solutions: what happens on intervals where $f = 1$?
+        (Compare \cref{ex:ch01-cube}.)
+\end{hintlevels}
+
+\hintfor{prob:ch02-p3}
+\begin{hintlevels}
+  \item Law of reflection: the tangent makes equal angles with the incoming
+        ray and the outgoing ray.
+  \item With $\mathbf{t} = (1, y')$, equal angles means
+        $\frac{(x,y)\cdot\mathbf t}{\sqrt{x^2+y^2}} = (1,0)\cdot\mathbf t$.
+  \item That reads $x + y\der{y}{x} = \sqrt{x^2+y^2}$; the left side is
+        $\sqrt{x^2+y^2}\,\der{}{x}\sqrt{x^2+y^2}$.
+\end{hintlevels}
+
+% ------------------------------------------------------------
+\section{Further reading}\label{sec:ch02-reading}
+
+\begin{itemize}
+  \item \textcite[\S2.3]{BoyceDiPrima}: modeling with first-order equations,
+        including mixing, cooling, and escape velocity.
+  \item \textcite[Ch.~1 and Ch.~2]{Simmons}: falling bodies, orthogonal
+        trajectories, and the historical development of these models.
+  % VERIFY: Simmons, 2nd ed., section numbers for orthogonal trajectories and falling bodies.
+  \item \textcite[\S1.1--1.3]{HSD}: the logistic model and harvesting, which
+        we meet in Chapter~7.
+\end{itemize}

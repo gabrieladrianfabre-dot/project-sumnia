@@ -1,0 +1,11 @@
+% Linear drag, g = 1, m/c = 1: v(t) = 1 + (v0 - 1) e^{-t}.
+\begin{tikzpicture}
+\begin{axis}[deplot, xmin=0, xmax=5, ymin=0, ymax=2.2,
+  xlabel={$t$}, ylabel={$v$}, height=0.42\linewidth]
+  \pgfplotsinvokeforeach{0,0.5,1.5,2}{
+    \addplot[blue, samples=80, domain=0:5] {1 + (#1 - 1)*exp(-x)};
+  }
+  \addplot[red!70!black, dashed, samples=2, domain=0:5] {1};
+  \node[anchor=south east, red!70!black] at (axis cs:5,1) {$v_T$};
+\end{axis}
+\end{tikzpicture}
