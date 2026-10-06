@@ -1,0 +1,827 @@
+% ============================================================
+%  Chapter 0 — Prerequisites check
+% ============================================================
+\chapter{Prerequisites Check}\label{ch:ch00}
+
+This chapter is not a calculus course. It assumes you can differentiate and
+integrate the elementary functions fluently, and it fills the specific gaps
+that a competition background tends to leave: partial fractions done with
+proof rather than by recipe, what implicit differentiation actually asserts,
+complex exponentials built from power series, and the linear algebra of
+eigenvalues that powers Parts III and VI.
+
+\notation{Leibniz $\der{y}{x}$ throughout; $f'(x)$ is used only for the
+derivative of a named function $f$, exactly as in your calculus courses.}
+
+\begin{diagnostic}
+  \item Differentiate $\arctan(x^2)$ and simplify.
+  \item Compute $\displaystyle\int x\cos x\,\mathrm{d}x$.
+  \item Solve $\begin{cases}2a - b = 1\\ 3a + 2b = 12\end{cases}$ and say why the
+        solution is unique.
+\end{diagnostic}
+
+% ------------------------------------------------------------
+\section{Motivation}\label{sec:ch00-motivation}
+
+Three calculations that appear in the first weeks of any differential
+equations course:
+\begin{enumerate}[label=(\alph*)]
+  \item Solving $\der{y}{x} = y(1-y)$ requires
+        $\displaystyle\int\frac{\mathrm{d}y}{y(1-y)}$: a partial-fraction
+        integral.
+  \item The equation $y'' + 2y' + 5y = 0$ (Chapter~10) has characteristic
+        roots $-1\pm 2i$. To turn $e^{(-1+2i)x}$ into the real functions
+        $e^{-x}\cos 2x$ and $e^{-x}\sin 2x$ you need Euler's formula, and you
+        need to know that $\der{}{x}e^{\lambda x} = \lambda e^{\lambda x}$
+        remains true for complex $\lambda$.
+  \item The system $\dot{x} = x + 2y$, $\dot{y} = 2x + y$ (Chapter~18)
+        decouples completely in the coordinates given by the eigenvectors of
+        $\left(\begin{smallmatrix}1&2\\2&1\end{smallmatrix}\right)$.
+\end{enumerate}
+Each needs a tool that we now build with proof.
+
+% ------------------------------------------------------------
+\section{Integration techniques}\label{sec:ch00-integration}
+
+\subsection{Integration by parts, and the ``return'' trick}
+
+Integration by parts is the product rule read backwards: since
+$\der{}{x}(uv) = u\der{v}{x} + v\der{u}{x}$, integrating gives
+\begin{equation}\label{eq:ch00-parts}
+  \int u\,\mathrm{d}v = uv - \int v\,\mathrm{d}u .
+\end{equation}
+
+\begin{example}[An integral that returns to itself]\label{ex:ch00-e2xcos3x}
+Compute $J = \int e^{2x}\cos 3x\,\mathrm{d}x$.
+
+\emph{Solution.} Take $u = \cos 3x$, $\mathrm{d}v = e^{2x}\,\mathrm{d}x$, so
+$\mathrm{d}u = -3\sin 3x\,\mathrm{d}x$ and $v = \tfrac12 e^{2x}$.
+\begin{align*}
+  J &= \tfrac12 e^{2x}\cos 3x + \tfrac32\int e^{2x}\sin 3x\,\mathrm{d}x
+     \why{by \eqref{eq:ch00-parts}}\\
+    &= \tfrac12 e^{2x}\cos 3x
+       + \tfrac32\Bigl[\tfrac12 e^{2x}\sin 3x - \tfrac32 \int e^{2x}\cos 3x\,\mathrm{d}x\Bigr]
+     \why{parts again, $u=\sin 3x$}\\
+    &= \tfrac12 e^{2x}\cos 3x + \tfrac34 e^{2x}\sin 3x - \tfrac94 J
+     \why{the integral is $J$ again}.
+\end{align*}
+Collect the $J$ terms: $\tfrac{13}{4}J = \tfrac14 e^{2x}(2\cos 3x + 3\sin 3x)$,
+so
+\[
+  J = \frac{e^{2x}}{13}\,(2\cos 3x + 3\sin 3x) + C .
+\]
+\emph{Check} by differentiating:
+$\der{}{x}\bigl[e^{2x}(2\cos 3x + 3\sin 3x)\bigr]
+ = e^{2x}(4\cos 3x + 6\sin 3x - 6\sin 3x + 9\cos 3x) = 13e^{2x}\cos 3x$.
+\Cref{ex:ch00-complex-integral} redoes this in two lines with complex
+exponentials.
+\end{example}
+
+\subsection{Partial fractions, with proof}
+
+A \emph{rational function} is $p/q$ with $p,q$ real polynomials, $q\neq 0$. It
+is \emph{proper} if $\deg p < \deg q$. Polynomial long division writes any
+rational function as a polynomial plus a proper rational function, so we only
+need to decompose proper ones.
+
+The decomposition rests on one algebraic fact about polynomials.
+
+\begin{lemma}[B\'ezout for polynomials]\label{lem:ch00-bezout}
+If real polynomials $q_1, q_2$ have no common (complex) root, there exist real
+polynomials $a, b$ with $a q_1 + b q_2 = 1$.
+\end{lemma}
+
+\begin{proof}
+Let $S = \{a q_1 + b q_2 : a, b \text{ real polynomials}\}$ and let $g$ be a
+nonzero element of $S$ of least degree. Divide: $q_1 = s g + r$ with
+$\deg r < \deg g$ or $r=0$. Then $r = q_1 - s g\in S$, so minimality forces
+$r=0$; thus $g$ divides $q_1$. Likewise $g$ divides $q_2$. Every root of $g$
+would be a common root of $q_1$ and $q_2$; there are none, so by the
+fundamental theorem of algebra $g$ has no roots and is a nonzero constant $c$.
+Then $(a/c)q_1 + (b/c)q_2 = 1$.
+\end{proof}
+
+\begin{theorem}[Splitting a proper fraction]\label{thm:ch00-split}
+Let $q = q_1 q_2$ where $q_1, q_2$ have no common root, and let $p/q$ be
+proper. Then there are unique polynomials $p_1, p_2$ with
+$\deg p_i < \deg q_i$ and
+\[
+  \frac{p}{q_1 q_2} = \frac{p_1}{q_1} + \frac{p_2}{q_2}.
+\]
+\end{theorem}
+
+\begin{proof}
+\emph{Existence.} By \cref{lem:ch00-bezout}, $a q_1 + b q_2 = 1$; multiply by
+$p/(q_1q_2)$:
+\[
+  \frac{p}{q_1 q_2} = \frac{pb}{q_1} + \frac{pa}{q_2}.
+\]
+Divide $pb = s q_1 + p_1$ with $\deg p_1 < \deg q_1$. Then
+$\frac{p}{q_1q_2} = \frac{p_1}{q_1} + \bigl(s + \frac{pa}{q_2}\bigr)$, and the
+bracket equals $\frac{p_2}{q_2}$ with $p_2 = s q_2 + pa$. Comparing degrees:
+$p_2 q_1 = p - p_1 q_2$, whose right side has degree $<\deg q$, hence
+$\deg p_2 < \deg q_2$.
+
+\emph{Uniqueness.} If two such pairs exist, subtracting gives
+$\tilde p_1 q_2 = -\tilde p_2 q_1$ with $\deg\tilde p_i < \deg q_i$. Multiply
+$a q_1 + b q_2 = 1$ by $\tilde p_1$:
+$\tilde p_1 = a\tilde p_1 q_1 + b\,\tilde p_1 q_2 = q_1\,(a\tilde p_1 - b\tilde p_2)$,
+so $q_1$ divides $\tilde p_1$. Since $\deg\tilde p_1 < \deg q_1$, this forces
+$\tilde p_1 = 0$, and then $\tilde p_2 q_1 = 0$ gives $\tilde p_2=0$.
+\end{proof}
+
+Applying \cref{thm:ch00-split} repeatedly to the real factorization of $q$
+(\cref{cor:ch00-real-factor} below), and then expanding each
+$p_i/(x-r)^m$ or $p_i/(x^2+\beta x+\gamma)^m$ by dividing $p_i$ repeatedly by
+the base factor, gives the familiar form:
+\[
+  \frac{p}{q} = \sum \frac{A}{(x-r)^j}
+              + \sum \frac{Bx + C}{(x^2+\beta x+\gamma)^j}.
+\]
+
+\begin{example}[Distinct factors, one irreducible quadratic]\label{ex:ch00-pf1}
+Compute $\displaystyle\int\frac{2x^2 + x + 3}{(x+1)(x^2+1)}\,\mathrm{d}x$.
+
+\emph{Solution.} The fraction is proper ($2<3$). Write
+$\frac{2x^2+x+3}{(x+1)(x^2+1)} = \frac{A}{x+1} + \frac{Bx+C}{x^2+1}$, i.e.
+\[
+  2x^2 + x + 3 = A(x^2+1) + (Bx+C)(x+1).
+\]
+\begin{align*}
+  x=-1:&\quad 2 - 1 + 3 = 2A \;\Rightarrow\; A = 2 \why{kills the second term}\\
+  x^2\text{ coefficient}:&\quad 2 = A + B \;\Rightarrow\; B = 0\\
+  \text{constant term}:&\quad 3 = A + C \;\Rightarrow\; C = 1\\
+  x\text{ coefficient}:&\quad 1 = B + C = 1 \why{consistency check}
+\end{align*}
+Hence
+\[
+  \int\frac{2x^2+x+3}{(x+1)(x^2+1)}\,\mathrm{d}x
+  = \int\frac{2}{x+1}\,\mathrm{d}x + \int\frac{\mathrm{d}x}{x^2+1}
+  = 2\ln|x+1| + \arctan x + C .
+\]
+\end{example}
+
+\begin{example}[Repeated factor]\label{ex:ch00-pf-repeated}
+Decompose $\dfrac{1}{x(x+1)^2}$.
+
+\emph{Solution.} The repeated factor needs one term per power:
+$\frac{1}{x(x+1)^2} = \frac{A}{x} + \frac{B}{x+1} + \frac{C}{(x+1)^2}$, so
+$1 = A(x+1)^2 + Bx(x+1) + Cx$.
+\begin{align*}
+  x = 0:&\quad 1 = A \\
+  x = -1:&\quad 1 = -C \;\Rightarrow\; C = -1\\
+  x^2\text{ coefficient}:&\quad 0 = A + B \;\Rightarrow\; B = -1 .
+\end{align*}
+So $\frac{1}{x(x+1)^2} = \frac1x - \frac{1}{x+1} - \frac{1}{(x+1)^2}$.
+Check at $x=1$: $1 - \frac12 - \frac14 = \frac14 = \frac{1}{1\cdot 4}$.
+\end{example}
+
+\begin{example}[Needs care: an improper fraction]\label{ex:ch00-improper}
+Compute $\displaystyle\int\frac{x^3}{x^2-1}\,\mathrm{d}x$.
+
+\emph{Solution.} The fraction is \emph{not} proper ($3 \ge 2$), so
+\cref{thm:ch00-split} does not apply yet. Divide first:
+\begin{align*}
+  x^3 &= x(x^2-1) + x \why{long division}\\
+  \frac{x^3}{x^2-1} &= x + \frac{x}{x^2-1}.
+\end{align*}
+The remainder integrates by the substitution $w = x^2-1$,
+$\mathrm{d}w = 2x\,\mathrm{d}x$:
+\[
+  \int\frac{x^3}{x^2-1}\,\mathrm{d}x = \frac{x^2}{2} + \frac12\ln|x^2-1| + C .
+\]
+If you had written $\frac{x^3}{(x-1)(x+1)} = \frac{A}{x-1} + \frac{B}{x+1}$,
+no constants would work: the right side tends to $0$ as $x\to\infty$ and the
+left side does not.
+\end{example}
+
+\subsection{Implicit differentiation, and what it assumes}
+
+Implicit differentiation assumes that the curve $F(x,y)=0$ is, near the point
+in question, the graph of a differentiable function $y = \varphi(x)$. That is a
+theorem, not a reflex.
+
+\begin{theorem}[Implicit function theorem, two variables]\label{thm:ch00-ift}
+Let $F$ have continuous first partial derivatives near $(x_0,y_0)$, with
+$F(x_0,y_0) = 0$ and $\pder{F}{y}(x_0,y_0)\neq 0$. Then there is an open
+interval $I\ni x_0$ and a unique continuously differentiable $\varphi$ on $I$
+with $\varphi(x_0)=y_0$ and $F(x,\varphi(x)) = 0$ for $x\in I$; moreover
+\[
+  \der{\varphi}{x} = -\,\frac{\pder{F}{x}(x,\varphi(x))}{\pder{F}{y}(x,\varphi(x))}.
+\]
+\end{theorem}
+\noindent\emph{Proof deferred} to \textcite[Thm.~9.28]{Rudin}.
+% VERIFY: theorem number 9.28 for the implicit function theorem in Rudin, 3rd ed.
+The derivative formula itself is the chain rule applied to
+$F(x,\varphi(x)) = 0$; the hard part, which the citation supplies, is that
+$\varphi$ \emph{exists}.
+
+\begin{example}[Needs care: where the formula breaks]\label{ex:ch00-implicit}
+On the ellipse $x^2 + xy + y^2 = 7$, find $\der{y}{x}$ and the points where
+the curve is not locally a graph over the $x$-axis.
+
+\emph{Solution.} Differentiate, treating $y$ as a function of $x$:
+\begin{align*}
+  2x + \Bigl(y + x\der{y}{x}\Bigr) + 2y\der{y}{x} &= 0 \why{chain and product rules}\\
+  (x + 2y)\der{y}{x} &= -(2x + y)\\
+  \der{y}{x} &= -\frac{2x+y}{x+2y} \why{valid only where $x + 2y\neq 0$}.
+\end{align*}
+Here $\pder{F}{y} = x + 2y$. Where it vanishes, $x = -2y$; substituting,
+$4y^2 - 2y^2 + y^2 = 7$, so $y = \pm\sqrt{7/3}$, and the points are
+$\bigl(\mp 2\sqrt{7/3}, \pm\sqrt{7/3}\bigr)$. These are the leftmost and
+rightmost points of the ellipse, where the tangent is vertical and no function
+$y=\varphi(x)$ describes the curve on both sides.
+\end{example}
+
+% ------------------------------------------------------------
+\section{Complex numbers and Euler's formula}\label{sec:ch00-complex}
+
+\subsection{Arithmetic and geometry}
+
+A complex number is $z = a + bi$ with $a,b\in\R$ and $i^2=-1$; $\operatorname{Re} z = a$,
+$\operatorname{Im} z = b$. The conjugate is $\bar z = a - bi$ and the modulus
+is $|z| = \sqrt{a^2+b^2} = \sqrt{z\bar z}$. Conjugation respects arithmetic:
+$\overline{z+w} = \bar z + \bar w$ and $\overline{zw} = \bar z\,\bar w$ (expand
+both sides). Also $|zw| = |z||w|$ and $|z + w|\le |z| + |w|$.
+
+\begin{proposition}[Conjugate roots]\label{prop:ch00-conj-roots}
+If $p$ is a polynomial with \emph{real} coefficients and $p(z) = 0$, then
+$p(\bar z) = 0$.
+\end{proposition}
+\begin{proof}
+Write $p(x) = \sum_k c_k x^k$ with $c_k\in\R$. Then
+$p(\bar z) = \sum_k c_k\bar z^k = \sum_k\overline{c_k z^k} = \overline{p(z)}
+= \bar 0 = 0$, using $\bar c_k = c_k$ and the two conjugation rules.
+\end{proof}
+
+\begin{corollary}[Real factorization]\label{cor:ch00-real-factor}
+Every real polynomial of positive degree is a real constant times a product
+of real linear factors $x - r$ and real irreducible quadratics
+$x^2 + \beta x + \gamma$ with $\beta^2 < 4\gamma$.
+\end{corollary}
+\begin{proof}
+By the fundamental theorem of algebra it factors over $\mathbb{C}$ into linear
+factors. Pair each non-real root $z$ with $\bar z$
+(\cref{prop:ch00-conj-roots}; an induction on degree, dividing out
+$(x-z)(x-\bar z)$, handles multiplicities). Then
+$(x-z)(x-\bar z) = x^2 - 2(\operatorname{Re}z)x + |z|^2$ is real, with
+discriminant $4(\operatorname{Re}z)^2 - 4|z|^2 = -4(\operatorname{Im}z)^2<0$.
+\end{proof}
+
+\subsection{The exponential series}
+
+\begin{definition}[Complex exponential]\label{def:ch00-exp}
+For $z\in\mathbb{C}$, define
+\[
+  e^z = \exp(z) = \sum_{n=0}^{\infty}\frac{z^n}{n!}.
+\]
+\end{definition}
+
+The series converges absolutely for every $z$: with $a_n = |z|^n/n!$, the
+ratio $a_{n+1}/a_n = |z|/(n+1)\to 0$, so the ratio test applies. Absolute
+convergence matters because it licenses the two manipulations below:
+regrouping terms, and multiplying two series term by term
+(\textcite[Ch.~3]{Rudin}, the theorem on Cauchy products of series one of
+which converges absolutely).
+% VERIFY: Rudin Ch. 3, Thm 3.50 (Mertens) — cite by number once checked.
+
+\begin{theorem}[Addition law]\label{thm:ch00-exp-add}
+$e^{z+w} = e^z e^w$ for all $z,w\in\mathbb{C}$.
+\end{theorem}
+\begin{proof}
+Multiply the absolutely convergent series and collect terms of total degree
+$n$ (Cauchy product):
+\begin{align*}
+  e^z e^w &= \sum_{n=0}^{\infty}\sum_{k=0}^{n}\frac{z^k}{k!}\frac{w^{n-k}}{(n-k)!}
+     \why{Cauchy product}\\
+  &= \sum_{n=0}^{\infty}\frac{1}{n!}\sum_{k=0}^{n}\binom{n}{k}z^k w^{n-k}
+     \why{$\tfrac{1}{k!(n-k)!} = \tfrac{1}{n!}\tbinom nk$}\\
+  &= \sum_{n=0}^{\infty}\frac{(z+w)^n}{n!} = e^{z+w}
+     \why{binomial theorem}. \qedhere
+\end{align*}
+\end{proof}
+
+From calculus you know the Maclaurin series
+\begin{equation}\label{eq:ch00-sincos}
+  \cos\theta = \sum_{m=0}^\infty \frac{(-1)^m\theta^{2m}}{(2m)!},\qquad
+  \sin\theta = \sum_{m=0}^\infty \frac{(-1)^m\theta^{2m+1}}{(2m+1)!},
+\end{equation}
+valid for all real $\theta$. (Proof: Taylor's theorem with Lagrange remainder
+gives $|R_N(\theta)|\le |\theta|^{N+1}/(N+1)!$ because every derivative of
+$\sin$ and $\cos$ is bounded by $1$, and $|\theta|^{N+1}/(N+1)!\to 0$.)
+
+\begin{theorem}[Euler's formula]\label{thm:ch00-euler}
+For every real $\theta$, $\;e^{i\theta} = \cos\theta + i\sin\theta$.
+\end{theorem}
+\begin{proof}
+The powers of $i$ cycle: $i^{2m} = (-1)^m$ and $i^{2m+1} = (-1)^m i$. Split the
+absolutely convergent series for $e^{i\theta}$ into even and odd $n$:
+\begin{align*}
+  e^{i\theta} &= \sum_{m=0}^{\infty}\frac{(i\theta)^{2m}}{(2m)!}
+               + \sum_{m=0}^{\infty}\frac{(i\theta)^{2m+1}}{(2m+1)!}
+     \why{regrouping is legal}\\
+  &= \sum_{m=0}^{\infty}\frac{(-1)^m\theta^{2m}}{(2m)!}
+   + i\sum_{m=0}^{\infty}\frac{(-1)^m\theta^{2m+1}}{(2m+1)!}\\
+  &= \cos\theta + i\sin\theta \why{by \eqref{eq:ch00-sincos}}. \qedhere
+\end{align*}
+\end{proof}
+
+\begin{figure}[ht]
+  \centering
+  \input{figures/ch00_euler_circle}
+  \caption{$e^{i\theta}$ lies on the unit circle at angle $\theta$ from the
+  positive real axis.}
+  \label{fig:ch00-euler}
+\end{figure}
+
+\begin{corollary}\label{cor:ch00-euler-consequences}
+For real $a,b,\theta,\varphi$ and integer $n$:
+\begin{enumerate}[label=(\roman*)]
+  \item $e^{a+ib} = e^a(\cos b + i\sin b)$, so $|e^{a+ib}| = e^a$;
+  \item $e^{i\theta}e^{i\varphi} = e^{i(\theta+\varphi)}$, which \emph{is} the
+        pair of angle-addition formulas;
+  \item (de Moivre) $(\cos\theta + i\sin\theta)^n = \cos n\theta + i\sin n\theta$;
+  \item every $z\neq 0$ can be written $z = re^{i\theta}$ with $r=|z|$; $\theta$
+        is unique up to adding multiples of $2\pi$.
+\end{enumerate}
+\end{corollary}
+\begin{proof}
+(i) and (ii) follow from \cref{thm:ch00-exp-add,thm:ch00-euler}. Expanding
+both sides of (ii) and matching real and imaginary parts gives
+$\cos(\theta+\varphi) = \cos\theta\cos\varphi - \sin\theta\sin\varphi$ and the
+sine formula. (iii) is (ii) iterated (and $e^{-i\theta} = 1/e^{i\theta}$ for
+negative $n$). (iv): $z/|z|$ has modulus $1$, so it is $(\cos\theta,\sin\theta)$
+for some $\theta$, unique modulo $2\pi$.
+\end{proof}
+
+\begin{proposition}[Derivative of a complex exponential]\label{prop:ch00-deriv}
+For $\lambda = a + ib\in\mathbb{C}$ and real $t$,
+$\displaystyle\der{}{t}e^{\lambda t} = \lambda e^{\lambda t}$, where the
+derivative of a complex-valued function is taken on real and imaginary parts
+separately.
+\end{proposition}
+\begin{proof}
+By \cref{cor:ch00-euler-consequences}(i),
+$e^{\lambda t} = e^{at}\cos bt + i\,e^{at}\sin bt$. Differentiate each part:
+\begin{align*}
+  \der{}{t}e^{\lambda t}
+  &= \bigl(ae^{at}\cos bt - be^{at}\sin bt\bigr)
+   + i\bigl(ae^{at}\sin bt + be^{at}\cos bt\bigr) \why{product rule}\\
+  &= (a + ib)\,e^{at}(\cos bt + i\sin bt)
+     \why{expand to check: $i\cdot ib = -b$}\\
+  &= \lambda e^{\lambda t}. \qedhere
+\end{align*}
+\end{proof}
+
+\begin{example}[\Cref{ex:ch00-e2xcos3x} again, the complex way]\label{ex:ch00-complex-integral}
+Since $e^{2x}\cos 3x = \operatorname{Re} e^{(2+3i)x}$ and real parts commute
+with integration,
+\begin{align*}
+  \int e^{(2+3i)x}\,\mathrm{d}x
+  &= \frac{e^{(2+3i)x}}{2+3i} \why{\cref{prop:ch00-deriv} read backwards}\\
+  &= \frac{(2-3i)}{13}\,e^{2x}(\cos 3x + i\sin 3x)
+     \why{multiply by $\tfrac{2-3i}{2-3i}$}.
+\end{align*}
+The real part is $\frac{e^{2x}}{13}(2\cos 3x + 3\sin 3x)$, matching
+\cref{ex:ch00-e2xcos3x} with no ``return'' trick.
+\end{example}
+
+\begin{example}[Powers in polar form]\label{ex:ch00-polar}
+Compute $(1 + i\sqrt3)^6$.
+
+\emph{Solution.} $|1+i\sqrt3| = 2$ and the argument is $\pi/3$ (since
+$\cos\frac\pi3 = \frac12$, $\sin\frac\pi3 = \frac{\sqrt3}{2}$). So
+$(1+i\sqrt3)^6 = \bigl(2e^{i\pi/3}\bigr)^6 = 64\,e^{2\pi i} = 64$.
+\end{example}
+
+\begin{pitfall}[Complex powers are not single-valued]\label{pit:ch00-complex-powers}
+$e^{z+w} = e^ze^w$ is a theorem, but $(z^w)^u = z^{wu}$ is false in general for
+complex numbers. ``Proof'' that $1 = -1$:
+$-1 = i^2 = (\sqrt{-1})^2 = \sqrt{(-1)^2} = \sqrt{1} = 1$. The step
+$(\sqrt{a})^2 = \sqrt{a^2}$ fails because $\sqrt{\phantom{a}}$ has two
+candidate values for complex arguments. In this course, write powers only as
+$e^{\lambda t}$ with an explicit exponent, or as integer powers $z^n$.
+\end{pitfall}
+
+% ------------------------------------------------------------
+\section{Linear algebra for differential equations}\label{sec:ch00-linalg}
+
+Throughout, $A$ is an $n\times n$ matrix with real or complex entries, and
+vectors are columns.
+
+\subsection{Determinants and invertibility}
+
+For $2\times 2$ matrices,
+$\det\left(\begin{smallmatrix}a&b\\c&d\end{smallmatrix}\right) = ad - bc$.
+For $n\times n$, $\det$ is the unique function of the columns that is linear
+in each column, changes sign when two columns are swapped, and has
+$\det I = 1$. We use two facts.
+
+\begin{theorem}\label{thm:ch00-det}
+For $n\times n$ matrices $A, B$:
+\begin{enumerate}[label=(\roman*)]
+  \item $\det(AB) = \det A\,\det B$;
+  \item $A$ is invertible $\iff$ $\det A\neq 0$ $\iff$ the only solution of
+        $A\mathbf{v} = \mathbf{0}$ is $\mathbf{v} = \mathbf{0}$ $\iff$ the
+        columns of $A$ are linearly independent.
+\end{enumerate}
+\end{theorem}
+\noindent\emph{Proof for $n=2$} (general $n$ deferred to
+\textcite[Ch.~9]{Rudin}).
+% VERIFY: Rudin Ch. 9 determinant theorems (9.35–9.36) — cite by number once checked.
+(i) is a direct expansion of both sides. (ii): if $ad - bc\neq 0$, then
+$A^{-1} = \frac{1}{ad-bc}\left(\begin{smallmatrix}d&-b\\-c&a\end{smallmatrix}\right)$
+(multiply to check). If $ad - bc = 0$, then
+$A\left(\begin{smallmatrix}d\\-c\end{smallmatrix}\right) = \mathbf0$ and
+$A\left(\begin{smallmatrix}-b\\a\end{smallmatrix}\right) = \mathbf0$; unless
+$A = 0$, one of these is a nonzero vector in the kernel, so $A$ is not
+invertible. $\qed$
+
+\begin{pitfall}[$\det$ is not linear]\label{pit:ch00-det-linear}
+$\det(A + B)\neq\det A + \det B$ in general, and $\det(cA) = c^n\det A$, not
+$c\det A$. Test: $A = B = I_2$ gives $\det(2I) = 4\neq 2$.
+\end{pitfall}
+
+\subsection{Eigenvalues and eigenvectors}
+
+\begin{definition}\label{def:ch00-eig}
+A scalar $\lambda$ is an \emph{eigenvalue} of $A$ if $A\mathbf{v} = \lambda\mathbf{v}$
+for some \emph{nonzero} vector $\mathbf{v}$, called an \emph{eigenvector}. The
+\emph{characteristic polynomial} is $p_A(\lambda) = \det(A - \lambda I)$.
+\end{definition}
+
+\begin{proposition}\label{prop:ch00-charpoly}
+$\lambda$ is an eigenvalue of $A$ iff $p_A(\lambda)=0$. For $n=2$,
+\[
+  p_A(\lambda) = \lambda^2 - (\operatorname{tr}A)\lambda + \det A,
+\]
+so the eigenvalues $\lambda_1,\lambda_2$ (with multiplicity) satisfy
+$\lambda_1 + \lambda_2 = \operatorname{tr}A$ and $\lambda_1\lambda_2 = \det A$.
+\end{proposition}
+\begin{proof}
+$A\mathbf{v} = \lambda\mathbf{v}$ with $\mathbf{v}\neq\mathbf0$ means
+$(A - \lambda I)\mathbf{v} = \mathbf0$ has a nonzero solution, which by
+\cref{thm:ch00-det}(ii) means $\det(A - \lambda I) = 0$. For
+$A = \left(\begin{smallmatrix}a&b\\c&d\end{smallmatrix}\right)$,
+$\det(A-\lambda I) = (a-\lambda)(d-\lambda) - bc = \lambda^2 - (a+d)\lambda +
+(ad - bc)$. The last claim is Vieta's formulas.
+\end{proof}
+
+\begin{theorem}[Distinct eigenvalues give independent eigenvectors]\label{thm:ch00-indep}
+If $\mathbf{v}_1,\dots,\mathbf{v}_k$ are eigenvectors of $A$ for pairwise
+distinct eigenvalues $\lambda_1,\dots,\lambda_k$, then they are linearly
+independent.
+\end{theorem}
+\begin{proof}
+Induction on $k$. For $k=1$, $\mathbf{v}_1\neq\mathbf0$. Suppose the claim
+holds for $k-1$, and $\sum_{j=1}^k c_j\mathbf{v}_j = \mathbf0$. Apply $A$, and
+separately multiply by $\lambda_k$:
+\[
+  \sum_{j=1}^{k} c_j\lambda_j\mathbf{v}_j = \mathbf0,\qquad
+  \sum_{j=1}^{k} c_j\lambda_k\mathbf{v}_j = \mathbf0 .
+\]
+Subtract: $\sum_{j=1}^{k-1}c_j(\lambda_j - \lambda_k)\mathbf{v}_j = \mathbf0$. By
+the induction hypothesis every $c_j(\lambda_j-\lambda_k) = 0$, and
+$\lambda_j\neq\lambda_k$, so $c_1=\dots=c_{k-1}=0$. Then
+$c_k\mathbf{v}_k = \mathbf0$ forces $c_k=0$.
+\end{proof}
+
+\begin{definition}\label{def:ch00-diag}
+$A$ is \emph{diagonalizable} if $A = PDP^{-1}$ for an invertible $P$ and a
+diagonal $D$.
+\end{definition}
+
+\begin{theorem}[Diagonalization criterion]\label{thm:ch00-diag}
+$A$ is diagonalizable iff $A$ has $n$ linearly independent eigenvectors. In
+that case $P = [\mathbf{v}_1\,\cdots\,\mathbf{v}_n]$ (eigenvectors as columns)
+and $D = \operatorname{diag}(\lambda_1,\dots,\lambda_n)$. In particular, $n$
+distinct eigenvalues guarantee diagonalizability.
+\end{theorem}
+\begin{proof}
+The $j$th column of $AP$ is $A\mathbf{v}_j$ and the $j$th column of $PD$ is
+$\lambda_j\mathbf{v}_j$. So $AP = PD$ says exactly that each column
+$\mathbf{v}_j$ satisfies $A\mathbf{v}_j = \lambda_j\mathbf{v}_j$.
+($\Leftarrow$) With independent eigenvectors as columns, $P$ is invertible
+(\cref{thm:ch00-det}(ii)) and $AP=PD$ gives $A = PDP^{-1}$. ($\Rightarrow$) If
+$A = PDP^{-1}$ then $AP = PD$, so the columns of $P$ are eigenvectors; they are
+nonzero and independent because $P$ is invertible. The last sentence follows
+from \cref{thm:ch00-indep}.
+\end{proof}
+
+Why we care: if $A = PDP^{-1}$ then $A^k = PD^kP^{-1}$ (the inner
+$P^{-1}P$ cancel), and $D^k$ is computed entrywise. Chapter~18 does the same
+for $e^{At}$.
+
+\begin{example}[Diagonalizing a symmetric matrix]\label{ex:ch00-diag}
+Diagonalize $A = \begin{pmatrix}1&2\\2&1\end{pmatrix}$.
+
+\emph{Solution.} $\operatorname{tr}A = 2$, $\det A = 1 - 4 = -3$, so
+$p_A(\lambda) = \lambda^2 - 2\lambda - 3 = (\lambda-3)(\lambda+1)$.
+\begin{align*}
+  \lambda = 3:&\quad (A-3I)\mathbf v = \begin{pmatrix}-2&2\\2&-2\end{pmatrix}\mathbf v = \mathbf0
+     \;\Rightarrow\; \mathbf v_1 = \begin{pmatrix}1\\1\end{pmatrix}\\
+  \lambda = -1:&\quad (A+I)\mathbf v = \begin{pmatrix}2&2\\2&2\end{pmatrix}\mathbf v = \mathbf0
+     \;\Rightarrow\; \mathbf v_2 = \begin{pmatrix}1\\-1\end{pmatrix}
+\end{align*}
+With $P = \left(\begin{smallmatrix}1&1\\1&-1\end{smallmatrix}\right)$ and
+$D = \operatorname{diag}(3,-1)$: $AP = \left(\begin{smallmatrix}3&-1\\3&1\end{smallmatrix}\right) = PD$. \checkmark
+\end{example}
+
+\begin{example}[Needs care: a matrix that cannot be diagonalized]\label{ex:ch00-jordan}
+Show that $N = \begin{pmatrix}1&1\\0&1\end{pmatrix}$ is not diagonalizable.
+
+\emph{Solution.} $p_N(\lambda) = (1-\lambda)^2$, so the only eigenvalue is
+$1$. Eigenvectors solve
+$(N - I)\mathbf v = \left(\begin{smallmatrix}0&1\\0&0\end{smallmatrix}\right)\mathbf v = \mathbf0$,
+i.e.\ $v_2 = 0$: every eigenvector is a multiple of
+$\left(\begin{smallmatrix}1\\0\end{smallmatrix}\right)$. Two independent
+eigenvectors do not exist, so by \cref{thm:ch00-diag} $N$ is not
+diagonalizable. A repeated eigenvalue \emph{may} fail to produce enough
+eigenvectors ($I_2$ has a repeated eigenvalue and is diagonal). This
+phenomenon is exactly what produces the $te^{rt}$ solutions of Chapters 10
+and 18.
+\end{example}
+
+\begin{example}[Complex eigenvalues of a real matrix]\label{ex:ch00-rotation}
+Find the eigenvalues and eigenvectors of $J = \begin{pmatrix}0&-1\\1&0\end{pmatrix}$
+(rotation by $90^\circ$).
+
+\emph{Solution.} $\operatorname{tr}J = 0$, $\det J = 1$, so
+$p_J(\lambda) = \lambda^2 + 1$ and $\lambda = \pm i$. No real eigenvector can
+exist, since a rotation by $90^\circ$ moves every real direction. Over
+$\mathbb{C}$, for $\lambda = i$:
+$(J - iI)\mathbf v = \left(\begin{smallmatrix}-i&-1\\1&-i\end{smallmatrix}\right)\mathbf v = \mathbf0$
+gives $v_2 = -iv_1$, so $\mathbf v = \left(\begin{smallmatrix}1\\-i\end{smallmatrix}\right)$.
+Check: $J\mathbf v = \left(\begin{smallmatrix}i\\1\end{smallmatrix}\right) = i\left(\begin{smallmatrix}1\\-i\end{smallmatrix}\right)$.
+By \cref{prop:ch00-conj-roots}-style reasoning (conjugate the equation
+$J\mathbf v = i\mathbf v$, using that $J$ is real),
+$\bar{\mathbf v} = \left(\begin{smallmatrix}1\\i\end{smallmatrix}\right)$ is an
+eigenvector for $-i$.
+\end{example}
+
+% ------------------------------------------------------------
+\section{Pitfalls}\label{sec:ch00-pitfalls}
+
+\begin{pitfall}[Partial fractions on an improper fraction]\label{pit:ch00-improper}
+Setting up $\frac{p}{q} = \sum\frac{A}{x - r}$ when $\deg p\ge\deg q$ gives an
+inconsistent linear system (or worse, a wrong answer if you only use the
+``cover-up'' values). Always divide first (\cref{ex:ch00-improper}).
+\end{pitfall}
+
+\begin{pitfall}[Too few terms for a repeated factor]\label{pit:ch00-repeated}
+$\frac{1}{x(x+1)^2}\neq\frac{A}{x} + \frac{B}{(x+1)^2}$ for any constants: the
+right side has numerator $A(x+1)^2 + Bx$, and matching $1$ forces $A=1$ (from
+$x^0$), $A = 0$ (from $x^2$). A factor $(x-r)^m$ needs all powers
+$1,\dots,m$.
+\end{pitfall}
+
+\begin{pitfall}[Dropping the absolute value in $\ln$]\label{pit:ch00-ln-abs}
+$\int\frac{\mathrm{d}x}{x} = \ln|x| + C$, valid separately on $x>0$ and on
+$x<0$ (and the constants on the two intervals may differ). Writing $\ln x$
+silently restricts to $x>0$; in Chapter~3 this loses half the solutions of
+separable equations.
+\end{pitfall}
+
+\begin{pitfall}[The zero vector is not an eigenvector]\label{pit:ch00-zero-eig}
+$A\mathbf{0} = \lambda\mathbf0$ for every $\lambda$, which is why the
+definition demands $\mathbf{v}\neq\mathbf{0}$. If your eigenvector computation
+returns only $\mathbf0$, you have made an arithmetic error: by
+\cref{prop:ch00-charpoly}, $\det(A - \lambda I) = 0$ guarantees a nonzero
+solution.
+\end{pitfall}
+
+\begin{pitfall}[``Every matrix is diagonalizable'']\label{pit:ch00-all-diag}
+False; see \cref{ex:ch00-jordan}. Over $\mathbb{C}$, distinct eigenvalues are
+\emph{sufficient}, not necessary.
+\end{pitfall}
+
+% ------------------------------------------------------------
+\section{Problems}\label{sec:ch00-problems}
+
+\subsection*{Warm-up}
+
+\begin{problem}{W}\label{prob:ch00-w1}
+Compute $\displaystyle\int x^2e^{-x}\,\mathrm{d}x$.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch00-w2}
+Decompose $\dfrac{3x+5}{(x-1)(x+2)}$ into partial fractions and integrate it.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch00-w3}
+Write $(1+i)^{10}$ in the form $a + bi$ using polar form.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch00-w4}
+The point $(1,1)$ lies on the curve $x^2y + y^3 = 2x$. Verify that
+\cref{thm:ch00-ift} applies there and compute $\der{y}{x}$ at that point.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch00-w5}
+Find the eigenvalues and eigenvectors of
+$\begin{pmatrix}2&1\\1&2\end{pmatrix}$.
+\end{problem}
+
+\subsection*{Core}
+
+\begin{problem}{C}\label{prob:ch00-c1}
+Compute $\displaystyle\int\frac{x^2 + 2x + 3}{(x-1)(x^2+1)}\,\mathrm{d}x$.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch00-c2}
+Compute $\displaystyle\int\frac{\mathrm{d}x}{x^2(x+1)}$ on the interval
+$x>0$, and separately on $-1<x<0$.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch00-c3}
+Compute $\int e^{x}\sin 2x\,\mathrm{d}x$ as the imaginary part of
+$\int e^{(1+2i)x}\,\mathrm{d}x$, then check by differentiation.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch00-c4}
+Use de Moivre's formula to express $\cos 3\theta$ as a polynomial in
+$\cos\theta$ and $\sin 3\theta$ as a polynomial in $\sin\theta$.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch00-c5}
+Find all complex $z$ with $z^4 = -16$, in both polar and $a+bi$ form, and
+sketch them in the complex plane.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch00-c6}
+Diagonalize $A = \begin{pmatrix}4&-2\\1&1\end{pmatrix}$ and use the result to
+find a closed formula for every entry of $A^n$, $n\ge 1$.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch00-c7}
+\begin{enumerate}[label=(\alph*)]
+  \item Show that $\begin{pmatrix}3&1\\0&3\end{pmatrix}$ is not diagonalizable.
+  \item For a general $2\times2$ matrix $A$, verify by direct computation that
+        $A^2 - (\operatorname{tr}A)A + (\det A)I = 0$ (Cayley--Hamilton for
+        $n=2$).
+\end{enumerate}
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch00-c8}
+Let $R_\theta = \begin{pmatrix}\cos\theta&-\sin\theta\\\sin\theta&\cos\theta\end{pmatrix}$
+with $0<\theta<\pi$. Find its eigenvalues (express them with Euler's formula)
+and one eigenvector for each.
+\end{problem}
+
+\subsection*{Hard}
+
+\begin{problem}{H}\label{prob:ch00-h1}
+Let $p(x) = \prod_{k=1}^{n}(x - r_k)$ with distinct (complex) $r_k$, and let
+$f$ be a polynomial with $\deg f < n$. Prove the \emph{cover-up formula}
+\[
+  \frac{f(x)}{p(x)} = \sum_{k=1}^{n}\frac{f(r_k)}{p'(r_k)\,(x - r_k)}.
+\]
+Deduce that $\displaystyle\sum_{k=1}^{n}\prod_{j\neq k}\frac{1}{r_k - r_j} = 0$
+for $n\ge 2$.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch00-h2}
+Using $\cos\theta = \frac{e^{i\theta} + e^{-i\theta}}{2}$ and the binomial
+theorem, evaluate $\displaystyle\int_0^{2\pi}\cos^{2n}\theta\,\mathrm{d}\theta$
+in closed form for every integer $n\ge 0$.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch00-h3}
+Let $A$ be a real $2\times 2$ matrix with eigenvalue $\alpha + i\beta$,
+$\beta\neq 0$, and eigenvector $\mathbf v = \mathbf a + i\mathbf b$ where
+$\mathbf a,\mathbf b\in\R^2$. Prove that $\mathbf a,\mathbf b$ are linearly
+independent over $\R$, and that $P = [\mathbf a\ \mathbf b]$ satisfies
+\[
+  P^{-1}AP = \begin{pmatrix}\alpha&\beta\\-\beta&\alpha\end{pmatrix}.
+\]
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch00-h4}
+Let $A$ be $n\times n$ with $n$ distinct eigenvalues, and suppose $AB = BA$.
+Prove that every eigenvector of $A$ is an eigenvector of $B$, and conclude that
+$B$ is diagonalizable with the same $P$ as $A$.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch00-h5}
+Prove \cref{cor:ch00-real-factor} carefully, including multiplicities: if $z$
+is a non-real root of the real polynomial $p$ with multiplicity $m$, show
+$\bar z$ is a root of the same multiplicity.
+\end{problem}
+
+\subsection*{Putnam/olympiad-style}
+
+\begin{problem}{P}\label{prob:ch00-p1}
+Find a closed form for $\displaystyle S_n = \sum_{\substack{0\le k\le n\\ 3\mid k}}\binom{n}{k}$
+valid for every $n\ge 0$, and prove it.
+\end{problem}
+
+\begin{problem}{P}\label{prob:ch00-p2}
+Determine all real $2\times 2$ matrices $A$ with $A^2 = -I$.
+\end{problem}
+
+\begin{problem}{P}\label{prob:ch00-p3}
+Let $f$ be a real polynomial with $f(x)\ge 0$ for all real $x$. Prove that
+there exist real polynomials $g, h$ with $f = g^2 + h^2$.
+\end{problem}
+
+% ------------------------------------------------------------
+\section{Hints}\label{sec:ch00-hints}
+
+\paragraph{Warm-up and core.}
+\cref{prob:ch00-w1}: parts twice, or tabular integration.
+\cref{prob:ch00-w4}: compute $\pder{F}{y}$ at $(1,1)$ first.
+\cref{prob:ch00-c2}: the antiderivative formula is the same on both intervals;
+what changes is how you may write the logarithms.
+\cref{prob:ch00-c5}: write $-16 = 16e^{i\pi}$, and remember that $\pi$ is not
+the only argument of $-16$.
+\cref{prob:ch00-c6}: $A^n = PD^nP^{-1}$; compute $P^{-1}$ with the $2\times2$
+formula.
+\cref{prob:ch00-c7}(b): four entries, four short expansions.
+
+\hintfor{prob:ch00-h1}
+\begin{hintlevels}
+  \item Both sides are proper rational functions; compare their partial
+        fraction coefficients.
+  \item Multiply both sides by $(x - r_k)$ and let $x\to r_k$. What is
+        $\lim_{x\to r_k}\frac{p(x)}{x-r_k}$?
+  \item For the identity, take $f = 1$ and compare the behaviour of both sides
+        as $x\to\infty$ after multiplying by $x$.
+\end{hintlevels}
+
+\hintfor{prob:ch00-h2}
+\begin{hintlevels}
+  \item Expand $\cos^{2n}\theta$ as a combination of $e^{ik\theta}$.
+  \item $\int_0^{2\pi}e^{ik\theta}\,\mathrm{d}\theta$ is $0$ unless $k = 0$.
+  \item Only one term of $\bigl(e^{i\theta} + e^{-i\theta}\bigr)^{2n}$ survives:
+        which $k$ in the binomial sum gives exponent $0$?
+\end{hintlevels}
+
+\hintfor{prob:ch00-h3}
+\begin{hintlevels}
+  \item Separate $A\mathbf v = (\alpha + i\beta)\mathbf v$ into real and
+        imaginary parts.
+  \item You should get $A\mathbf a = \alpha\mathbf a - \beta\mathbf b$ and
+        $A\mathbf b = \beta\mathbf a + \alpha\mathbf b$.
+  \item For independence, suppose $\mathbf b = c\mathbf a$ with $c$ real; then
+        $\mathbf v = (1 + ic)\mathbf a$ and $\mathbf a$ would be a \emph{real}
+        eigenvector. Why is that impossible?
+\end{hintlevels}
+
+\hintfor{prob:ch00-h4}
+\begin{hintlevels}
+  \item Apply $A$ to $B\mathbf v$ where $A\mathbf v = \lambda\mathbf v$.
+  \item $A(B\mathbf v) = \lambda(B\mathbf v)$, so $B\mathbf v$ lies in the
+        $\lambda$-eigenspace of $A$.
+  \item With $n$ distinct eigenvalues, how large can each eigenspace be?
+        (Use \cref{thm:ch00-indep} and a count.)
+\end{hintlevels}
+
+\hintfor{prob:ch00-h5}
+\begin{hintlevels}
+  \item Multiplicity $m$ means $p(z) = p'(z) = \dots = p^{(m-1)}(z) = 0\neq p^{(m)}(z)$.
+  \item The derivatives of a real polynomial are real polynomials.
+  \item Apply \cref{prop:ch00-conj-roots}'s argument to each $p^{(k)}$, and
+        use $\overline{w}\neq 0 \iff w\neq 0$.
+\end{hintlevels}
+
+\hintfor{prob:ch00-p1}
+\begin{hintlevels}
+  \item Roots of unity filter: let $\omega = e^{2\pi i/3}$ and consider
+        $(1+1)^n + (1+\omega)^n + (1+\omega^2)^n$.
+  \item $1 + \omega + \omega^2 = 0$, so $\sum_{j=0}^{2}\omega^{jk}$ is $3$ if
+        $3\mid k$ and $0$ otherwise.
+  \item Write $1 + \omega$ and $1 + \omega^2$ in polar form; they are
+        conjugate unit complex numbers.
+\end{hintlevels}
+
+\hintfor{prob:ch00-p2}
+\begin{hintlevels}
+  \item What does $A^2 = -I$ say about the eigenvalues of $A$?
+  \item Combine with Cayley--Hamilton (\cref{prob:ch00-c7}(b)):
+        $A^2 = (\operatorname{tr}A)A - (\det A)I$.
+  \item Show $\operatorname{tr}A = 0$ and $\det A = 1$, then check the converse.
+\end{hintlevels}
+
+\hintfor{prob:ch00-p3}
+\begin{hintlevels}
+  \item Factor $f$ over $\mathbb{C}$ and use \cref{prop:ch00-conj-roots}.
+  \item Real roots of a nonnegative polynomial have even multiplicity (why?),
+        so $f = c\,q(x)\overline{q}(x)$ where $q$ is a complex polynomial,
+        $\overline q$ has the conjugated coefficients, and $c>0$.
+  \item Write $q = g_0 + i h_0$ with $g_0,h_0$ real polynomials and compute
+        $q\overline q$ for real $x$.
+\end{hintlevels}
+
+% ------------------------------------------------------------
+\section{Further reading}\label{sec:ch00-reading}
+
+\begin{itemize}
+  \item \textcite[Ch.~8]{Rudin}: the exponential and trigonometric functions
+        defined from power series, done fully rigorously; Ch.~3 for absolute
+        convergence and products of series.
+  \item \textcite[\S3.3]{BoyceDiPrima}: Euler's formula as it is first used in
+        differential equations; \S7.2--7.3 for matrices, linear independence,
+        eigenvalues and eigenvectors.
+  \item \textcite[Ch.~5]{HSD}: higher-dimensional linear algebra written
+        specifically for use with linear systems of differential equations.
+\end{itemize}
