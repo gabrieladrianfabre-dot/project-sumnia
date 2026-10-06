@@ -1,0 +1,16 @@
+% T' + kT = k(20 + 5 sin wt), k = 0.2, w = 2pi/24.
+% T = 20 + A(k sin wt - w cos wt) + C e^{-kt},  A = 5k/(k^2+w^2),
+% C = T0 - 20 + A w.
+\begin{tikzpicture}[
+  declare function={kk=0.2; ww=2*pi/24; AA=5*kk/(kk^2+ww^2);
+    up(\t)=AA*(kk*sin(deg(ww*\t)) - ww*cos(deg(ww*\t)));}]
+\begin{axis}[deplot, xmin=0, xmax=72, ymin=8, ymax=31,
+  axis lines=left, xlabel={$t$ (hours)}, ylabel={$T$},
+  xtick={0,12,24,36,48,60,72}, height=0.45\linewidth]
+  \addplot[gray, dashed, samples=200, domain=0:72] {20 + 5*sin(deg(ww*x))};
+  \pgfplotsinvokeforeach{10,20,30}{
+    \addplot[blue, samples=200, domain=0:72]
+      {20 + up(x) + (#1 - 20 + AA*ww)*exp(-kk*x)};
+  }
+\end{axis}
+\end{tikzpicture}

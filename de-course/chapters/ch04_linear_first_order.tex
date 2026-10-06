@@ -1,0 +1,547 @@
+% ============================================================
+%  Chapter 4 — Linear first-order equations
+% ============================================================
+\chapter{Linear First-Order Equations}\label{ch:ch04}
+
+\begin{diagnostic}
+  \item Compute $\der{}{x}\Bigl(e^{\int_0^x p(s)\,\mathrm{d}s}\Bigr)$ for a
+        continuous $p$.
+  \item Recognize the left side as a single derivative:
+        $x^2\der{y}{x} + 2xy$.
+  \item Compute $\displaystyle\int x e^{x^2}\,\mathrm{d}x$ and
+        $\displaystyle\int e^{x}\sin x\,\mathrm{d}x$.
+\end{diagnostic}
+
+% ------------------------------------------------------------
+\section{Motivation}\label{sec:ch04-motivation}
+
+Two problems from Chapter~2 are still open. The mixing tank whose volume grows
+(\cref{ex:ch02-mix-variable}) satisfies
+\[
+  \der{Q}{t} + \frac{2}{100 + t}\,Q = 0.6,
+\]
+and a house whose outside temperature oscillates daily satisfies
+\[
+  \der{T}{t} + kT = k\Bigl(20 + 5\sin\frac{2\pi t}{24}\Bigr).
+\]
+Both have the form ``derivative $+$ (function of $t$)$\cdot$unknown $=$
+function of $t$''. That structure, linearity, is enough to solve
+\emph{every} such equation by a single formula, and, unlike Chapter~3, the
+solution always exists on the whole interval where the coefficients are
+continuous. That last fact is the real content of this chapter.
+
+% ------------------------------------------------------------
+\section{The integrating factor}\label{sec:ch04-theory}
+
+\begin{definition}[Standard form]\label{def:ch04-standard}
+A first-order linear equation is in \emph{standard form} when written
+\begin{equation}\label{eq:ch04-standard}
+  \der{y}{x} + p(x)\,y = q(x).
+\end{equation}
+It is \emph{homogeneous} if $q\equiv 0$. Throughout, $p$ and $q$ are continuous
+on an open interval $I$.
+\end{definition}
+
+\paragraph{Discovering the integrating factor.} The left side of
+\eqref{eq:ch04-standard} is not a derivative of anything obvious. Look for a
+positive function $\mu(x)$ such that multiplying by $\mu$ turns it into the
+derivative of a product:
+\[
+  \mu\der{y}{x} + \mu p\,y \overset{?}{=} \der{}{x}(\mu y) = \mu\der{y}{x} + \der{\mu}{x}\,y .
+\]
+This holds for every $y$ iff $\der{\mu}{x} = p\mu$. That is a homogeneous linear
+equation for $\mu$; by the same product-rule argument as
+\cref{lem:ch02-exp} (with $e^{-P}\mu$ in place of $e^{-kt}y$), its solutions are
+$\mu = Ce^{P(x)}$ with $P' = p$. We take $C = 1$.
+
+\begin{theorem}[Existence, uniqueness, and the formula]\label{thm:ch04-main}
+Let $p, q$ be continuous on the open interval $I$, let $x_0\in I$ and
+$y_0\in\R$. Put
+\[
+  P(x) = \int_{x_0}^{x}p(s)\,\mathrm{d}s,\qquad \mu(x) = e^{P(x)} .
+\]
+Then the IVP $\der{y}{x} + p(x)y = q(x)$, $y(x_0) = y_0$, has exactly one
+solution on $I$, namely
+\begin{equation}\label{eq:ch04-formula}
+  y(x) = e^{-P(x)}\Bigl(y_0 + \int_{x_0}^{x}e^{P(s)}q(s)\,\mathrm{d}s\Bigr).
+\end{equation}
+Moreover, every solution on any subinterval $I'\ni x_0$ is the restriction of
+\eqref{eq:ch04-formula} to $I'$.
+\end{theorem}
+
+\begin{proof}
+$P$ is differentiable with $P' = p$ (fundamental theorem of calculus), so
+$\mu$ is differentiable, positive, and $\mu' = p\mu$.
+
+\emph{Every solution has the form \eqref{eq:ch04-formula}.} Let $y$ solve the
+IVP on an interval $I'\ni x_0$, $I'\subseteq I$. Then on $I'$:
+\begin{align*}
+  \der{}{x}(\mu y) &= \mu\der{y}{x} + \mu p\,y \why{product rule, $\mu' = p\mu$}\\
+  &= \mu\Bigl(\der{y}{x} + py\Bigr) = \mu q \why{the equation}.
+\end{align*}
+The function $\mu q$ is continuous, so by \cref{thm:ch01-antiderivative},
+$\mu(x)y(x) = \int_{x_0}^x\mu q\,\mathrm{d}s + C$; at $x = x_0$, $\mu = 1$ gives
+$C = y_0$. Divide by $\mu>0$ to get \eqref{eq:ch04-formula}.
+
+\emph{The formula is a solution on all of $I$.} The right side of
+\eqref{eq:ch04-formula} is defined and differentiable on all of $I$ because
+$p$ and $q$ are continuous there. Reversing the computation:
+$\der{}{x}(\mu y) = \mu q$, i.e.\ $\mu y' + \mu p y = \mu q$, and dividing by
+$\mu$ gives the equation; $y(x_0) = y_0$ by inspection.
+\end{proof}
+
+\begin{remark}[Linear versus nonlinear]\label{rem:ch04-global}
+Compare \cref{ex:ch03-xy2}: $\der{y}{x} = xy^2$ has a perfectly smooth right
+side, yet the solution with $y(0)=1$ dies at $x = \sqrt2$. For a
+\emph{linear} equation this cannot happen: the solution lives on the entire
+interval of continuity of $p$ and $q$, and its interval does not depend on
+$y_0$. The interval of a linear equation is read off the coefficients; the
+interval of a nonlinear one is not.
+\end{remark}
+
+\subsection{Structure of the solution set}
+
+\begin{proposition}[Superposition]\label{prop:ch04-superposition}
+If $y_1$ solves $y' + py = q_1$ and $y_2$ solves $y' + py = q_2$ on $I$, then
+for constants $a,b$, $ay_1 + by_2$ solves $y' + py = aq_1 + bq_2$.
+\end{proposition}
+\begin{proof}
+$(ay_1 + by_2)' + p(ay_1 + by_2) = a(y_1' + py_1) + b(y_2' + py_2) = aq_1 + bq_2$.
+\end{proof}
+
+\begin{corollary}[General $=$ particular $+$ homogeneous]\label{cor:ch04-structure}
+Let $y_p$ be any one solution of \eqref{eq:ch04-standard} on $I$. Then the
+solutions on $I$ are exactly $y = y_p + Ce^{-P(x)}$, $C\in\R$.
+\end{corollary}
+\begin{proof}
+If $y$ is a solution, $y - y_p$ solves the homogeneous equation
+(\cref{prop:ch04-superposition} with $a = 1$, $b = -1$), whose solutions are
+$Ce^{-P}$ by \cref{thm:ch04-main} with $q = 0$. Conversely
+$y_p + Ce^{-P}$ is a solution by superposition.
+\end{proof}
+
+\Cref{cor:ch04-structure} means you may find $y_p$ by \emph{any} legitimate
+means, including guessing, as long as you verify it. Chapter~11 turns this
+into a method (undetermined coefficients); \cref{ex:ch04-house} previews it.
+
+\begin{proposition}[Forgetting the initial condition]\label{prop:ch04-transient}
+If $p(x)\ge c>0$ for all $x\ge x_0$, then any two solutions $y, z$ of
+\eqref{eq:ch04-standard} on $[x_0,\infty)$ satisfy
+$|y(x) - z(x)|\le|y(x_0) - z(x_0)|\,e^{-c(x - x_0)}$.
+\end{proposition}
+\begin{proof}
+$w = y - z$ solves the homogeneous equation, so
+$w(x) = w(x_0)e^{-P(x)}$ by \eqref{eq:ch04-formula} with $q = 0$. Since
+$P(x) = \int_{x_0}^xp\ge c(x - x_0)$, we get $|w(x)|\le|w(x_0)|e^{-c(x-x_0)}$.
+\end{proof}
+
+So in a damped linear system all solutions converge to one another: the term
+$Ce^{-P}$ is the \emph{transient}, and what remains is the \emph{steady state}.
+
+\subsection{A second derivation: variation of parameters}
+
+The homogeneous equation $y' + py = 0$ has the solution $y_h = e^{-P}$. Look
+for a solution of the full equation of the form $y = u(x)\,y_h(x)$, letting the
+``constant'' vary:
+\begin{align*}
+  y' + py &= u'y_h + u\,y_h' + p\,u\,y_h \why{product rule}\\
+          &= u'y_h + u\,(y_h' + py_h) = u'y_h \why{$y_h$ solves the homogeneous equation}.
+\end{align*}
+So $y' + py = q$ iff $u' = q/y_h = e^{P}q$, giving back
+\eqref{eq:ch04-formula}. This idea generalizes to higher order (Chapter~11)
+and to systems (Chapter~19), where integrating factors do not.
+
+% ------------------------------------------------------------
+\section{Worked examples}\label{sec:ch04-examples}
+
+\begin{example}[The basic procedure]\label{ex:ch04-basic}
+Solve $\der{y}{x} + \dfrac{2}{x}\,y = \dfrac{\cos x}{x^2}$, $y(\pi) = 0$.
+
+\emph{Solution.} The coefficients are continuous on $(0,\infty)$ and on
+$(-\infty,0)$; since $x_0 = \pi>0$, \cref{thm:ch04-main} gives a unique
+solution on $I = (0,\infty)$.
+\begin{align*}
+  \mu &= e^{\int\frac2x\,\mathrm{d}x} = e^{2\ln x} = x^2 \why{integrating factor, $x>0$}\\
+  x^2\der{y}{x} + 2xy &= \cos x \why{multiply the equation by $\mu$}\\
+  \der{}{x}\bigl(x^2y\bigr) &= \cos x \why{left side is $(\mu y)'$}\\
+  x^2y &= \sin x + C \why{integrate}\\
+  \pi^2\cdot 0 &= \sin\pi + C\;\Rightarrow\;C = 0 \why{initial condition}.
+\end{align*}
+So $y = \dfrac{\sin x}{x^2}$ on $(0,\infty)$. (Any antiderivative of $p$ works
+for $\mu$; a different constant multiplies $\mu$ by a constant and cancels.)
+\end{example}
+
+\begin{example}[The growing tank of Chapter 2]\label{ex:ch04-tank}
+Solve $\der{Q}{t} + \dfrac{2}{100+t}Q = 0.6$, $Q(0) = 5$, and find the
+long-run concentration.
+
+\emph{Solution.} Coefficients are continuous on $(-100,\infty)$, which
+contains the physically relevant $t\ge0$.
+\begin{align*}
+  \mu &= e^{\int\frac{2}{100+t}\mathrm{d}t} = (100+t)^2 \why{$100+t>0$}\\
+  \der{}{t}\bigl[(100+t)^2Q\bigr] &= 0.6\,(100+t)^2 \why{multiply by $\mu$}\\
+  (100+t)^2Q &= 0.2\,(100+t)^3 + C \why{integrate}\\
+  10^4\cdot 5 &= 0.2\cdot10^6 + C\;\Rightarrow\;C = -1.5\times10^5 \why{$t = 0$}.
+\end{align*}
+So $Q(t) = 0.2\,(100+t) - \dfrac{1.5\times10^5}{(100+t)^2}$. The volume is
+$V = 100 + t$, so the concentration is
+$\dfrac{Q}{V} = 0.2 - \dfrac{1.5\times10^5}{(100+t)^3}\to 0.2$ kg/L, the inflow
+concentration, but now algebraically rather than exponentially fast.
+\end{example}
+
+\begin{example}[A house in a daily temperature cycle]\label{ex:ch04-house}
+Solve $\der{T}{t} + kT = k(20 + 5\sin\omega t)$ ($k>0$, $\omega = 2\pi/24$ per
+hour) and describe the steady state.
+
+\emph{Solution.} Write $u = T - 20$, so $\der{u}{t} + ku = 5k\sin\omega t$. By
+\cref{cor:ch04-structure} we need one particular solution. Integrating
+$e^{kt}\sin\omega t$ by parts twice would work (\cref{ex:ch00-e2xcos3x}); the
+complex route is shorter. Solve the complex equation
+$\der{z}{t} + kz = 5ke^{i\omega t}$ and take imaginary parts (legitimate
+because $k$ is real, so real and imaginary parts of a solution solve the
+equations with forcing $\operatorname{Re}$ and $\operatorname{Im}$ of
+$5ke^{i\omega t}$):
+\begin{align*}
+  z &= Ae^{i\omega t}\ \Rightarrow\ (i\omega + k)Ae^{i\omega t} = 5ke^{i\omega t}
+     \why{\cref{prop:ch00-deriv}}\\
+  A &= \frac{5k}{k + i\omega} = \frac{5k(k - i\omega)}{k^2 + \omega^2}
+     \why{rationalize}\\
+  u_p &= \operatorname{Im}\bigl(Ae^{i\omega t}\bigr)
+       = \frac{5k}{k^2+\omega^2}\bigl(k\sin\omega t - \omega\cos\omega t\bigr).
+\end{align*}
+Writing $k = \sqrt{k^2+\omega^2}\cos\varphi$, $\omega = \sqrt{k^2+\omega^2}\sin\varphi$
+(so $\tan\varphi = \omega/k$):
+\[
+  T(t) = 20 + \underbrace{\frac{5k}{\sqrt{k^2+\omega^2}}\sin(\omega t - \varphi)}_{\text{steady state}}
+       + \underbrace{Ce^{-kt}}_{\text{transient}} .
+\]
+The inside swings with a smaller amplitude than outside (factor
+$k/\sqrt{k^2+\omega^2}<1$) and lags by $\varphi/\omega$ hours. A
+well-insulated house (small $k$) has small swings and a lag approaching $6$
+hours (a quarter period). \Cref{fig:ch04-house} shows three initial
+temperatures forgetting their start (\cref{prop:ch04-transient}).
+\end{example}
+
+\begin{figure}[ht]
+  \centering
+  \input{figures/ch04_house}
+  \caption{\Cref{ex:ch04-house} with $k = 0.2$ per hour: outside temperature
+  (dashed) and inside temperature for $T(0)\in\{10, 20, 30\}$. The transients
+  die out; the steady state has smaller amplitude and lags behind.}
+  \label{fig:ch04-house}
+\end{figure}
+
+\begin{example}[Needs care: a singular point where the theorem is silent]\label{ex:ch04-singular}
+Find all solutions on $\R$ of $x\der{y}{x} - 2y = x^3$.
+
+\emph{Solution.} Standard form $\der{y}{x} - \frac2xy = x^2$ has $p = -2/x$,
+discontinuous at $0$, so \cref{thm:ch04-main} applies on $(0,\infty)$ and on
+$(-\infty,0)$ \emph{separately}. On either:
+\begin{align*}
+  \mu &= e^{-2\ln|x|} = x^{-2}\why{integrating factor}\\
+  \der{}{x}\bigl(x^{-2}y\bigr) &= 1 \;\Rightarrow\; y = x^3 + Cx^2 .
+\end{align*}
+Now glue. Any function
+\[
+  y = \begin{cases}x^3 + C_1x^2, & x\ge0,\\ x^3 + C_2x^2, & x<0,\end{cases}
+\]
+is differentiable at $0$ with $y(0) = 0$ and $y'(0) = 0$ (both one-sided
+derivatives vanish), and satisfies the \emph{original} equation at $x = 0$:
+$0\cdot0 - 2\cdot0 = 0$. So:
+the IVP $y(0) = 0$ has infinitely many solutions on $\R$ (two free constants),
+and the IVP $y(0) = 1$ has none. Neither contradicts \cref{thm:ch04-main}:
+its hypothesis (continuity of $p$ on an interval containing $x_0$) fails.
+\end{example}
+
+\begin{example}[Needs care: discontinuous forcing]\label{ex:ch04-switch}
+A tap is open for one hour: $\der{y}{t} + y = q(t)$ with $q = 1$ on $[0,1)$ and
+$q = 0$ for $t\ge1$, and $y(0) = 0$. Find $y$.
+
+\emph{Solution.} $q$ is not continuous, so we solve on each piece and require
+$y$ to be \emph{continuous} at $t = 1$ (the amount in a tank cannot jump).
+\begin{align*}
+  0\le t<1:&\quad y = 1 - e^{-t} \why{\cref{cor:ch02-affine}, $y(0) = 0$}\\
+  t\ge 1:&\quad y = y(1)e^{-(t-1)} = (1 - e^{-1})e^{-(t-1)} = (e-1)e^{-t}
+     \why{homogeneous, continuity at $1$}.
+\end{align*}
+At $t = 1$ the left derivative is $e^{-1}$ and the right derivative is
+$-(1 - e^{-1})$: $y$ is continuous but not differentiable there, so it is not a
+solution in the sense of \cref{def:ch01-solution}. It satisfies the equation
+except at the switching time, and it is the physically correct answer.
+Chapter~14 makes such ``solutions'' systematic with step functions.
+\end{example}
+
+\begin{example}[Swapping the roles of $x$ and $y$]\label{ex:ch04-swap}
+Solve $\der{y}{x} = \dfrac{y}{2y\ln y + y - x}$ for $y>1$.
+
+\emph{Solution.} \notation{Leibniz, because we invert the derivative
+(\eqref{eq:ch01-chain}).} As an equation for $y(x)$ this is nonlinear. But
+where $\der{y}{x}\neq0$, $\der{x}{y} = 1\big/\der{y}{x}$:
+\begin{align*}
+  \der{x}{y} &= \frac{2y\ln y + y - x}{y} = 2\ln y + 1 - \frac{x}{y}\\
+  \der{x}{y} + \frac1y\,x &= 2\ln y + 1 \why{linear in $x(y)$!}\\
+  \der{}{y}(yx) &= 2y\ln y + y \why{$\mu = y$}\\
+  yx &= y^2\ln y + C \why{$\int(2y\ln y + y)\,\mathrm{d}y = y^2\ln y$}.
+\end{align*}
+So the solution curves are $x = y\ln y + C/y$. Always ask whether an equation
+is linear in \emph{some} choice of dependent variable.
+\end{example}
+
+% ------------------------------------------------------------
+\section{Pitfalls}\label{sec:ch04-pitfalls}
+
+\begin{pitfall}[Not in standard form]\label{pit:ch04-standard}
+For $x\der{y}{x} + 3y = x$, the integrating factor is \emph{not} $e^{\int3\,\mathrm{d}x}$.
+Divide by $x$ first: $p = 3/x$, $\mu = x^3$. The formula $\mu = e^{\int p}$
+assumes the coefficient of $\der{y}{x}$ is $1$.
+\end{pitfall}
+
+\begin{pitfall}[Multiplying only the left side]\label{pit:ch04-rhs}
+After multiplying by $\mu$, the right side is $\mu q$, not $q$. Writing
+$(\mu y)' = q$ is the single most common error in this chapter.
+\end{pitfall}
+
+\begin{pitfall}[Losing the constant]\label{pit:ch04-constant}
+$\mu y = \int\mu q\,\mathrm{d}x$ \emph{without} $+C$ yields one particular
+solution, not the family; then the initial condition usually cannot be met.
+(The constant in $\mu$ itself, by contrast, may be dropped.)
+\end{pitfall}
+
+\begin{pitfall}[Claiming the solution beyond the interval of continuity]\label{pit:ch04-interval}
+The theorem guarantees a solution on the interval of continuity of $p$ and $q$
+containing $x_0$, nothing more. \Cref{ex:ch04-singular} shows what can happen
+across a point where $p$ blows up: nonuniqueness, or no solution at all.
+\end{pitfall}
+
+\begin{pitfall}[Applying the integrating factor to a nonlinear equation]\label{pit:ch04-nonlinear}
+$\der{y}{x} + y^2 = x$ is \emph{not} linear; ``$\mu = e^{\int y\,\mathrm{d}x}$''
+is meaningless because $y$ is unknown. Linearity in the dependent variable is a
+prerequisite (but see \cref{ex:ch04-swap} and Chapter~6's substitutions).
+\end{pitfall}
+
+% ------------------------------------------------------------
+\section{Problems}\label{sec:ch04-problems}
+
+\subsection*{Warm-up}
+
+\begin{problem}{W}\label{prob:ch04-w1}
+Find the general solution of $\der{y}{x} + 3y = 6$ in two ways: as a linear
+equation and with \cref{cor:ch02-affine}.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch04-w2}
+Solve $\der{y}{x} - 2xy = x$, $y(0) = 0$.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch04-w3}
+Find the general solution of $x\der{y}{x} + y = e^x$ on $x>0$.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch04-w4}
+Solve $\der{y}{x} + y\tan x = \sec x$, $y(0) = 1$, on $(-\frac\pi2,\frac\pi2)$.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch04-w5}
+Without solving, give the largest interval on which \cref{thm:ch04-main}
+guarantees a unique solution of $(x^2-1)\der{y}{x} + y = \ln x$, $y(2) = 1$.
+\end{problem}
+
+\subsection*{Core}
+
+\begin{problem}{C}\label{prob:ch04-c1}
+Solve $\der{y}{x} + y = \sin x$ twice: with the integrating factor (and
+$\int e^x\sin x\,\mathrm{d}x$), and with the complex method of
+\cref{ex:ch04-house}. Identify the transient and the steady state.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch04-c2}
+Solve \cref{prob:ch02-c2}(a) completely, without using the hint in part (b),
+and prove the solution is unique.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch04-c3}
+An $RC$ circuit obeys $R\der{q}{t} + \frac1C q = E(t)$, $q(0) = 0$. Solve for
+constant $E = E_0$; then find the steady-state charge for $E = E_0\cos\omega t$,
+its amplitude, and its phase lag.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch04-c4}
+Find all solutions of $x\der{y}{x} + 2y = 4x^2$ on $(0,\infty)$ and on
+$(-\infty,0)$. Then show that the IVP $y(0) = 0$ has exactly one solution on
+$\R$ and that $y(0) = 1$ has none. Contrast with \cref{ex:ch04-singular}: what
+is the structural difference?
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch04-c5}
+Solve $\der{y}{x} + y = e^{-x}$, $y(0) = 0$. Show the solution tends to $0$ but
+more slowly than $e^{-x}$, and find its maximum. Why does the usual
+``transient decays like $e^{-x}$'' intuition fail here?
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch04-c6}
+A thermometer obeys Newton's law $\der{T}{t} = -k(T - T_{\mathrm a}(t))$ in an oven
+whose temperature rises linearly, $T_{\mathrm a} = a + bt$. Solve, and show that
+eventually the thermometer reads $b/k$ degrees below the oven.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch04-c7}
+A drug is infused at constant rate $r$ (mg/h) into a blood volume $V$ for $T$
+hours, then stopped; it is eliminated at rate $kC$ per unit volume, where $C$
+is the concentration. Derive the equation for $C$, solve it on $[0,T]$ and on
+$[T,\infty)$ with $C(0) = 0$ and $C$ continuous, and find the peak
+concentration.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch04-c8}
+Solve $\der{y}{x} = \dfrac{1}{x + y^2}$ by treating $x$ as a function of $y$.
+\end{problem}
+
+\subsection*{Hard}
+
+\begin{problem}{H}\label{prob:ch04-h1}
+Let $p, q$ be continuous on $[0,\infty)$ with $p(x)\to a>0$ and $q(x)\to b$ as
+$x\to\infty$. Prove that every solution of $\der{y}{x} + p(x)y = q(x)$ satisfies
+$y(x)\to b/a$.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch04-h2}
+Let $p,q$ be continuous and $T$-periodic with $\int_0^Tp(s)\,\mathrm{d}s\neq0$.
+Prove that $\der{y}{x} + p(x)y = q(x)$ has exactly one $T$-periodic solution.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch04-h3}
+(Fredholm alternative, first-order case.) In the setting of \cref{prob:ch04-h2}
+but with $\int_0^Tp = 0$, prove: if
+$\int_0^Te^{P(s)}q(s)\,\mathrm{d}s = 0$ (with $P(x) = \int_0^xp$) then
+\emph{every} solution is $T$-periodic; otherwise \emph{no} solution is.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch04-h4}
+Find all continuous $f:\R\to\R$ with
+$\displaystyle f(x) = x^2 + \int_0^x e^{x-t}f(t)\,\mathrm{d}t$ for all $x$. (First
+prove that any continuous solution is differentiable.)
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch04-h5}
+(Stability of linear equations under perturbation.) Let $p\ge 0$ on $[0,X]$,
+and let $y, z$ solve $y' + py = q_1$ and $z' + pz = q_2$ there. Prove
+\[
+  |y(x) - z(x)|\le |y(0) - z(0)| + \int_0^x|q_1(s) - q_2(s)|\,\mathrm{d}s
+  \qquad(0\le x\le X).
+\]
+Explain why this matters when $q_2$ is a measured (noisy) version of $q_1$.
+\end{problem}
+
+\subsection*{Putnam/olympiad-style}
+
+\begin{problem}{P}[classical]\label{prob:ch04-p1}
+Let $f:[0,\infty)\to\R$ be differentiable with $f(x) + f'(x)\to L$ as
+$x\to\infty$. Prove that $f(x)\to L$ and $f'(x)\to 0$.
+\end{problem}
+
+\begin{problem}{P}\label{prob:ch04-p2}
+Find all differentiable $f:\R\to\R$ with
+$\displaystyle f'(x) = f(x) + \int_0^1 f(t)\,\mathrm{d}t$ for all $x$.
+\end{problem}
+
+\begin{problem}{P}\label{prob:ch04-p3}
+Prove that every solution of $\der{y}{x} + (\sin x)\,y = 1$ is unbounded on
+$[0,\infty)$, that $y(x)/x$ has no limit as $x\to\infty$, and express
+$\limsup_{x\to\infty}y(x)/x$ as a definite integral.
+\end{problem}
+
+% ------------------------------------------------------------
+\section{Hints}\label{sec:ch04-hints}
+
+\paragraph{Warm-up and core.}
+\cref{prob:ch04-w4}: $\mu = \sec x$, and $\der{}{x}\tan x = \sec^2x$.
+\cref{prob:ch04-w5}: put in standard form and list the discontinuities of $p$
+and $q$.
+\cref{prob:ch04-c4}: continuity at $0$ restricts the constants.
+\cref{prob:ch04-c5}: here the forcing has the same exponential as the
+homogeneous solution.
+\cref{prob:ch04-c6}: try $T_p = \alpha + \beta t$.
+\cref{prob:ch04-c7}: the infusion contributes $r/V$ to $\der{C}{t}$.
+\cref{prob:ch04-c8}: compare \cref{ex:ch04-swap}.
+
+\hintfor{prob:ch04-h1}
+\begin{hintlevels}
+  \item Use \eqref{eq:ch04-formula} and analyze
+        $e^{-P(x)}\int_0^xe^{P(s)}q(s)\,\mathrm{d}s$.
+  \item Write it as a quotient $\frac{\int_0^xe^{P}q}{e^{P(x)}}$ in which the
+        denominator tends to $\infty$.
+  \item Apply L'H\^opital's rule (in its $\infty/\infty$ form, which needs only
+        that the denominator tends to $\infty$), or an $\varepsilon$-argument
+        splitting the integral at a large $x_1$.
+\end{hintlevels}
+
+\hintfor{prob:ch04-h2}
+\begin{hintlevels}
+  \item A solution is $T$-periodic iff $y(T) = y(0)$ (why is that enough?).
+  \item By \eqref{eq:ch04-formula}, $y(T) = e^{-P(T)}y(0) + c$ for a constant $c$.
+  \item This is a linear equation for $y(0)$ with coefficient
+        $1 - e^{-P(T)}\neq 0$. For ``enough'', check that $x\mapsto y(x+T)$
+        solves the same equation.
+\end{hintlevels}
+
+\hintfor{prob:ch04-h3}
+\begin{hintlevels}
+  \item Now $P(T) = 0$, so the map $y(0)\mapsto y(T)$ is a translation.
+  \item Compute the translation amount from \eqref{eq:ch04-formula}.
+  \item A translation has a fixed point iff it is the identity.
+\end{hintlevels}
+
+\hintfor{prob:ch04-h4}
+\begin{hintlevels}
+  \item Write $\int_0^xe^{x-t}f(t)\,\mathrm{d}t = e^x\int_0^xe^{-t}f(t)\,\mathrm{d}t$;
+        the right side is then differentiable, so $f$ is.
+  \item Differentiate and eliminate the integral using the original equation.
+  \item You get $f' - 2f = 2x - x^2$ with $f(0) = 0$. Check your final answer in
+        the \emph{integral} equation.
+\end{hintlevels}
+
+\hintfor{prob:ch04-h5}
+\begin{hintlevels}
+  \item $w = y - z$ solves $w' + pw = q_1 - q_2$.
+  \item Use \eqref{eq:ch04-formula} for $w$ and $e^{-P(x)+P(s)}\le 1$ for
+        $s\le x$.
+  \item Take absolute values inside the integral.
+\end{hintlevels}
+
+\hintfor{prob:ch04-p1}
+\begin{hintlevels}
+  \item Let $g = f + f'$; then $\der{}{x}(e^xf) = e^xg$.
+  \item $f(x) = \dfrac{f(0) + \int_0^xe^tg(t)\,\mathrm{d}t}{e^x}$.
+  \item Treat as in \cref{prob:ch04-h1}; $f'\to0$ then follows from
+        $f' = g - f$.
+\end{hintlevels}
+
+\hintfor{prob:ch04-p2}
+\begin{hintlevels}
+  \item The integral is an unknown \emph{constant} $c$.
+  \item Solve $f' - f = c$, then impose $c = \int_0^1f$.
+  \item You get one linear condition linking the two constants.
+\end{hintlevels}
+
+\hintfor{prob:ch04-p3}
+\begin{hintlevels}
+  \item $P(x) = 1 - \cos x$ is $2\pi$-periodic, and $\int_0^{2\pi}\sin = 0$:
+        this is the situation of \cref{prob:ch04-h3}.
+  \item Show $y(x + 2\pi) = y(x) + K$ for a positive constant $K$.
+  \item $y(x) = e^{-P(x)}\bigl(y_0 + \int_0^xe^{P}\bigr)$ and
+        $\frac1x\int_0^xe^{P}\to$ the average of $e^{P}$ over a period, while
+        $e^{-P(x)}$ keeps oscillating.
+\end{hintlevels}
+
+% ------------------------------------------------------------
+\section{Further reading}\label{sec:ch04-reading}
+
+\begin{itemize}
+  \item \textcite[\S2.1 and \S2.4]{BoyceDiPrima}: linear equations by
+        integrating factors, and the differences between linear and nonlinear
+        equations (existence intervals in particular).
+  \item \textcite[Lesson 11]{TenenbaumPollard}: the linear first-order
+        equation and the Bernoulli equation (which is Chapter~6 here).
+  \item \textcite[Ch.~2]{Simmons}: linear first-order equations among the
+        classical first-order methods.
+\end{itemize}
