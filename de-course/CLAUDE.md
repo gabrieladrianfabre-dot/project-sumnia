@@ -37,6 +37,16 @@ explain why it is wrong, and show a better approach. Direct, not harsh.
    *is* stating a conversion, e.g. `y' = \der{y}{x}`, in Ch 1 or when a switch is
    announced). When unclear, use Leibniz. Any operator shorthand (e.g. `D`) must
    be defined in terms of the notations above before first use.
+   **Settled decisions (student delegated these):**
+   - *PDE subscripts.* From Ch 25 on, subscript partials (`u_t`, `u_{xx}`,
+     `u_{xy}`) are a fourth notation, **PDE chapters only (Ch 25–27)**. Ch 25
+     introduces them with the conversion `u_t = \pder{u}{t}`. Leibniz `\pder`
+     stays in use for derivations where the chain rule or a change of variables
+     is the point (e.g. characteristics). Outside Ch 25–27, a subscript is never
+     a derivative.
+   - *Systems.* Ch 18–22 write time derivatives in Newton: `\dot{\mathbf{x}} =
+     A\mathbf{x}`, not `\der{\mathbf{x}}{t}`. There, subscripts (`x_1`, `x_2`)
+     mean vector components only.
 2. **Manual, handwritten-style worked solutions.** Every algebraic and calculus
    step, as on paper, with a short reason beside each step (`\why{...}`). No code
    output presented as a solution.

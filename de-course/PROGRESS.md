@@ -46,12 +46,12 @@
 
 None yet.
 
-## Open decisions (raised with the student)
+## Decisions log
 
-- PDE notation: subscript partials (`u_t`, `u_xx`) are standard in Strauss and
-  Evans but are not one of the three sanctioned notations. Pending decision.
-- Ch 18–22 systems: the outline writes `d**x**/dt = A**x**`, but rule 1 says
-  Newton for time derivatives in dynamical systems. Pending decision.
+- PDE notation: subscript partials allowed as a fourth notation in Ch 25–27
+  only, introduced with conversions in Ch 25 (see CLAUDE.md rule 1).
+- Systems (Ch 18–22): Newton dot, `\dot{\mathbf{x}} = A\mathbf{x}`;
+  subscripts there are components, never derivatives.
 
 ## Student weak spots
 
