@@ -1,0 +1,97 @@
+\documentclass[11pt, oneside, openany]{book}
+\input{preamble}
+
+% Uncomment to compile a single chapter quickly, e.g.:
+% \includeonly{chapters/ch01_what_is_a_de}
+
+\title{Differential Equations\\[0.5ex]
+  \large From First Principles to Dynamics, Numerics, and PDEs}
+\author{A rigorous self-study course}
+\date{}
+
+\begin{document}
+
+\frontmatter
+\maketitle
+
+\chapter*{How to Use This Course}
+\addcontentsline{toc}{chapter}{How to Use This Course}
+
+Each chapter opens with a \emph{diagnostic} of three prerequisite questions,
+then motivates, defines, proves, and works examples by hand, with a short
+reason beside every step. It ends with pitfalls, problems in four tiers
+(\textbf{W} warm-up, \textbf{C} core, \textbf{H} hard, \textbf{P}
+Putnam/olympiad-style), graded hints, and further reading.
+
+\paragraph{No answers.} This book contains no answer key and no final answers.
+Hard problems come with hints in three levels: the idea to try, the key setup,
+and the first major step. Use the smallest level that unblocks you.
+
+\paragraph{Notation.} Three derivative notations are used, each where it fits
+best: Leibniz ($\der{y}{x}$, $\pder{u}{t}$) by default, Lagrange ($y'$,
+$y''$) for compact algebra, and Newton ($\dot{x}$, $\ddot{x}$) for time
+derivatives in mechanics and dynamics. Chapter~1 introduces all three; each
+later switch is announced in a single line.
+
+\tableofcontents
+
+\mainmatter
+
+% ---------------------------------------------------------------
+%  Chapters are added one at a time (see CLAUDE.md, rule 7).
+% ---------------------------------------------------------------
+\setcounter{chapter}{-1}
+% \include{chapters/ch00_prereqs}
+
+% \part{Foundations}
+% \include{chapters/ch01_what_is_a_de}
+% \include{chapters/ch02_modeling}
+
+% \part{First-Order Equations}
+% \include{chapters/ch03_separable}
+% \include{chapters/ch04_linear_first_order}
+% \include{chapters/ch05_exact}
+% \include{chapters/ch06_substitutions}
+% \include{chapters/ch07_autonomous}
+% \include{chapters/ch08_existence_uniqueness}
+
+% \part{Linear Equations of Higher Order}
+% \include{chapters/ch09_structure}
+% \include{chapters/ch10_constant_coefficients}
+% \include{chapters/ch11_nonhomogeneous}
+% \include{chapters/ch12_cauchy_euler}
+% \include{chapters/ch13_oscillations}
+
+% \part{Transform Methods}
+% \include{chapters/ch14_laplace}
+
+% \part{Series Solutions}
+% \include{chapters/ch15_power_series}
+% \include{chapters/ch16_frobenius}
+% \include{chapters/ch17_bessel_legendre}
+
+% \part{Systems and Dynamics}
+% \include{chapters/ch18_linear_systems}
+% \include{chapters/ch19_nonhomogeneous_systems}
+% \include{chapters/ch20_nonlinear_systems}
+% \include{chapters/ch21_limit_cycles}
+% \include{chapters/ch22_bifurcations_chaos}
+
+% \part{Numerical Methods}
+% \include{chapters/ch23_one_step_methods}
+% \include{chapters/ch24_stability_stiffness}
+
+% \part{Introduction to PDEs}
+% \include{chapters/ch25_classification_fourier}
+% \include{chapters/ch26_separation_sturm_liouville}
+% \include{chapters/ch27_characteristics}
+
+% \part{Capstone}
+% \include{chapters/ch28_competition_problems}
+
+\backmatter
+% Enabled once refs.bib has its first verified entry (an empty
+% bibliography triggers a biblatex warning).
+% \printbibliography[heading=bibintoc]
+
+\end{document}

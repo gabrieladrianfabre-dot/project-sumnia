@@ -1,0 +1,157 @@
+% ============================================================
+%  preamble.tex — packages, macros, environments
+%  Differential Equations course. See CLAUDE.md for the rules.
+% ============================================================
+
+% ---------- Fonts and encoding ----------
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+
+% ---------- Page layout ----------
+\usepackage[a4paper, margin=1in, headheight=14pt]{geometry}
+\usepackage{microtype}
+
+% ---------- Mathematics ----------
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+% NOTE: the `physics` package is deliberately not loaded. Its \dv/\pdv would
+% compete with \der/\pder below, and it globally redefines \div, \Re, \Im.
+
+% ---------- Lists, tables ----------
+\usepackage{enumitem}
+\usepackage{booktabs}
+
+% ---------- Graphics ----------
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, calc, decorations.markings, positioning}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
+\usepackage[most]{tcolorbox}
+
+% ---------- Bibliography ----------
+\usepackage[backend=biber, style=alphabetic, maxbibnames=99]{biblatex}
+\addbibresource{refs.bib}
+
+% ---------- Hyperlinks (late), cleveref (after hyperref) ----------
+\usepackage[hidelinks, bookmarksnumbered]{hyperref}
+\usepackage[capitalise, nameinlink]{cleveref}
+
+% ============================================================
+%  Notation macros (Lagrange y', y'' and Newton \dot{x}, \ddot{x}
+%  need no macro).
+% ============================================================
+\newcommand{\der}[2]{\frac{\mathrm{d}#1}{\mathrm{d}#2}}
+\newcommand{\dern}[3]{\frac{\mathrm{d}^{#3}#1}{\mathrm{d}#2^{#3}}}
+\newcommand{\pder}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\pdern}[3]{\frac{\partial^{#3} #1}{\partial #2^{#3}}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Lap}{\mathcal{L}}
+\DeclareMathOperator{\W}{W}   % Wronskian
+
+% Step justification in worked examples, used as  ... &= ... \why{reason} \\
+\newcommand{\why}[1]{\qquad\text{\small\itshape(#1)}}
+
+% One-line announcement of a notation switch inside a chapter.
+\newcommand{\notation}[1]{%
+  \par\smallskip\noindent
+  {\small\sffamily\bfseries Notation\,$\rightarrow$\,}{\small\sffamily #1}%
+  \par\smallskip}
+
+% ============================================================
+%  Theorem-like environments (numbered within chapter, shared counter)
+% ============================================================
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% `proof` is provided by amsthm.
+
+\crefname{theorem}{Theorem}{Theorems}
+\crefname{lemma}{Lemma}{Lemmas}
+\crefname{corollary}{Corollary}{Corollaries}
+\crefname{proposition}{Proposition}{Propositions}
+\crefname{definition}{Definition}{Definitions}
+\crefname{example}{Example}{Examples}
+\crefname{remark}{Remark}{Remarks}
+
+% ============================================================
+%  Boxed environments
+% ============================================================
+\definecolor{pitfallcol}{RGB}{176,48,48}
+\definecolor{problemcol}{RGB}{40,80,140}
+\definecolor{diagcol}{RGB}{90,90,90}
+
+% --- pitfall: a common mistake and why it fails ---
+\newcounter{pitfall}[chapter]
+\renewcommand{\thepitfall}{\thechapter.\arabic{pitfall}}
+\crefname{pitfall}{Pitfall}{Pitfalls}
+\NewDocumentEnvironment{pitfall}{o}{%
+  \refstepcounter{pitfall}%
+  \begin{tcolorbox}[enhanced, breakable,
+      colback=pitfallcol!4, colframe=pitfallcol!75!black,
+      fonttitle=\bfseries\sffamily,
+      title={Pitfall \thepitfall\IfValueT{#1}{: #1}}]%
+}{\end{tcolorbox}}
+
+% --- problem: tiered (W, C, H, P), numbered per tier within chapter ---
+%   \begin{problem}{H}[Optional title or source]  ...  \end{problem}
+\newcounter{probW}[chapter] \renewcommand{\theprobW}{\thechapter.W\arabic{probW}}
+\newcounter{probC}[chapter] \renewcommand{\theprobC}{\thechapter.C\arabic{probC}}
+\newcounter{probH}[chapter] \renewcommand{\theprobH}{\thechapter.H\arabic{probH}}
+\newcounter{probP}[chapter] \renewcommand{\theprobP}{\thechapter.P\arabic{probP}}
+\crefname{probW}{Problem}{Problems}
+\crefname{probC}{Problem}{Problems}
+\crefname{probH}{Problem}{Problems}
+\crefname{probP}{Problem}{Problems}
+\NewDocumentEnvironment{problem}{m o}{%
+  \refstepcounter{prob#1}%
+  \begin{tcolorbox}[enhanced, breakable,
+      colback=white, colframe=problemcol,
+      boxrule=0.6pt, arc=1mm,
+      fonttitle=\bfseries\sffamily, coltitle=white,
+      title={Problem \csname theprob#1\endcsname\IfValueT{#2}{\ \textmd{(#2)}}}]%
+}{\end{tcolorbox}}
+
+% --- diagnostic: the 3 prerequisite questions opening each chapter ---
+\NewDocumentEnvironment{diagnostic}{}{%
+  \begin{tcolorbox}[enhanced, breakable,
+      colback=diagcol!5, colframe=diagcol,
+      fonttitle=\bfseries\sffamily,
+      title={Diagnostic (no answers given; if any of these stalls you, revisit the prerequisite first)}]%
+  \begin{enumerate}[label=\textbf{D\arabic*.}, leftmargin=*]%
+}{\end{enumerate}\end{tcolorbox}}
+
+% --- hints: graded levels for H and P problems ---
+%   \hintfor{prob:chNN-name}
+%   \begin{hintlevels} \item idea \item setup \item first major step \end{hintlevels}
+\newcommand{\hintfor}[1]{\par\medskip\noindent\textbf{Hints for \cref{#1}.}\par}
+\newlist{hintlevels}{enumerate}{1}
+\setlist[hintlevels]{label=\textsf{Level \arabic*.}, leftmargin=*, itemsep=2pt}
+
+% ============================================================
+%  pgfplots defaults for direction fields, phase lines, portraits
+% ============================================================
+\pgfplotsset{
+  deplot/.style={
+    axis lines=middle, grid=major, grid style={gray!20},
+    xlabel style={anchor=west}, ylabel style={anchor=south},
+    width=0.7\linewidth, height=0.5\linewidth,
+    every axis plot/.append style={thick}},
+  % Direction field: put in the axis options, then draw with
+  %   \addplot3[slopearrows, quiver={u={1/sqrt(1+(F)^2)}, v={(F)/sqrt(1+(F)^2)},
+  %     scale arrows=...}] (x,y,0);   where F is the right-hand side f(x,y).
+  % Arrows have unit length before scaling, so steep slopes are not stretched.
+  slopefield/.style={view={0}{90}, zmin=-1, zmax=1, samples=15},
+  slopearrows/.style={gray, thin, -{Stealth[length=2pt]}},
+}
