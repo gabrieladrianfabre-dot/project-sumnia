@@ -1,0 +1,706 @@
+% ============================================================
+%  Chapter 1 — What a differential equation is
+% ============================================================
+\chapter{What a Differential Equation Is}\label{ch:ch01}
+
+\begin{diagnostic}
+  \item Find $\der{y}{x}$ on the circle $x^2 + y^2 = 1$ by implicit
+        differentiation. At which points does your formula fail?
+  \item On which intervals is $x\mapsto \dfrac{1}{x-1}$ continuous? Is it
+        continuous ``on its domain''? Are those the same statement?
+  \item Compute $\displaystyle\der{}{x}\int_0^x e^{t^2}\,\mathrm{d}t$ and name
+        the theorem you used.
+\end{diagnostic}
+
+% ------------------------------------------------------------
+\section{Motivation: an equation whose unknown is a function}\label{sec:ch01-motivation}
+
+\emph{Which curves have the property that the tangent line at every point
+passes through the origin?}
+
+Let the curve be the graph of $y = y(x)$. The tangent line at $(x, y(x))$ has
+slope $\der{y}{x}$; it passes through the origin exactly when that slope
+equals the slope of the segment from the origin, $y/x$. So we need
+\begin{equation}\label{eq:ch01-motivation}
+  \der{y}{x} = \frac{y}{x}\qquad (x\neq 0).
+\end{equation}
+The unknown is not a number but a \emph{function}, and the equation relates
+the function to its own derivative. Lines $y = cx$ obviously work. Are there
+others? And on what set does ``work'' even mean anything, given that
+\eqref{eq:ch01-motivation} is meaningless at $x = 0$? Answering both questions
+precisely is the purpose of this chapter. (Chapter~3 shows that on each of the intervals $x>0$ and $x<0$ the
+solutions are exactly $y=cx$.)
+
+% ------------------------------------------------------------
+\section{Three notations for derivatives}\label{sec:ch01-notation}
+
+This course uses three notations, each where it is clearest.
+
+\begin{center}
+\begin{tabular}{@{}llll@{}}
+  \toprule
+  Name & First derivative & Higher derivatives & Use it for \\
+  \midrule
+  Leibniz  & $\der{y}{x}$ & $\dern{y}{x}{2}$, $\dern{y}{x}{n}$ & default; chain rule, substitutions \\
+  Lagrange & $y'$ & $y''$, $y^{(n)}$ & compact algebra \\
+  Newton   & $\dot{x}$ & $\ddot{x}$ & time derivatives in mechanics, dynamics \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The conversions, which are the only equations in this course allowed
+to mix notations, are
+\begin{equation}\label{eq:ch01-conversions}
+  y' = \der{y}{x},\quad y'' = \dern{y}{x}{2},\quad y^{(n)} = \dern{y}{x}{n};
+  \qquad
+  \dot{x} = \der{x}{t},\quad \ddot{x} = \dern{x}{t}{2}.
+\end{equation}
+Lagrange's prime hides the independent variable (is $y'$ a derivative in $x$
+or in $t$?), so it is used only when that variable is fixed and obvious.
+Newton's dot always means $\der{}{t}$ with $t$ time.
+
+\paragraph{Why Leibniz is the default.} Leibniz notation makes the chain rule
+look like cancellation, and that is \emph{exactly} what you need for
+substitutions. If $y$ depends on $x$ and $x$ on $t$,
+\begin{equation}\label{eq:ch01-chain}
+  \der{y}{t} = \der{y}{x}\,\der{x}{t},
+  \qquad\text{and, where } \der{y}{x}\neq 0,\qquad
+  \der{x}{y} = \frac{1}{\der{y}{x}} .
+\end{equation}
+These are theorems (chain rule; inverse function theorem in one variable), not
+fraction arithmetic, and the ``fraction'' intuition fails for second
+derivatives (\cref{pit:ch01-second-derivative}).
+
+\begin{example}[Notation doing work: velocity as a function of position]\label{ex:ch01-v-dvdx}
+\notation{Newton: $x(t)$ is a position at time $t$, $\dot{x}$ velocity,
+$\ddot{x}$ acceleration.}
+A mass on a spring obeys $\ddot{x} = -kx$ with $k>0$. Show that
+$\dot{x}^2 + kx^2$ is constant along every motion.
+
+\emph{Solution.} \notation{Leibniz, to expose the chain rule.} Write
+$v = \der{x}{t}$ and suppose that, on some time interval, $x$ is a
+differentiable invertible function of $t$, so $v$ can be regarded as a
+function of $x$. Then
+\begin{align*}
+  \dern{x}{t}{2} = \der{v}{t} &= \der{v}{x}\,\der{x}{t}
+     \why{chain rule \eqref{eq:ch01-chain}}\\
+  &= v\,\der{v}{x} = \der{}{x}\Bigl(\tfrac12 v^2\Bigr).
+\end{align*}
+The equation becomes $\der{}{x}\bigl(\tfrac12 v^2\bigr) = -kx = \der{}{x}\bigl(-\tfrac12 kx^2\bigr)$,
+so $\tfrac12 v^2 + \tfrac12 kx^2$ has zero $x$-derivative and is constant.
+
+The invertibility assumption fails at turning points ($v = 0$). A cleaner
+proof avoids it: \notation{Newton again.}
+\begin{align*}
+  \der{}{t}\bigl(\dot{x}^2 + kx^2\bigr)
+  &= 2\dot{x}\ddot{x} + 2kx\dot{x} \why{chain rule in $t$}\\
+  &= 2\dot{x}(\ddot{x} + kx) = 0 \why{the equation of motion}.
+\end{align*}
+This is conservation of energy. The first computation is how you
+\emph{discover} the conserved quantity; the second is how you \emph{prove} it.
+\end{example}
+
+% ------------------------------------------------------------
+\section{Definitions and classification}\label{sec:ch01-defs}
+
+\begin{definition}[Ordinary differential equation]\label{def:ch01-ode}
+An \emph{ordinary differential equation (ODE) of order $n$} for an unknown
+function $y$ of one variable $x$ is an equation
+\begin{equation}\label{eq:ch01-general-ode}
+  F\Bigl(x,\, y,\, \der{y}{x},\, \dots,\, \dern{y}{x}{n}\Bigr) = 0
+\end{equation}
+in which $\dern{y}{x}{n}$ actually appears. It is in \emph{normal form} if it
+is solved for the highest derivative:
+$\dern{y}{x}{n} = f\bigl(x, y, \der{y}{x}, \dots, \dern{y}{x}{n-1}\bigr)$.
+A \emph{partial differential equation (PDE)} involves an unknown function of
+two or more variables and its partial derivatives, e.g.\ the heat equation
+$\pder{u}{t} = \pdern{u}{x}{2}$.
+\end{definition}
+
+\begin{definition}[Linear]\label{def:ch01-linear}
+An $n$th-order ODE is \emph{linear} if it can be written
+\begin{equation}\label{eq:ch01-linear}
+  a_n(x)\dern{y}{x}{n} + a_{n-1}(x)\dern{y}{x}{n-1} + \dots
+  + a_1(x)\der{y}{x} + a_0(x)\,y = g(x),
+\end{equation}
+with coefficients depending on $x$ only. It is \emph{homogeneous} if
+$g\equiv 0$. Otherwise the equation is \emph{nonlinear}.
+\end{definition}
+
+Linearity is about the \emph{unknown} $y$ and its derivatives: they may appear
+only to the first power, not multiplied together, and not inside other
+functions. The independent variable $x$ may appear any way it likes.
+
+\begin{definition}[Autonomous]\label{def:ch01-autonomous}
+A first-order equation $\der{y}{x} = f(x,y)$ is \emph{autonomous} if $f$ does
+not depend on $x$: $\der{y}{x} = f(y)$. (Chapter~7 is devoted to these.)
+\end{definition}
+
+\begin{remark}[On ``degree'']\label{rem:ch01-degree}
+Older texts define the \emph{degree} of an ODE as the power of the highest
+derivative when the equation is a polynomial in the derivatives; e.g.\
+$\bigl(\dern{y}{x}{2}\bigr)^3 + \der{y}{x} = x$ has order $2$, degree $3$. The
+notion is undefined for equations like $\dern{y}{x}{2} = \sin\bigl(\der{y}{x}\bigr)$
+and plays no role in the theory; we mention it only so that you recognize it.
+\end{remark}
+
+\begin{example}[Classification]\label{ex:ch01-classify}
+\begin{center}
+\begin{tabular}{@{}lccc@{}}
+  \toprule
+  Equation & Order & Linear? & Note \\
+  \midrule
+  $\der{y}{x} = x^2y + \sin x$ & 1 & yes & $x^2$, $\sin x$ are allowed \\
+  $\der{y}{x} = \sin y$ & 1 & no & $y$ inside $\sin$; autonomous \\
+  $\dern{y}{x}{2} + y\der{y}{x} = 0$ & 2 & no & product $y\cdot y'$ \\
+  $x^2\dern{y}{x}{2} + x\der{y}{x} + (x^2-4)y = 0$ & 2 & yes & homogeneous \\
+  $\bigl(\der{y}{x}\bigr)^2 = 4y$ & 1 & no & degree 2 \\
+  $\pder{u}{t} + u\pder{u}{x} = 0$ & 1 & no & a PDE (Burgers, Ch.~27) \\
+  \bottomrule
+\end{tabular}
+\end{center}
+\end{example}
+
+\subsection{What a solution is}
+
+\begin{definition}[Solution]\label{def:ch01-solution}
+A \emph{solution} of \eqref{eq:ch01-general-ode} is a function $\varphi$
+defined on an \emph{open interval} $I$, $n$ times differentiable on $I$, such
+that
+$F\bigl(x,\varphi(x),\varphi'(x),\dots,\varphi^{(n)}(x)\bigr) = 0$ for
+\emph{every} $x\in I$. The interval is part of the solution.
+\end{definition}
+
+\noindent Why an interval and not an arbitrary set? Because on a set with gaps
+the derivative carries no information across the gap, and every uniqueness
+statement in this course would be false (\cref{ex:ch01-interval}).
+
+The simplest ODE, $\der{y}{x} = g(x)$, already shows the role of the interval.
+
+\begin{theorem}[Solutions of $\der{y}{x} = g(x)$]\label{thm:ch01-antiderivative}
+Let $g$ be continuous on an open interval $I$ and $x_0\in I$. Then the
+solutions of $\der{y}{x} = g(x)$ on $I$ are exactly the functions
+\[
+  y(x) = \int_{x_0}^{x} g(s)\,\mathrm{d}s + C,\qquad C\in\R .
+\]
+\end{theorem}
+\begin{proof}
+By the fundamental theorem of calculus, $G(x) = \int_{x_0}^x g(s)\,\mathrm{d}s$
+satisfies $G' = g$ on $I$, so each $G + C$ is a solution. Conversely let $y$ be
+any solution and put $h = y - G$; then $h' = 0$ on $I$. For any $a<b$ in $I$,
+the mean value theorem gives $\xi\in(a,b)$ with
+$h(b) - h(a) = h'(\xi)(b-a) = 0$. Hence $h$ is constant on $I$, i.e.
+$y = G + C$. The proof used that $[a,b]\subset I$ for all $a<b$ in $I$, which
+is exactly where ``interval'' is needed.
+\end{proof}
+
+\begin{example}[Needs care: the interval matters]\label{ex:ch01-interval}
+The function $y = 1/(x+1)$ satisfies $\der{y}{x} = -y^2$, since
+$\der{}{x}(x+1)^{-1} = -(x+1)^{-2}$. It is defined on $\R\setminus\{-1\}$, but
+that set is not an interval. It gives \emph{two} solutions, one on
+$(-1,\infty)$ and one on $(-\infty,-1)$. The initial condition $y(0) = 1$
+selects the first, and its \emph{maximal} interval is $(-1,\infty)$: the
+solution through $(0,1)$ cannot be continued past $x=-1$, where it blows up.
+Nothing in the equation $\der{y}{x}=-y^2$ (whose right side is perfectly
+smooth) warns you of this. The interval of a solution is not read off from
+the equation; it depends on the initial data.
+\end{example}
+
+\subsection{Explicit and implicit solutions}
+
+A solution $y = \varphi(x)$ given by a formula is \emph{explicit}. Often we
+can only find a relation $G(x,y) = 0$.
+
+\begin{proposition}[When a relation is an implicit solution]\label{prop:ch01-implicit}
+Let $G$ have continuous partial derivatives, let $G(x_0,y_0) = 0$ and
+$\pder{G}{y}(x_0,y_0)\neq 0$, and suppose that
+\[
+  \pder{G}{x}(x,y) + \pder{G}{y}(x,y)\,f(x,y) = 0
+  \qquad\text{whenever } G(x,y) = 0 \text{ (near $(x_0,y_0)$)}.
+\]
+Then the function $\varphi$ given by the implicit function theorem
+(\cref{thm:ch00-ift}) is a solution of $\der{y}{x} = f(x,y)$ on an interval
+containing $x_0$, with $\varphi(x_0) = y_0$.
+\end{proposition}
+\begin{proof}
+\Cref{thm:ch00-ift} gives $\varphi$ on an open interval $I\ni x_0$ with
+$G(x,\varphi(x)) = 0$ and $\pder{G}{y}(x,\varphi(x))\neq 0$ (shrinking $I$ if
+needed, by continuity), and
+$\varphi'(x) = -\pder{G}{x}\big/\pder{G}{y}$ evaluated at $(x,\varphi(x))$. By
+hypothesis this ratio equals $f(x,\varphi(x))$.
+\end{proof}
+
+\begin{example}[An implicit solution and its two explicit pieces]\label{ex:ch01-circle}
+Show that $x^2 + y^2 = 4$ is an implicit solution of $\der{y}{x} = -\dfrac{x}{y}$,
+and find the explicit solutions it contains.
+
+\emph{Solution.} With $G = x^2 + y^2 - 4$: $\pder{G}{x} + \pder{G}{y}\cdot\bigl(-\tfrac{x}{y}\bigr)
+= 2x - 2y\cdot\tfrac{x}{y} = 0$ wherever $y\neq 0$. By
+\cref{prop:ch01-implicit}, near every point of the circle with $y\neq 0$ the
+circle is the graph of a solution. Explicitly:
+\[
+  \varphi_+(x) = \sqrt{4 - x^2},\qquad \varphi_-(x) = -\sqrt{4-x^2},
+  \qquad x\in(-2,2).
+\]
+The circle as a whole is not the graph of any function, and at $(\pm 2, 0)$ the
+right side $-x/y$ is undefined. One relation, two solutions.
+\end{example}
+
+\subsection{General, particular, and singular solutions}
+
+\begin{definition}\label{def:ch01-general}
+A family of solutions $y = \varphi(x; c_1,\dots,c_n)$ of an $n$th-order
+equation depending on $n$ independent constants is called an \emph{$n$-parameter
+family} or, loosely, a \emph{general solution}. Fixing the constants gives a
+\emph{particular solution}. A solution that is not obtained from the family
+for any choice of the constants is a \emph{singular solution}.
+\end{definition}
+
+The phrase ``general solution'' is dangerous: it suggests the family contains
+\emph{all} solutions, and for nonlinear equations it often does not. For linear
+equations with continuous coefficients it does, but that is a theorem
+(Chapter~9), not a definition.
+
+\begin{example}[Needs care: a family that misses solutions]\label{ex:ch01-cube}
+We use the real cube root, so $y^{2/3} = \bigl(y^{1/3}\bigr)^2 \ge 0$ for all
+real $y$. The family $y = (x - c)^3$ solves $\der{y}{x} = 3y^{2/3}$ on all of
+$\R$:
+\begin{align*}
+  \der{}{x}(x-c)^3 &= 3(x-c)^2 \why{power rule}\\
+  3\bigl((x-c)^3\bigr)^{2/3} &= 3(x-c)^2 \why{real cube root of a cube}.
+\end{align*}
+But $y\equiv 0$ is also a solution and is not in the family for any $c$. Worse,
+the initial value problem $y(0) = 0$ has infinitely many solutions: $y\equiv 0$,
+$y = x^3$, and, for any $b>0$,
+\[
+  y = \begin{cases} 0, & x\le b,\\ (x-b)^3, & x> b.\end{cases}
+\]
+(This is differentiable at $x = b$: both one-sided derivatives are $0$.)
+Chapter~8 identifies what goes wrong: $3y^{2/3}$ is not Lipschitz at $y=0$.
+\end{example}
+
+\begin{example}[Clairaut's equation and an envelope]\label{ex:ch01-clairaut}
+Find solutions of $y = x\der{y}{x} + \Bigl(\der{y}{x}\Bigr)^2$.
+
+\emph{Solution.} \notation{Write $p = \der{y}{x}$ for brevity (a name for a
+Leibniz derivative, not a new notation).} The equation reads $y = xp + p^2$.
+Differentiate both sides in $x$, using $\der{y}{x} = p$:
+\begin{align*}
+  p &= p + x\der{p}{x} + 2p\der{p}{x} \why{product and chain rules}\\
+  0 &= (x + 2p)\der{p}{x} .
+\end{align*}
+\emph{Case 1:} $\der{p}{x} = 0$ on an interval, so $p = c$ is constant and
+$y = cx + c^2$: a one-parameter family of lines.
+\emph{Case 2:} $x + 2p = 0$, so $p = -x/2$ and $y = x(-\tfrac{x}{2}) + \tfrac{x^2}{4}
+= -\tfrac{x^2}{4}$. Check: $\der{y}{x} = -\tfrac{x}{2}$, and
+$x\bigl(-\tfrac x2\bigr) + \tfrac{x^2}{4} = -\tfrac{x^2}{4} = y$. \checkmark
+
+The parabola $y = -x^2/4$ is not a line, so it is a \emph{singular solution}.
+Geometrically it is the \emph{envelope} of the family: each line
+$y = cx + c^2$ is tangent to it at $x = -2c$ (\cref{fig:ch01-clairaut}). Through
+each point \emph{above} the parabola pass two lines of the family (the
+quadratic $c^2 + cx_0 - y_0 = 0$ in $c$ has discriminant $x_0^2 + 4y_0 > 0$),
+so prescribing $y(x_0) = y_0$ there does not determine the solution.
+\end{example}
+
+\begin{figure}[ht]
+  \centering
+  \input{figures/ch01_clairaut}
+  \caption{The lines $y = cx + c^2$ for $c\in\{-2,-1,-\tfrac12,0,\tfrac12,1,2\}$
+  and their envelope $y = -x^2/4$ (thick), a singular solution of
+  $y = x\der{y}{x} + (\der{y}{x})^2$.}
+  \label{fig:ch01-clairaut}
+\end{figure}
+
+\subsection{Initial value problems}
+
+\begin{definition}[Initial value problem]\label{def:ch01-ivp}
+An \emph{initial value problem (IVP)} for an $n$th-order equation in normal
+form consists of the equation together with $n$ conditions at one point
+$x_0$:
+\[
+  y(x_0) = y_0,\quad \der{y}{x}(x_0) = y_1,\quad\dots,\quad
+  \dern{y}{x}{n-1}(x_0) = y_{n-1}.
+\]
+A solution of the IVP is a solution on an interval containing $x_0$ that
+satisfies these conditions.
+\end{definition}
+
+The count $n$ is not arbitrary: for $\dern{y}{x}{2} = -y$, knowing $y(0)$ alone
+does not determine $y$ (both $\cos x$ and $\cos x + \sin x$ have $y(0) = 1$).
+Chapter~8 proves that, under mild hypotheses, $n$ conditions determine exactly
+one solution.
+
+\begin{example}[Fitting a family to initial data]\label{ex:ch01-ivp}
+\notation{Lagrange, for the algebra of fitting constants.}
+Verify that $y = c_1e^{x} + c_2e^{-2x}$ solves $y'' + y' - 2y = 0$ for all
+constants, then solve the IVP $y(0) = 1$, $y'(0) = 0$.
+
+\emph{Solution.}
+\begin{align*}
+  y' &= c_1e^x - 2c_2e^{-2x},\qquad y'' = c_1e^x + 4c_2e^{-2x}\\
+  y'' + y' - 2y &= c_1e^x(1 + 1 - 2) + c_2e^{-2x}(4 - 2 - 2) = 0. \why{collect terms}
+\end{align*}
+Initial conditions:
+\begin{align*}
+  y(0) = c_1 + c_2 &= 1,\\
+  y'(0) = c_1 - 2c_2 &= 0 \;\Rightarrow\; c_1 = 2c_2 \why{second equation}\\
+  3c_2 &= 1 \;\Rightarrow\; c_2 = \tfrac13,\ c_1 = \tfrac23 \why{substitute}.
+\end{align*}
+So $y = \tfrac23e^x + \tfrac13e^{-2x}$ on $\R$. Whether this is the
+\emph{only} solution is a separate question (yes, by Chapter~9).
+\end{example}
+
+\subsection{Reduction to a first-order system}
+
+\begin{proposition}\label{prop:ch01-system}
+The $n$th-order normal-form equation
+$\dern{y}{x}{n} = f\bigl(x,y,\der{y}{x},\dots,\dern{y}{x}{n-1}\bigr)$ is
+equivalent to the first-order system for $(u_1,\dots,u_n)$:
+\[
+  \der{u_1}{x} = u_2,\quad \der{u_2}{x} = u_3,\quad\dots,\quad
+  \der{u_{n-1}}{x} = u_n,\quad \der{u_n}{x} = f(x,u_1,\dots,u_n),
+\]
+in the sense that $y$ solves the equation iff $(y, \der{y}{x},\dots,\dern{y}{x}{n-1})$
+solves the system, and every solution of the system arises this way.
+\end{proposition}
+\begin{proof}
+If $y$ solves the equation, set $u_k = \dern{y}{x}{k-1}$; the first $n-1$
+system equations hold by definition and the last is the ODE. Conversely, if
+$(u_1,\dots,u_n)$ solves the system, induction on $k$ gives
+$u_k = \dern{u_1}{x}{k-1}$, and the last equation says $u_1$ solves the ODE.
+\end{proof}
+
+This is why first-order theory (Chapters 3--8) and first-order numerical
+methods (Chapter~23) cover equations of every order.
+
+% ------------------------------------------------------------
+\section{Direction fields}\label{sec:ch01-direction-fields}
+
+\begin{definition}[Direction field; isocline]\label{def:ch01-field}
+The \emph{direction field} (slope field) of $\der{y}{x} = f(x,y)$ attaches to
+each point $(x,y)$ of the domain of $f$ a short segment of slope $f(x,y)$. An
+\emph{isocline} is a level set $f(x,y) = m$: a curve along which every segment
+has the same slope $m$.
+\end{definition}
+
+A differentiable $\varphi$ solves $\der{y}{x} = f(x,y)$ on $I$ iff, at every
+point of its graph, the graph is tangent to the segment there: that is just
+\cref{def:ch01-solution} read geometrically. So the field shows you the
+solutions before you have a formula, and sometimes when no formula exists.
+
+\begin{example}[Reading a field]\label{ex:ch01-field}
+Sketch the direction field of $\der{y}{x} = x - y$ and predict the long-run
+behaviour of all solutions.
+
+\emph{Solution.} The isoclines $x - y = m$ are the lines $y = x - m$.
+\begin{itemize}
+  \item On $y = x$ ($m = 0$) the segments are horizontal.
+  \item On $y = x - 1$ ($m=1$) the segments have slope $1$, the same as the
+        isocline itself. So the line $y = x - 1$ is \emph{itself} a solution.
+        Check: $\der{}{x}(x-1) = 1$ and $x - (x-1) = 1$. \checkmark
+  \item Let $d = y - (x-1)$ be the vertical distance from a solution to that
+        line. Then $\der{d}{x} = \der{y}{x} - 1 = (x - y) - 1 = -d$. So above
+        the line ($d>0$) the distance decreases, and below it ($d<0$) the
+        distance increases toward $0$: solutions are pulled toward the line
+        from both sides.
+\end{itemize}
+Prediction: every solution approaches the line $y = x - 1$ as
+$x\to\infty$. (The equation $\der{d}{x} = -d$ even suggests $d = Ce^{-x}$.) Chapter~4 confirms it with the formula
+$y = x - 1 + Ce^{-x}$; \cref{fig:ch01-field} plots the field and five of
+these curves.
+\end{example}
+
+\begin{figure}[ht]
+  \centering
+  \input{figures/ch01_field_x_minus_y}
+  \caption{Direction field of $\der{y}{x} = x - y$ with the solutions
+  $y = x - 1 + Ce^{-x}$, $C\in\{-2,-1,0,1,2\}$. The straight solution
+  ($C = 0$) is dashed.}
+  \label{fig:ch01-field}
+\end{figure}
+
+% ------------------------------------------------------------
+\section{Pitfalls}\label{sec:ch01-pitfalls}
+
+\begin{pitfall}[A solution without an interval]\label{pit:ch01-no-interval}
+``$y = 1/(x+1)$ is the solution of $\der{y}{x} = -y^2$, $y(0) = 1$'' is
+incomplete: the solution is that formula \emph{on $(-1,\infty)$}. The piece on
+$(-\infty,-1)$ is a different solution and has nothing to do with the initial
+condition (\cref{ex:ch01-interval}).
+\end{pitfall}
+
+\begin{pitfall}[Second derivatives are not fractions]\label{pit:ch01-second-derivative}
+From $\der{x}{y} = 1/\der{y}{x}$ it does \emph{not} follow that
+$\dern{x}{y}{2} = 1/\dern{y}{x}{2}$. Test with $y = x^2$ on $x>0$:
+$x = y^{1/2}$, $\dern{x}{y}{2} = -\tfrac14 y^{-3/2}$, while
+$1/\dern{y}{x}{2} = \tfrac12$. The correct formula (differentiate
+$\der{x}{y} = 1/\der{y}{x}$ with respect to $y$ using the chain rule) is
+$\dern{x}{y}{2} = -\dern{y}{x}{2}\Big/\bigl(\der{y}{x}\bigr)^3$.
+\end{pitfall}
+
+\begin{pitfall}[``The general solution contains every solution'']\label{pit:ch01-general}
+False for nonlinear equations: $y\equiv0$ is missing from $y = (x-c)^3$
+(\cref{ex:ch01-cube}), and $y = -x^2/4$ is missing from $y = cx+c^2$
+(\cref{ex:ch01-clairaut}). When you derive a family, track every step at which
+you divided by something or assumed something was nonzero.
+\end{pitfall}
+
+\begin{pitfall}[Judging linearity by the $x$-dependence]\label{pit:ch01-linearity}
+$\der{y}{x} = e^{x^2}y + \ln x$ is linear; $\der{y}{x} = y^2$ is not.
+Linearity concerns how $y$ and its derivatives enter, never how $x$ enters.
+\end{pitfall}
+
+\begin{pitfall}[Too few initial conditions]\label{pit:ch01-ics}
+A second-order IVP needs $y(x_0)$ \emph{and} $\der{y}{x}(x_0)$ at the
+\emph{same} point. Conditions at two different points, such as $y(0) = 0$,
+$y(\pi) = 0$, define a \emph{boundary value problem}, which may have no
+solution or infinitely many ($y = c\sin x$ solves $\dern{y}{x}{2} = -y$ with
+those conditions for every $c$).
+\end{pitfall}
+
+% ------------------------------------------------------------
+\section{Problems}\label{sec:ch01-problems}
+
+\subsection*{Warm-up}
+
+\begin{problem}{W}\label{prob:ch01-w1}
+For each equation give the order, whether it is linear, and (if linear)
+whether it is homogeneous:
+(a) $\der{y}{x} + x^3y = \cos x$;
+(b) $\dern{y}{x}{2} = \sqrt{1 + \bigl(\der{y}{x}\bigr)^2}$;
+(c) $\ddot{x} + \sin x = 0$;
+(d) $x\dern{y}{x}{3} - y = 0$;
+(e) $y\der{y}{x} = x$.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch01-w2}
+Verify that $y = xe^x$ solves $y'' - 2y' + y = 0$ on $\R$.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch01-w3}
+Find all real $r$ for which $y = e^{rx}$ solves $y'' + y' - 6y = 0$.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch01-w4}
+Solve the IVP $\der{y}{x} = \cos x$, $y(\pi) = 1$, and state the interval.
+Which theorem guarantees there is no other solution?
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch01-w5}
+Write $\dern{y}{x}{3} + x\der{y}{x} = e^x$ as a first-order system
+(\cref{prop:ch01-system}).
+\end{problem}
+
+\subsection*{Core}
+
+\begin{problem}{C}\label{prob:ch01-c1}
+Find all real $m$ such that $y = x^m$ solves $x^2y'' - 2xy' + 2y = 0$ on
+$x>0$. Then find the member of the two-parameter family formed from them that
+satisfies $y(1) = 3$, $y'(1) = 5$.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch01-c2}
+Find a solution of $\der{y}{x} = y^2$, $y(0) = 2$, of the form $y = a/(b - x)$,
+and determine its maximal interval. Explain why the same formula for
+$x > \tfrac12$ is not part of this solution.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch01-c3}
+Show that $x^2 - xy + y^2 = 3$ is an implicit solution of
+$(2y - x)\der{y}{x} = y - 2x$. Find the explicit solution through $(1,2)$ and
+the largest open interval on which it is defined and solves the equation.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch01-c4}
+For $\der{y}{x} = y - x$: find the isoclines, find the one solution that is a
+straight line, and sketch the direction field by hand, with several solution
+curves. Describe the behaviour of solutions above and below the line as
+$x\to\infty$.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch01-c5}
+Consider $y = x\der{y}{x} + \Bigl(\der{y}{x}\Bigr)^{-1}$ on $x>0$. Find the
+family of line solutions, and a singular solution; show that the singular
+solution is not in the family and that it is tangent to every line of the
+family with positive slope.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch01-c6}
+(Real cube roots, as in \cref{ex:ch01-cube}.) Construct a solution of
+$\der{y}{x} = 3y^{2/3}$ on $\R$ that is zero exactly on $[-1,2]$. Prove that
+your function is differentiable at $x=-1$ and $x = 2$.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch01-c7}
+A particle moves on the half-line $x>0$ according to $\ddot{x} = -1/x^2$.
+Using the method of \cref{ex:ch01-v-dvdx}, find a conserved quantity, then prove
+it is conserved by differentiating in $t$.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch01-c8}
+Find a first-order differential equation, not containing $c$, satisfied by
+every circle $(x - c)^2 + y^2 = c^2$ (circles through the origin centred on the
+$x$-axis). Where is your equation undefined, and why?
+\end{problem}
+
+\subsection*{Hard}
+
+\begin{problem}{H}\label{prob:ch01-h1}
+Using only the product rule and \cref{thm:ch01-antiderivative}, prove that every
+twice-differentiable solution of $\dern{y}{x}{2} = y$ on $\R$ has the form
+$y = c_1e^x + c_2e^{-x}$.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch01-h2}
+(General Clairaut equation.) Let $g$ be twice differentiable with $g''\neq 0$,
+and consider $y = xp + g(p)$ with $p = \der{y}{x}$.
+\begin{enumerate}[label=(\alph*)]
+  \item Show each line $y = cx + g(c)$ is a solution.
+  \item Show the parametric curve $x = -g'(s)$, $y = g(s) - sg'(s)$ is the
+        graph of a solution (near any parameter value), and that at parameter
+        $s$ it is tangent to the line with $c = s$.
+\end{enumerate}
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch01-h3}
+Describe \emph{all} solutions of the IVP $\der{y}{x} = 3y^{2/3}$, $y(0) = 0$,
+on $\R$ (real cube root), and prove your list is complete.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch01-h4}
+Let $f$ be continuous on $\R^2$ and $\varphi$ a solution of
+$\der{y}{x} = f(x,y)$ on an interval $I$. Prove:
+\begin{enumerate}[label=(\alph*)]
+  \item if $f(x,-y) = -f(x,y)$ for all $x,y$, then $-\varphi$ is a solution on $I$;
+  \item if $f(-x,y) = -f(x,y)$, then $x\mapsto\varphi(-x)$ is a solution on $-I$;
+  \item if $f(x,y+1) = f(x,y)$, then $\varphi + 1$ is a solution on $I$.
+\end{enumerate}
+Interpret each as a symmetry of the direction field, and decide which apply to
+$\der{y}{x} = x\sin(\pi y)$.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch01-h5}
+Let $f$ be continuous and $F' = f$. Show that every solution of
+$\dern{y}{x}{2} = f(y)$ satisfies $\tfrac12\bigl(\der{y}{x}\bigr)^2 - F(y) = E$
+for a constant $E$. Use this to find the solution of
+$\dern{y}{x}{2} = 2y^3$, $y(0) = 1$, $\der{y}{x}(0) = 1$, and its maximal
+interval. At one step you must choose a sign: justify the choice.
+\end{problem}
+
+\subsection*{Putnam/olympiad-style}
+
+\begin{problem}{P}[Putnam 2010 A2, \cite{Putnam2010}]\label{prob:ch01-p1}
+Find all differentiable functions $f:\R\to\R$ such that
+\[
+  f'(x) = \frac{f(x+n) - f(x)}{n}
+\]
+for all real numbers $x$ and all positive integers $n$.
+\end{problem}
+
+\begin{problem}{P}\label{prob:ch01-p2}
+Find all differentiable $f:\R\to\R$ with $f'(x) = f(1 - x)$ for all $x$.
+\end{problem}
+
+\begin{problem}{P}\label{prob:ch01-p3}
+Prove that there is no differentiable $f:\R\to\R$ with
+$f'(x)\ge 1 + f(x)^2$ for all real $x$.
+\end{problem}
+
+% ------------------------------------------------------------
+\section{Hints}\label{sec:ch01-hints}
+
+\paragraph{Warm-up and core.}
+\cref{prob:ch01-w4}: \cref{thm:ch01-antiderivative}.
+\cref{prob:ch01-c2}: the maximal interval must contain $0$ and avoid the blow-up
+point.
+\cref{prob:ch01-c3}: solve the quadratic for $y$ and use the point $(1,2)$ to
+pick the root; the interval ends where $\pder{G}{y} = 0$.
+\cref{prob:ch01-c5}: imitate \cref{ex:ch01-clairaut}.
+\cref{prob:ch01-c8}: eliminate $c$ between the equation of the circle and its
+derivative.
+
+\hintfor{prob:ch01-h1}
+\begin{hintlevels}
+  \item Factor the operator: introduce $u = \der{y}{x} - y$.
+  \item Show $\der{u}{x} = -u$, then that $\der{}{x}\bigl(e^{x}u\bigr) = 0$.
+  \item Conclude $u = Ae^{-x}$, and then apply the same trick to
+        $\der{}{x}\bigl(e^{-x}y\bigr)$.
+\end{hintlevels}
+
+\hintfor{prob:ch01-h2}
+\begin{hintlevels}
+  \item For (b), compute $\der{y}{x}$ along the curve as a ratio of
+        $s$-derivatives.
+  \item $\der{x}{s} = -g''(s)\neq 0$, so $x$ is a local parameter (why does that
+        make the curve a graph?).
+  \item The ratio simplifies to $s$; now check $y - xs = g(s)$.
+\end{hintlevels}
+
+\hintfor{prob:ch01-h3}
+\begin{hintlevels}
+  \item On any interval where $y\neq 0$, compute $\der{}{x}\bigl(y^{1/3}\bigr)$.
+  \item Let $a = \inf\{x\le 0 : y = 0 \text{ on } [x,0]\}$ and similarly $b$ to
+        the right. What is $y$ on $(b,\infty)$ if $b<\infty$?
+  \item On $(b,\infty)$, $y^{1/3} = x - c$ for some $c$; continuity at $b$
+        pins $c$. Also rule out $y$ changing sign without passing through $0$.
+\end{hintlevels}
+
+\hintfor{prob:ch01-h4}
+\begin{hintlevels}
+  \item Differentiate each candidate with the chain rule.
+  \item In (b), $\der{}{x}\varphi(-x) = -\varphi'(-x)$; substitute the ODE at the
+        point $-x$.
+  \item For $x\sin(\pi y)$: test each hypothesis directly; each that holds is a
+        reflection or translation of the field.
+\end{hintlevels}
+
+\hintfor{prob:ch01-h5}
+\begin{hintlevels}
+  \item Differentiate $\tfrac12(y')^2 - F(y)$ with respect to $x$.
+  \item With $F(y) = \tfrac12y^4$ and the initial data, $E = 0$, so
+        $\bigl(\der{y}{x}\bigr)^2 = y^4$.
+  \item $\der{y}{x} = y^2$ or $-y^2$: which does the initial condition force,
+        and why can't the sign switch later (consider where $\der{y}{x}$ could
+        vanish)?
+\end{hintlevels}
+
+\hintfor{prob:ch01-p1}
+\begin{hintlevels}
+  \item Use $n=1$ and compare with another $n$; try to show $f'$ is periodic or
+        constant.
+  \item Set $g(x) = f(x+1) - f(x)$, which equals $f'(x)$ by $n=1$. What does
+        differentiating $g$ give?
+  \item Show $f'(x+1) = f'(x)$ and combine with the $n=2$ equation.
+\end{hintlevels}
+
+\hintfor{prob:ch01-p2}
+\begin{hintlevels}
+  \item The right side is differentiable, so $f'$ is; differentiate the equation.
+  \item You should reach $f'' = -f$; but not every solution of that works.
+  \item Write $f = A\cos x + B\sin x$ (justified by \cref{prob:ch01-h1}'s method
+        or Chapter 10) and substitute back into the \emph{original} equation.
+\end{hintlevels}
+
+\hintfor{prob:ch01-p3}
+\begin{hintlevels}
+  \item Divide by $1 + f^2$ and recognize a derivative.
+  \item $\der{}{x}\arctan f(x)\ge 1$.
+  \item Integrate over an interval of length greater than $\pi$.
+\end{hintlevels}
+
+% ------------------------------------------------------------
+\section{Further reading}\label{sec:ch01-reading}
+
+\begin{itemize}
+  \item \textcite[\S1.1--1.3]{BoyceDiPrima}: models, direction fields, and
+        classification.
+  \item \textcite[Ch.~1]{TenenbaumPollard}: an unusually careful treatment of
+        what a solution is, including implicit solutions and families of
+        curves.
+  % VERIFY: Tenenbaum & Pollard, Ch. 1 scope (basic concepts, families of curves).
+  \item \textcite[\S2.1]{Strogatz}: the geometric way of thinking about
+        $\dot x = f(x)$.
+  \item \textcite[Ch.~1]{Arnold}: direction fields and phase spaces, from the
+        geometric viewpoint used in Part VI.
+\end{itemize}

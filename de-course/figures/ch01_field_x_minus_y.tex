@@ -1,0 +1,15 @@
+% Direction field of dy/dx = x - y and solutions y = x - 1 + C e^{-x}.
+\begin{tikzpicture}
+\begin{axis}[deplot, slopefield, xmin=-2, xmax=3, ymin=-2, ymax=3,
+  domain=-2:3, y domain=-2:3, samples=16,
+  xlabel={$x$}, ylabel={$y$}]
+  \addplot3[slopearrows,
+    quiver={u={1/sqrt(1+(x-y)^2)}, v={(x-y)/sqrt(1+(x-y)^2)},
+            scale arrows=0.22}] (x,y,0);
+  \pgfplotsinvokeforeach{-2,-1,1,2}{
+    \addplot[blue, samples=120, domain=-2:3, restrict y to domain=-2.2:3.2]
+      {x - 1 + (#1)*exp(-x)};
+  }
+  \addplot[blue, dashed, samples=2, domain=-1:3] {x - 1};
+\end{axis}
+\end{tikzpicture}
