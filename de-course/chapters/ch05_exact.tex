@@ -1,0 +1,573 @@
+% ============================================================
+%  Chapter 5 — Exact equations and integrating factors
+% ============================================================
+\chapter{Exact Equations and Integrating Factors}\label{ch:ch05}
+
+\begin{diagnostic}
+  \item For $F(x,y) = x^2y + \sin(xy)$, compute $\pder{F}{x}$, $\pder{F}{y}$,
+        $\pder{}{y}\pder{F}{x}$ and $\pder{}{x}\pder{F}{y}$. What do you notice?
+  \item If $y = y(x)$ is differentiable, compute $\der{}{x}F(x,y(x))$ in terms of
+        the partial derivatives of $F$.
+  \item Evaluate $\displaystyle\der{}{y}\int_0^1 \sin(ty)\,\mathrm{d}t$ in two ways:
+        by computing the integral first, and by differentiating inside it.
+\end{diagnostic}
+
+% ------------------------------------------------------------
+\section{Motivation}\label{sec:ch05-motivation}
+
+Consider
+\begin{equation}\label{eq:ch05-motivation}
+  \der{y}{x} = -\frac{2xy + 1}{x^2 + 3y^2}.
+\end{equation}
+It is not separable and not linear. But look at $F(x,y) = x^2y + x + y^3$. Along
+any differentiable curve $y = y(x)$,
+\[
+  \der{}{x}F(x,y(x)) = \pder{F}{x} + \pder{F}{y}\der{y}{x}
+  = (2xy + 1) + (x^2 + 3y^2)\der{y}{x},
+\]
+which is zero exactly when $y$ solves \eqref{eq:ch05-motivation}. So the
+solution curves are the level curves $x^2y + x + y^3 = c$. The equation was
+secretly the statement ``$F$ is constant''. When does such an $F$ exist, how do
+we find it, and what if it does not exist but almost does? Those three
+questions are this chapter. The answer to the first is a statement about
+mixed partial derivatives, and, surprisingly, about the \emph{shape of the
+domain}.
+
+% ------------------------------------------------------------
+\section{Exact equations}\label{sec:ch05-exact}
+
+\notation{Leibniz and partial derivatives throughout: the structure of the
+differential $\mathrm{d}F = \pder{F}{x}\mathrm{d}x + \pder{F}{y}\mathrm{d}y$ is the
+whole point.}
+
+We write first-order equations symmetrically as
+\begin{equation}\label{eq:ch05-form}
+  M(x,y)\,\mathrm{d}x + N(x,y)\,\mathrm{d}y = 0,
+\end{equation}
+which means: a curve $y = y(x)$ is a solution if
+$M(x,y) + N(x,y)\der{y}{x} = 0$, and a curve $x = x(y)$ is a solution if
+$M\der{x}{y} + N = 0$. This form treats $x$ and $y$ equally, which is natural
+for level curves (a circle is not a graph over either axis).
+
+\begin{definition}[Exact]\label{def:ch05-exact}
+Let $M, N$ be continuous on an open set $D\subseteq\R^2$. Equation
+\eqref{eq:ch05-form} is \emph{exact on $D$} if there is a function $F$ with
+continuous first partial derivatives on $D$ (a \emph{potential}) such that
+\[
+  \pder{F}{x} = M,\qquad \pder{F}{y} = N\qquad\text{on } D .
+\]
+\end{definition}
+
+\begin{theorem}[Solutions of an exact equation]\label{thm:ch05-level}
+Suppose \eqref{eq:ch05-form} is exact on $D$ with potential $F$. A
+differentiable $\varphi$ on an interval $I$, with $(x,\varphi(x))\in D$, solves
+$M + N\der{y}{x} = 0$ iff $F(x,\varphi(x))$ is constant on $I$. Conversely, if
+$F(x_0,y_0) = c$ and $N(x_0,y_0)\neq 0$, the level set $F = c$ is, near
+$(x_0,y_0)$, the graph of a solution.
+\end{theorem}
+\begin{proof}
+By the chain rule, $\der{}{x}F(x,\varphi(x)) = M(x,\varphi) + N(x,\varphi)\varphi'(x)$.
+This vanishes on $I$ iff $\varphi$ is a solution, and a function with zero
+derivative on an interval is constant (\cref{thm:ch01-antiderivative}). The
+converse is \cref{prop:ch01-implicit} with $G = F - c$ (note
+$\pder{G}{y} = N\neq 0$ and $\pder{G}{x} + \pder{G}{y}\cdot(-M/N) = 0$).
+\end{proof}
+
+\subsection{The test for exactness}
+
+We need two theorems of multivariable calculus.
+
+\begin{theorem}[Symmetry of mixed partials]\label{thm:ch05-schwarz}
+If $F$ has continuous partial derivatives $\pder{F}{x}$, $\pder{F}{y}$,
+$\pder{}{y}\pder{F}{x}$ and $\pder{}{x}\pder{F}{y}$ on an open set, then
+$\pder{}{y}\pder{F}{x} = \pder{}{x}\pder{F}{y}$ there.
+\end{theorem}
+
+\begin{theorem}[Differentiation under the integral sign]\label{thm:ch05-leibniz}
+If $f$ and $\pder{f}{x}$ are continuous on $[a,b]\times[c,d]$, then
+$\displaystyle\der{}{x}\int_c^d f(x,t)\,\mathrm{d}t = \int_c^d\pder{f}{x}(x,t)\,\mathrm{d}t$
+for $a<x<b$.
+\end{theorem}
+\noindent Both proofs are deferred to \textcite[Ch.~9]{Rudin}.
+% VERIFY: Rudin 3rd ed. Thm 9.41 (mixed partials) and Thm 9.42 (differentiation under the integral sign).
+
+\begin{theorem}[Exactness test]\label{thm:ch05-test}
+Let $M, N$ have continuous first partial derivatives on an open rectangle
+$R = (a,b)\times(c,d)$. Then \eqref{eq:ch05-form} is exact on $R$ iff
+\begin{equation}\label{eq:ch05-test}
+  \pder{M}{y} = \pder{N}{x}\qquad\text{on } R .
+\end{equation}
+In that case, for any $(x_0,y_0)\in R$, a potential is
+\begin{equation}\label{eq:ch05-potential}
+  F(x,y) = \int_{x_0}^{x}M(s,y_0)\,\mathrm{d}s + \int_{y_0}^{y}N(x,t)\,\mathrm{d}t .
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+(\emph{Necessity.}) If $\pder{F}{x} = M$ and $\pder{F}{y} = N$, then the mixed
+partials of $F$ are $\pder{M}{y}$ and $\pder{N}{x}$, which are continuous, so
+they are equal by \cref{thm:ch05-schwarz}.
+
+(\emph{Sufficiency.}) Define $F$ by \eqref{eq:ch05-potential}; it is defined
+because every horizontal and vertical segment used lies in the rectangle.
+\begin{align*}
+  \pder{F}{y}(x,y) &= 0 + N(x,y)
+     \why{FTC in $y$; the first term does not depend on $y$}\\
+  \pder{F}{x}(x,y) &= M(x,y_0) + \int_{y_0}^{y}\pder{N}{x}(x,t)\,\mathrm{d}t
+     \why{FTC; \cref{thm:ch05-leibniz}}\\
+  &= M(x,y_0) + \int_{y_0}^{y}\pder{M}{t}(x,t)\,\mathrm{d}t
+     \why{hypothesis \eqref{eq:ch05-test}}\\
+  &= M(x,y_0) + \bigl(M(x,y) - M(x,y_0)\bigr) = M(x,y)
+     \why{FTC in $t$}.
+\end{align*}
+Both partials are continuous, so $F$ is a potential.
+\end{proof}
+
+The proof used the rectangle in one place: to integrate along the segments from
+$(x_0,y_0)$ to $(x,y_0)$ to $(x,y)$, they must stay in the domain. On domains
+with holes the test can pass and exactness still fail.
+
+\begin{example}[Needs care: the test passes, exactness fails]\label{ex:ch05-angle}
+Let $D = \R^2\setminus\{(0,0)\}$ and
+\[
+  M = \frac{-y}{x^2+y^2},\qquad N = \frac{x}{x^2+y^2} .
+\]
+\emph{Test.} By the quotient rule,
+$\pder{M}{y} = \frac{-(x^2+y^2) + 2y^2}{(x^2+y^2)^2} = \frac{y^2 - x^2}{(x^2+y^2)^2}$
+and $\pder{N}{x} = \frac{(x^2+y^2) - 2x^2}{(x^2+y^2)^2} = \frac{y^2-x^2}{(x^2+y^2)^2}$:
+equal on $D$.
+
+\emph{Not exact on $D$.} Suppose $F$ were a potential on $D$. Along the unit
+circle $\gamma(\theta) = (\cos\theta,\sin\theta)$, by the chain rule
+\begin{align*}
+  \der{}{\theta}F(\gamma(\theta))
+  &= M\der{x}{\theta} + N\der{y}{\theta}
+   = (-\sin\theta)(-\sin\theta) + (\cos\theta)(\cos\theta) = 1,
+\end{align*}
+so $F(\gamma(2\pi)) - F(\gamma(0)) = 2\pi$. But $\gamma(2\pi) = \gamma(0)$, a
+contradiction.
+
+\emph{Exact on smaller domains.} On the half-plane $x>0$ (a region that
+contains every segment we need), $F = \arctan(y/x)$ is a potential: it is the
+polar angle $\theta$. The angle exists locally but cannot be defined
+continuously all the way around the origin. The solution curves of
+$-y\,\mathrm{d}x + x\,\mathrm{d}y = 0$ are, as $F = $ const shows, rays from
+the origin.
+\end{example}
+
+\subsection{Solving an exact equation by hand}
+
+Rather than memorizing \eqref{eq:ch05-potential}, integrate one equation and
+correct with the other:
+\begin{enumerate}[label=(\arabic*)]
+  \item Check $\pder{M}{y} = \pder{N}{x}$.
+  \item Integrate $\pder{F}{x} = M$ in $x$, with an unknown function $g(y)$ as
+        the ``constant'': $F = \int M\,\mathrm{d}x + g(y)$.
+  \item Differentiate in $y$ and set equal to $N$; this determines $g'(y)$.
+        (If $g'$ came out depending on $x$, step (1) was wrong.)
+  \item The solutions are $F(x,y) = c$; fit $c$ to initial data.
+\end{enumerate}
+
+\begin{example}[The motivating equation]\label{ex:ch05-motivation}
+Solve $(2xy + 1)\,\mathrm{d}x + (x^2 + 3y^2)\,\mathrm{d}y = 0$, $y(0) = 1$.
+
+\emph{Solution.}
+\begin{align*}
+  \pder{M}{y} &= 2x = \pder{N}{x} \why{exact on $\R^2$}\\
+  F &= \int(2xy + 1)\,\mathrm{d}x = x^2y + x + g(y) \why{$y$ held fixed}\\
+  \pder{F}{y} &= x^2 + g'(y) = x^2 + 3y^2 \;\Rightarrow\; g' = 3y^2,\ g = y^3
+     \why{match $N$}.
+\end{align*}
+So $x^2y + x + y^3 = c$, and $(0,1)$ gives $c = 1$:
+$x^2y + x + y^3 = 1$. Near $(0,1)$, $N = x^2 + 3y^2 = 3\neq0$, so by
+\cref{thm:ch05-level} this defines $y$ as a solution of the IVP near $x = 0$.
+\end{example}
+
+\begin{example}[A trigonometric potential]\label{ex:ch05-trig}
+Solve $(3x^2 + y\cos x)\,\mathrm{d}x + (\sin x - 4y^3)\,\mathrm{d}y = 0$.
+
+\emph{Solution.}
+\begin{align*}
+  \pder{M}{y} &= \cos x = \pder{N}{x} \why{exact}\\
+  F &= x^3 + y\sin x + g(y) \why{integrate $M$ in $x$}\\
+  \pder{F}{y} &= \sin x + g'(y) = \sin x - 4y^3 \;\Rightarrow\; g = -y^4 .
+\end{align*}
+Solutions: $x^3 + y\sin x - y^4 = c$.
+\end{example}
+
+% ------------------------------------------------------------
+\section{Integrating factors}\label{sec:ch05-integrating}
+
+\begin{definition}\label{def:ch05-if}
+A nonvanishing function $\mu$ with continuous first partials is an
+\emph{integrating factor} for \eqref{eq:ch05-form} on $D$ if
+$\mu M\,\mathrm{d}x + \mu N\,\mathrm{d}y = 0$ is exact on $D$.
+\end{definition}
+
+Multiplying by a nonvanishing $\mu$ does not change which curves are
+solutions (both equations say $M + N\der{y}{x} = 0$). On a rectangle, by
+\cref{thm:ch05-test}, $\mu$ is an integrating factor iff
+\begin{equation}\label{eq:ch05-if-pde}
+  \pder{(\mu M)}{y} = \pder{(\mu N)}{x}
+  \quad\Longleftrightarrow\quad
+  M\pder{\mu}{y} - N\pder{\mu}{x} = \mu\Bigl(\pder{N}{x} - \pder{M}{y}\Bigr).
+\end{equation}
+This is a \emph{partial} differential equation for $\mu$, generally harder than
+the original problem. We look for $\mu$ depending on one variable only.
+
+\begin{theorem}[One-variable integrating factors]\label{thm:ch05-if-special}
+Let $M,N$ have continuous first partials on a rectangle $R$.
+\begin{enumerate}[label=(\alph*)]
+  \item If $N\neq 0$ and $\dfrac{\pder{M}{y} - \pder{N}{x}}{N} = \rho(x)$ depends
+        on $x$ only, then $\mu(x) = e^{\int\rho(x)\,\mathrm{d}x}$ is an integrating
+        factor.
+  \item If $M\neq0$ and $\dfrac{\pder{N}{x} - \pder{M}{y}}{M} = \sigma(y)$ depends
+        on $y$ only, then $\mu(y) = e^{\int\sigma(y)\,\mathrm{d}y}$ is an integrating
+        factor.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+(a) For $\mu = \mu(x)$, $\pder{\mu}{y} = 0$, so \eqref{eq:ch05-if-pde} reads
+$-N\der{\mu}{x} = \mu\bigl(\pder{N}{x} - \pder{M}{y}\bigr)$, i.e.
+$\der{\mu}{x} = \rho(x)\mu$. The given $\mu$ solves this (it is positive, and
+$\der{\mu}{x} = \rho\mu$ by the chain rule). (b) is the same computation with
+the roles of $x$ and $y$ exchanged.
+\end{proof}
+
+\begin{example}[Linear equations, revisited]\label{ex:ch05-linear}
+Write $\der{y}{x} + p(x)y = q(x)$ as $\bigl(p(x)y - q(x)\bigr)\mathrm{d}x + \mathrm{d}y = 0$.
+Then $\frac{\pder{M}{y} - \pder{N}{x}}{N} = \frac{p - 0}{1} = p(x)$, so
+$\mu = e^{\int p}$: \cref{thm:ch05-if-special}(a) \emph{is} the integrating
+factor of Chapter~4.
+\end{example}
+
+\begin{example}[An integrating factor in $x$]\label{ex:ch05-mu-x}
+Solve $(x^2 + y^2 + x)\,\mathrm{d}x + xy\,\mathrm{d}y = 0$.
+
+\emph{Solution.}
+\begin{align*}
+  \pder{M}{y} &= 2y,\quad \pder{N}{x} = y \why{not exact}\\
+  \frac{\pder{M}{y} - \pder{N}{x}}{N} &= \frac{y}{xy} = \frac1x
+     \why{depends on $x$ only, for $xy\neq 0$}\\
+  \mu &= e^{\ln|x|} = |x|;\ \text{take } \mu = x \why{a constant multiple is fine}\\
+  (x^3 + xy^2 + x^2)\,\mathrm{d}x &+ x^2y\,\mathrm{d}y = 0
+     \why{check: both mixed partials are $2xy$}\\
+  F &= \frac{x^4}{4} + \frac{x^2y^2}{2} + \frac{x^3}{3}
+     \why{integrate in $x$; then $g'(y) = 0$}.
+\end{align*}
+Solutions: $3x^4 + 6x^2y^2 + 4x^3 = c$. \emph{Care:} $\mu = x$ vanishes on the
+line $x = 0$. That line is itself a solution curve of the original form
+($\mathrm{d}x = 0$ along it, and $M\cdot 0 + N\,\mathrm{d}y = 0$ since $N = 0$
+there), and it is the level set $c = 0$ of $F$ only by accident. Whenever $\mu$
+vanishes or blows up, check those curves separately.
+\Cref{fig:ch05-levels} shows the level curves.
+\end{example}
+
+\begin{figure}[ht]
+  \centering
+  \input{figures/ch05_levels}
+  \caption{Solution curves $\tfrac{x^4}{4} + \tfrac{x^2y^2}{2} + \tfrac{x^3}{3} = c$
+  of \cref{ex:ch05-mu-x} for $c\in\{-0.06,-0.02,0.05,0.3,1\}$. The
+  $y$-axis is also a solution curve.}
+  \label{fig:ch05-levels}
+\end{figure}
+
+\begin{example}[An integrating factor in $y$]\label{ex:ch05-mu-y}
+Solve $y\,\mathrm{d}x + (2x - ye^y)\,\mathrm{d}y = 0$.
+
+\emph{Solution.}
+\begin{align*}
+  \frac{\pder{N}{x} - \pder{M}{y}}{M} &= \frac{2 - 1}{y} = \frac1y
+     \;\Rightarrow\;\mu = y \why{\cref{thm:ch05-if-special}(b)}\\
+  y^2\,\mathrm{d}x &+ (2xy - y^2e^y)\,\mathrm{d}y = 0 \why{mixed partials $2y$}\\
+  F &= xy^2 + g(y),\quad 2xy + g'(y) = 2xy - y^2e^y\\
+  g &= -\int y^2e^y\,\mathrm{d}y = -(y^2 - 2y + 2)e^y \why{parts twice}.
+\end{align*}
+Solutions: $xy^2 - (y^2 - 2y + 2)e^y = c$, together with $y\equiv 0$ (where
+$\mu$ vanishes; check: $M = 0$ and $\mathrm{d}y = 0$ there).
+\end{example}
+
+\begin{example}[Needs care: many integrating factors, different losses]\label{ex:ch05-many}
+For $y\,\mathrm{d}x - x\,\mathrm{d}y = 0$, each of
+$\mu = \frac1{x^2}$, $\frac1{y^2}$, $\frac{1}{xy}$, $\frac{1}{x^2+y^2}$ is an
+integrating factor on a suitable region:
+\[
+  \frac{y\,\mathrm{d}x - x\,\mathrm{d}y}{x^2} = -\mathrm{d}\Bigl(\frac yx\Bigr),\quad
+  \frac{y\,\mathrm{d}x - x\,\mathrm{d}y}{y^2} = \mathrm{d}\Bigl(\frac xy\Bigr),\quad
+  \frac{y\,\mathrm{d}x - x\,\mathrm{d}y}{xy} = \mathrm{d}\ln\Bigl|\frac xy\Bigr| .
+\]
+All describe lines through the origin, but $\mu = 1/x^2$ is undefined on $x = 0$
+and so its potential $y/x$ cannot produce the solution $x = 0$; $\mu = 1/y^2$
+loses $y = 0$; $\mu = 1/(xy)$ loses both. The region of validity of an
+integrating factor is part of the answer. (\Cref{prob:ch05-h3} explains why the
+ratio of two integrating factors is always constant along solution curves.)
+\end{example}
+
+% ------------------------------------------------------------
+\section{Pitfalls}\label{sec:ch05-pitfalls}
+
+\begin{pitfall}[Testing the wrong partials]\label{pit:ch05-wrong-test}
+The test is $\pder{M}{y} = \pder{N}{x}$, ``cross'' partials. Checking
+$\pder{M}{x} = \pder{N}{y}$ tests nothing. Mnemonic: $M$ goes with
+$\mathrm{d}x$, so its \emph{other} variable is $y$.
+\end{pitfall}
+
+\begin{pitfall}[A constant instead of a function]\label{pit:ch05-constant}
+When integrating $\pder{F}{x} = M$ in $x$, the ``constant'' may depend on $y$:
+write $+\,g(y)$, never $+\,C$. Otherwise you will find an $F$ whose
+$y$-derivative does not equal $N$.
+\end{pitfall}
+
+\begin{pitfall}[Double counting]\label{pit:ch05-double}
+Integrating $M$ in $x$ and $N$ in $y$ separately and \emph{adding} the results
+counts the mixed terms twice: for $2xy\,\mathrm{d}x + x^2\,\mathrm{d}y$, adding
+gives $2x^2y$, but $F = x^2y$. Use the procedure, or take the union of terms
+without repetition and then \emph{check} by differentiating.
+\end{pitfall}
+
+\begin{pitfall}[Ignoring the domain]\label{pit:ch05-domain}
+$\pder{M}{y} = \pder{N}{x}$ guarantees a potential on rectangles (more
+generally on star-shaped regions: \cref{prob:ch05-h2}), not on domains with
+holes (\cref{ex:ch05-angle}).
+\end{pitfall}
+
+\begin{pitfall}[Forgetting where $\mu$ vanishes]\label{pit:ch05-mu-zero}
+An integrating factor can add spurious curves (where $\mu = 0$) or hide genuine
+ones (where $\mu$ is undefined). Check those curves in the \emph{original}
+equation.
+\end{pitfall}
+
+% ------------------------------------------------------------
+\section{Problems}\label{sec:ch05-problems}
+
+\subsection*{Warm-up}
+
+\begin{problem}{W}\label{prob:ch05-w1}
+Which are exact on $\R^2$?
+(a) $(2x + y)\,\mathrm{d}x + (x - 2y)\,\mathrm{d}y = 0$;
+(b) $y^2\,\mathrm{d}x + (2xy + 1)\,\mathrm{d}y = 0$;
+(c) $(x - y)\,\mathrm{d}x + (x + y)\,\mathrm{d}y = 0$.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch05-w2}
+Solve $(2x + y)\,\mathrm{d}x + (x - 2y)\,\mathrm{d}y = 0$, $y(1) = 0$.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch05-w3}
+Solve $(e^x\sin y + 2x)\,\mathrm{d}x + e^x\cos y\,\mathrm{d}y = 0$.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch05-w4}
+Find $k$ so that $(xy^2 + kx^2y)\,\mathrm{d}x + (x^3 + x^2y)\,\mathrm{d}y = 0$ is
+exact, and solve it.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch05-w5}
+Show that a separable equation $\der{y}{x} = g(x)h(y)$ becomes exact after
+division by $h(y)$, and relate the potential to $H$ and $G$ of
+\cref{thm:ch03-separation}.
+\end{problem}
+
+\subsection*{Core}
+
+\begin{problem}{C}\label{prob:ch05-c1}
+Solve $(y\cos x + 2xe^y)\,\mathrm{d}x + (\sin x + x^2e^y - 1)\,\mathrm{d}y = 0$,
+$y(0) = 0$.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch05-c2}
+Find an integrating factor and solve $(3xy + y^2)\,\mathrm{d}x + (x^2 + xy)\,\mathrm{d}y = 0$.
+List any solution curves the integrating factor might add or hide.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch05-c3}
+Find an integrating factor and solve $y\,\mathrm{d}x + (y^2 - x)\,\mathrm{d}y = 0$.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch05-c4}
+Starting from \cref{ex:ch05-linear}, compute the potential $F$ of
+$e^{P(x)}\bigl[(p y - q)\,\mathrm{d}x + \mathrm{d}y\bigr]$ and show that $F = c$
+reproduces formula \eqref{eq:ch04-formula}.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch05-c5}
+Solve $(y^2 + 2x)\,\mathrm{d}x + 2xy\,\mathrm{d}y = 0$, $y(1) = 1$, explicitly,
+and find the maximal interval of the solution $y(x)$.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch05-c6}
+For the form of \cref{ex:ch05-angle}, compute $\int_\gamma M\,\mathrm{d}x + N\,\mathrm{d}y$
+along the circle of radius $2$ centred at $(3,0)$, and explain the answer using
+the potential on $x>0$.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch05-c7}
+Find $m, n$ such that $x^my^n$ is an integrating factor of
+$(y^2 + 2xy)\,\mathrm{d}x - x^2\,\mathrm{d}y = 0$, solve the equation, and check
+whether $y\equiv0$ is a solution the integrating factor hides.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch05-c8}
+Show that $\mu = \dfrac{1}{x^2+y^2}$ is an integrating factor of
+$(x^2 + y^2 + y)\,\mathrm{d}x - x\,\mathrm{d}y = 0$ on $x>0$, and solve the
+equation explicitly for $y$. (Recall \cref{ex:ch05-angle}.)
+\end{problem}
+
+\subsection*{Hard}
+
+\begin{problem}{H}\label{prob:ch05-h1}
+Show that \eqref{eq:ch05-form} has an integrating factor of the form
+$\mu = \phi(xy)$ if $\dfrac{\pder{M}{y} - \pder{N}{x}}{yN - xM}$ is a function of
+$z = xy$ alone, and find $\phi$. Apply this to
+$y(1 + xy)\,\mathrm{d}x + x(1 - xy)\,\mathrm{d}y = 0$.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch05-h2}
+(Poincar\'e lemma in the plane.) Let $D$ be open and \emph{star-shaped} about
+the origin ($(x,y)\in D\Rightarrow (tx,ty)\in D$ for $0\le t\le1$), and let
+$M, N$ have continuous first partials on $D$ with $\pder{M}{y} = \pder{N}{x}$.
+Prove that
+\[
+  F(x,y) = \int_0^1\bigl[xM(tx,ty) + yN(tx,ty)\bigr]\,\mathrm{d}t
+\]
+is a potential. Why does this not contradict \cref{ex:ch05-angle}?
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch05-h3}
+Let $\mu_1,\mu_2$ be integrating factors of \eqref{eq:ch05-form} on a rectangle,
+and $F_1$ a potential for $\mu_1M\,\mathrm{d}x + \mu_1N\,\mathrm{d}y$, with
+$\nabla F_1\neq 0$. Prove that $g = \mu_2/\mu_1$ is constant along every
+solution curve. Check this for $\mu_1 = 1/x^2$, $\mu_2 = 1/y^2$ in
+\cref{ex:ch05-many}.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch05-h4}
+(Exact second-order equations.) Prove that
+$P(x)y'' + Q(x)y' + R(x)y = 0$ (with $P\in C^2$, $Q\in C^1$) can be written as
+$\der{}{x}\bigl[P y' + (Q - P')y\bigr] = 0$ iff $P'' - Q' + R = 0$. Use this
+to find the general solution of $x^2y'' + 3xy' + y = 0$ on $x>0$.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch05-h5}
+Show that \eqref{eq:ch05-form} has an integrating factor of the form
+$\mu = \phi(x^2 + y^2)$ if
+$\dfrac{\pder{M}{y} - \pder{N}{x}}{2(xN - yM)}$ is a function of $z = x^2 + y^2$
+alone. Explain how this criterion produces the integrating factor of
+\cref{prob:ch05-c8}.
+\end{problem}
+
+\subsection*{Putnam/olympiad-style}
+
+\begin{problem}{P}\label{prob:ch05-p1}
+Let $M, N$ have continuous first partials on $\R^2$ with
+$\pder{M}{y} = \pder{N}{x}$ and $N(x,y)\ge 1$ everywhere. Prove that through
+every point of the plane passes exactly one solution curve of
+$M\,\mathrm{d}x + N\,\mathrm{d}y = 0$, and that it is the graph of a $C^1$
+function defined on all of $\R$.
+\end{problem}
+
+\begin{problem}{P}\label{prob:ch05-p2}
+Let $P, Q$ be real polynomials in $x,y$ with $\pder{P}{y} = \pder{Q}{x}$. Prove
+that $P\,\mathrm{d}x + Q\,\mathrm{d}y$ has a polynomial potential $F$ with
+$\deg F\le 1 + \max(\deg P,\deg Q)$, and that the bound can be attained.
+\end{problem}
+
+\begin{problem}{P}\label{prob:ch05-p3}
+Let $\gamma:[0,1]\to\R^2\setminus\{(0,0)\}$ be a $C^1$ closed curve. Prove that
+$\displaystyle\int_\gamma\frac{x\,\mathrm{d}y - y\,\mathrm{d}x}{x^2+y^2}\in 2\pi\mathbb{Z}$.
+\end{problem}
+
+% ------------------------------------------------------------
+\section{Hints}\label{sec:ch05-hints}
+
+\paragraph{Warm-up and core.}
+\cref{prob:ch05-w5}: divide by $h(y)$ and compare with \eqref{eq:ch03-HG}.
+\cref{prob:ch05-c2}: try \cref{thm:ch05-if-special}(a).
+\cref{prob:ch05-c3}: try \cref{thm:ch05-if-special}(b).
+\cref{prob:ch05-c5}: the level set is quadratic in $y$; which sign does the
+initial condition pick, and where does the radicand vanish?
+\cref{prob:ch05-c6}: the circle lies in $x>0$.
+\cref{prob:ch05-c7}: substitute $\mu = x^my^n$ into \eqref{eq:ch05-if-pde} and
+match monomials.
+\cref{prob:ch05-c8}: write the equation as
+$\mathrm{d}x + \frac{y\,\mathrm{d}x - x\,\mathrm{d}y}{x^2+y^2} = 0$.
+
+\hintfor{prob:ch05-h1}
+\begin{hintlevels}
+  \item Substitute $\mu = \phi(xy)$ into \eqref{eq:ch05-if-pde}; use
+        $\pder{\mu}{x} = y\phi'$ and $\pder{\mu}{y} = x\phi'$.
+  \item You get $\frac{\phi'(z)}{\phi(z)} = $ (the given ratio).
+  \item For the example the ratio is $-2/(xy)$.
+\end{hintlevels}
+
+\hintfor{prob:ch05-h2}
+\begin{hintlevels}
+  \item Differentiate under the integral sign (\cref{thm:ch05-leibniz}).
+  \item Use $\pder{M}{y} = \pder{N}{x}$ to recognize the integrand of
+        $\pder{F}{x}$ as $\der{}{t}\bigl[tM(tx,ty)\bigr]$.
+  \item The punctured plane is not star-shaped about any point.
+\end{hintlevels}
+
+\hintfor{prob:ch05-h3}
+\begin{hintlevels}
+  \item $\mu_2M\,\mathrm{d}x + \mu_2N\,\mathrm{d}y = g\,\mathrm{d}F_1$ is exact.
+  \item Exactness of $gF_{1,x}\,\mathrm{d}x + gF_{1,y}\,\mathrm{d}y$ gives
+        $g_yF_{1,x} = g_xF_{1,y}$.
+  \item The tangent to a solution curve is $(F_{1,y}, -F_{1,x})$; differentiate
+        $g$ in that direction.
+\end{hintlevels}
+
+\hintfor{prob:ch05-h4}
+\begin{hintlevels}
+  \item Expand $\der{}{x}[Py' + (Q-P')y]$ and compare coefficients.
+  \item For $x^2y'' + 3xy' + y$: $P'' - Q' + R = 2 - 3 + 1 = 0$.
+  \item The first integral is a \emph{linear first-order} equation (Chapter~4).
+\end{hintlevels}
+
+\hintfor{prob:ch05-h5}
+\begin{hintlevels}
+  \item With $\mu = \phi(z)$: $\pder{\mu}{x} = 2x\phi'$, $\pder{\mu}{y} = 2y\phi'$.
+  \item Substitute into \eqref{eq:ch05-if-pde} and divide.
+  \item For \cref{prob:ch05-c8}'s equation, factor $xN - yM$.
+\end{hintlevels}
+
+\hintfor{prob:ch05-p1}
+\begin{hintlevels}
+  \item Build a global potential (the plane is a rectangle).
+  \item For fixed $x$, the map $y\mapsto F(x,y)$ is strictly increasing with
+        derivative $\ge 1$. What is its range?
+  \item Each level set meets every vertical line exactly once; use
+        \cref{thm:ch00-ift} for smoothness.
+\end{hintlevels}
+
+\hintfor{prob:ch05-p2}
+\begin{hintlevels}
+  \item Use formula \eqref{eq:ch05-potential} with $(x_0,y_0) = (0,0)$.
+  \item Integrating a polynomial in one variable raises degree by at most one.
+  \item For attainment, try $P = x^n$, $Q = 0$.
+\end{hintlevels}
+
+\hintfor{prob:ch05-p3}
+\begin{hintlevels}
+  \item Construct a continuous angle along $\gamma$ by solving an ODE:
+        $\theta' = \frac{xy' - yx'}{x^2+y^2}$.
+  \item With $r = \sqrt{x^2+y^2}$ and $\theta(0)$ chosen so the claim holds at
+        $t = 0$, show $(x + iy)/(re^{i\theta})$ has zero derivative; hence
+        $x + iy = re^{i\theta}$ all along the curve.
+  \item The integral equals $\theta(1) - \theta(0)$, and
+        $e^{i\theta(1)} = e^{i\theta(0)}$.
+\end{hintlevels}
+
+% ------------------------------------------------------------
+\section{Further reading}\label{sec:ch05-reading}
+
+\begin{itemize}
+  \item \textcite[\S2.6]{BoyceDiPrima}: exact equations and integrating factors.
+  \item \textcite[Lessons 9--10]{TenenbaumPollard}: exact equations, recognizable
+        exact differentials, and integrating factors, with many examples of
+        ``inspection'' factors like those in \cref{ex:ch05-many}.
+  % VERIFY: Tenenbaum & Pollard Lesson 10 title (recognizable exact equations; integrating factors).
+  \item \textcite[Ch.~10]{Rudin}: differential forms, closed versus exact forms,
+        and the general Poincar\'e lemma behind \cref{ex:ch05-angle} and
+        \cref{prob:ch05-h2}.
+\end{itemize}
