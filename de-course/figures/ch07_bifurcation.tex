@@ -1,0 +1,20 @@
+% Equilibria of X' = X(1-X) - H: H = X(1-X).
+\begin{tikzpicture}[>=Stealth]
+\begin{axis}[deplot, axis lines=left, xmin=0, xmax=0.4, ymin=-0.1, ymax=1.1,
+  xlabel={$H$}, ylabel={$X$}, height=0.45\linewidth,
+  xtick={0,0.1,0.2,0.25,0.3,0.4}, xticklabels={$0$,$0.1$,$0.2$,$\frac14$,$0.3$,$0.4$}]
+  \addplot[blue, very thick, samples=100, domain=0:0.25]
+    {(1 + sqrt(1 - 4*x))/2};
+  \addplot[blue, very thick, dashed, samples=100, domain=0:0.25]
+    {(1 - sqrt(1 - 4*x))/2};
+  \addplot[gray, dotted, samples=2] coordinates {(0.25,-0.1) (0.25,1.1)};
+  % arrows at H = 0.1: up between branches, down outside
+  \draw[->, red!70!black, thick] (axis cs:0.1,0.2) -- (axis cs:0.1,0.75);
+  \draw[->, red!70!black, thick] (axis cs:0.1,1.05) -- (axis cs:0.1,0.93);
+  \draw[->, red!70!black, thick] (axis cs:0.1,0.08) -- (axis cs:0.1,-0.07);
+  % arrows at H = 0.33: always down
+  \draw[->, red!70!black, thick] (axis cs:0.33,1.0) -- (axis cs:0.33,0.6);
+  \draw[->, red!70!black, thick] (axis cs:0.33,0.5) -- (axis cs:0.33,0.1);
+  \node[anchor=west, font=\small] at (axis cs:0.255,0.55) {collapse};
+\end{axis}
+\end{tikzpicture}

@@ -1,0 +1,22 @@
+% f(x) = x(1-x)(x-2) and the phase line below it (same x-scale).
+\begin{tikzpicture}[>=Stealth]
+\begin{axis}[deplot, name=graph, scale only axis, width=0.6\linewidth, height=0.32\linewidth, xmin=-0.6, xmax=2.6, ymin=-0.9, ymax=0.9,
+  xlabel={$x$}, ylabel={$f(x)$}, ytick={-0.5,0.5}]
+  \addplot[blue, samples=120, domain=-0.6:2.6] {x*(1-x)*(x-2)};
+\end{axis}
+\begin{axis}[at={(graph.south west)}, anchor=north west, yshift=-0.6cm,
+  scale only axis, width=0.6\linewidth, height=1.2cm, xmin=-0.6, xmax=2.6, ymin=-1, ymax=1,
+  axis line style={draw=none}, ticks=none, clip=false]
+  \draw[thick] (axis cs:-0.6,0) -- (axis cs:2.6,0) node[right] {$x$};
+  \draw[->, very thick, red!70!black] (axis cs:-0.5,0) -- (axis cs:-0.12,0);
+  \draw[->, very thick, red!70!black] (axis cs:0.85,0) -- (axis cs:0.15,0);
+  \draw[->, very thick, red!70!black] (axis cs:1.15,0) -- (axis cs:1.85,0);
+  \draw[->, very thick, red!70!black] (axis cs:2.5,0) -- (axis cs:2.12,0);
+  \fill (axis cs:0,0) circle (2.2pt);
+  \node[below=3pt] at (axis cs:0,0) {$0$};
+  \filldraw[fill=white] (axis cs:1,0) circle (2.2pt);
+  \node[below=3pt] at (axis cs:1,0) {$1$};
+  \fill (axis cs:2,0) circle (2.2pt);
+  \node[below=3pt] at (axis cs:2,0) {$2$};
+\end{axis}
+\end{tikzpicture}

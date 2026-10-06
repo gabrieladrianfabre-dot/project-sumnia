@@ -1,0 +1,532 @@
+% ============================================================
+%  Chapter 7 — Autonomous equations
+% ============================================================
+\chapter{Autonomous Equations and the Phase Line}\label{ch:ch07}
+
+\begin{diagnostic}
+  \item Make a sign chart for $f(x) = x(1-x)(x-2)$.
+  \item State the mean value theorem, and use it to show: if $g$ is
+        differentiable on $[a,\infty)$ and $g'(t)\ge c>0$ there, then
+        $g(t)\to\infty$.
+  \item If $f$ is differentiable at $a$ and $f(a) = 0$, $f'(a) = -3$, what is
+        the sign of $f(x)$ for $x$ slightly larger than $a$? Justify from the
+        definition of the derivative.
+\end{diagnostic}
+
+% ------------------------------------------------------------
+\section{Motivation: how much fish can we take?}\label{sec:ch07-motivation}
+
+A fish stock grows logistically and is harvested at a constant rate $h$
+(tonnes per year):
+\begin{equation}\label{eq:ch07-harvest}
+  \der{x}{t} = rx\Bigl(1 - \frac xK\Bigr) - h .
+\end{equation}
+Managers want the largest $h$ that can be sustained forever. We could try to
+solve \eqref{eq:ch07-harvest} (it is separable), but the formula depends on
+$h$ in three different ways depending on the sign of a discriminant, and it
+hides the one fact that matters: \emph{above a critical harvest, the
+population collapses in finite time, whatever its starting size}. This
+chapter develops a qualitative method that reads such facts directly from the
+graph of the right-hand side.
+
+\notation{Newton: in this chapter $t$ is time and we write $\dot x = \der{x}{t}$,
+as is standard for dynamical systems. When we separate variables we switch back
+to Leibniz and say so.}
+
+% ------------------------------------------------------------
+\section{Definitions}\label{sec:ch07-defs}
+
+\begin{definition}[Autonomous equation; equilibrium]\label{def:ch07-autonomous}
+An \emph{autonomous} first-order equation is $\dot x = f(x)$. A point $x^*$ with
+$f(x^*) = 0$ is an \emph{equilibrium} (fixed point); the constant function
+$x(t)\equiv x^*$ is a solution.
+\end{definition}
+
+Throughout this chapter (except where said otherwise) $f$ is $C^1$ on $\R$, so
+every zero of $f$ satisfies the Lipschitz bound of
+\cref{prop:ch03-lipschitz-zero} (a $C^1$ function is Lipschitz near each point,
+by the mean value theorem).
+
+\begin{proposition}[Time-translation invariance]\label{prop:ch07-translation}
+If $x(t)$ solves $\dot x = f(x)$ on $(\alpha,\beta)$, then for every $c$,
+$t\mapsto x(t - c)$ solves it on $(\alpha + c,\beta + c)$.
+\end{proposition}
+\begin{proof}
+$\der{}{t}x(t-c) = \dot x(t-c) = f(x(t-c))$ by the chain rule. Note this uses
+that $f$ does not depend on $t$.
+\end{proof}
+
+\begin{definition}[Stability]\label{def:ch07-stability}
+An equilibrium $x^*$ is
+\begin{itemize}
+  \item \emph{stable} if for every $\varepsilon>0$ there is $\delta>0$ such that
+        every solution with $|x(0) - x^*|<\delta$ exists for all $t\ge0$ and
+        satisfies $|x(t) - x^*|<\varepsilon$ for all $t\ge 0$;
+  \item \emph{asymptotically stable} if it is stable and, in addition, there is
+        $\delta_0>0$ such that $|x(0) - x^*|<\delta_0$ implies $x(t)\to x^*$ as
+        $t\to\infty$;
+  \item \emph{unstable} if it is not stable.
+\end{itemize}
+\end{definition}
+
+The definition of stability is a statement about \emph{all} nearby solutions
+for \emph{all} future time; Chapter~20 uses the same definition in higher
+dimensions.
+
+% ------------------------------------------------------------
+\section{The phase line, with proofs}\label{sec:ch07-theory}
+
+\begin{theorem}[Structure of solutions on the line]\label{thm:ch07-structure}
+Let $f$ be $C^1$ and let $x(t)$ be a solution of $\dot x = f(x)$ with
+$f(x(t_0))\neq0$. Then:
+\begin{enumerate}[label=(\alph*)]
+  \item $x(t)$ never equals an equilibrium, and $x(t)$ is strictly monotone (increasing if $f(x(t_0))>0$, decreasing otherwise);
+  \item if the solution moves toward a \emph{finite} endpoint $e$ of $J_0$ (the
+        largest open interval containing $x(t_0)$ on which $f\neq0$), then it
+        exists for all $t\ge t_0$ and $x(t)\to e$ as $t\to\infty$. In particular,
+        if $x(t_0)$ lies between consecutive equilibria $a<b$, the solution
+        exists for all $t\in\R$ and tends to one of $a,b$ as $t\to\infty$ and to
+        the other as $t\to-\infty$;
+  \item if $x(t)$ exists and is bounded on $[t_0,\infty)$, then $x(t)$ tends to an
+        equilibrium as $t\to\infty$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Let $J_0$ be the largest open interval containing $x(t_0)$ on which $f\neq0$.
+
+(a) Its finite endpoints are zeros of the $C^1$ function $f$, hence Lipschitz
+zeros, so by \cref{cor:ch03-trapped} (with $g\equiv1$) the solution stays in
+$J_0$. On $J_0$, $f$ has constant sign (intermediate value theorem), so
+$\dot x = f(x(t))$ has constant sign, and $x$ is strictly monotone.
+
+(b) Say $f>0$ on $J_0$, so the motion is to the right and $e$ is the right
+endpoint (the other case is symmetric). Let $y_0 = x(t_0)$ and
+$H(y) = \int_{y_0}^{y}\frac{\mathrm{d}s}{f(s)}$ for $y\in[y_0,e)$. Then $H$ is
+increasing, and $H(y)\to+\infty$ as $y\to e^-$: since $f(e) = 0$ and $f$ is
+Lipschitz near $e$, $0<f(s)\le L(e - s)$, so
+$H(y)\ge\frac1L\ln\frac{e - y_1}{e - y}$ minus a constant, exactly as in the
+proof of \cref{prop:ch03-lipschitz-zero}. Hence $H$ maps $[y_0,e)$ onto
+$[0,\infty)$. In \cref{thm:ch03-separation}(c) we have $G(t) = t - t_0$, which
+lies in $H(J_0)\supseteq[0,\infty)$ for all $t\ge t_0$; so the solution exists
+for all $t\ge t_0$ and equals $H^{-1}(t - t_0)\to e$. If both endpoints are
+finite equilibria, apply the same argument to the time-reversed equation
+$\der{}{s}x(-s) = -f(x(-s))$, which moves toward the other endpoint.
+
+(c) A bounded monotone function has a limit $L$ as $t\to\infty$. Suppose
+$f(L)\neq0$, say $f(L)>0$. By continuity, $f(x(t))\ge \frac12 f(L)$ for all
+$t\ge T$ (some $T$). By the mean value theorem,
+$x(t) - x(T)\ge\frac12f(L)(t - T)\to\infty$, contradicting boundedness. So
+$f(L) = 0$.
+\end{proof}
+
+\begin{corollary}[No oscillations in one dimension]\label{cor:ch07-no-periodic}
+For $C^1$ $f$, $\dot x = f(x)$ has no nonconstant periodic solutions.
+\end{corollary}
+\begin{proof}
+A nonconstant solution is strictly monotone by \cref{thm:ch07-structure}(a), so
+it never repeats a value.
+\end{proof}
+
+\Cref{thm:ch07-structure} justifies the \emph{phase line}: draw the $x$-axis,
+mark the zeros of $f$, and put an arrow pointing right where $f>0$ and left
+where $f<0$. Every solution moves monotonically along an arrow and approaches
+the equilibrium it points to. Whether a solution can reach $\pm\infty$ in
+finite time is \emph{not} visible on the phase line
+(\cref{ex:ch07-blowup}).
+
+\begin{theorem}[Linearization test]\label{thm:ch07-linearization}
+Let $f$ be $C^1$ and $f(x^*) = 0$.
+\begin{enumerate}[label=(\alph*)]
+  \item If $f'(x^*)<0$, $x^*$ is asymptotically stable.
+  \item If $f'(x^*)>0$, $x^*$ is unstable.
+  \item If $f'(x^*) = 0$, no conclusion is possible from $f'(x^*)$ alone.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(a) By the definition of the derivative,
+$\frac{f(x)}{x - x^*}\to f'(x^*)<0$, so there is $\delta>0$ with $f(x)<0$ on
+$(x^*, x^*+\delta]$ and $f(x)>0$ on $[x^* - \delta, x^*)$. Take
+$x(0)\in(x^*, x^*+\delta)$. The interval $J_0$ containing $x(0)$ has left
+endpoint $x^*$, and the solution moves left, toward it. By
+\cref{thm:ch07-structure}(b) it exists for all $t\ge0$, decreases, and tends
+to $x^*$; in particular $|x(t) - x^*|\le|x(0) - x^*|$. The same holds from the
+left. Given $\varepsilon>0$, take $\delta' = \min(\delta,\varepsilon)$: then
+$|x(0) - x^*|<\delta'$ implies $|x(t) - x^*|<\varepsilon$ for all $t\ge0$, and
+$x(t)\to x^*$. So $x^*$ is asymptotically stable.
+
+(b) Choose $\delta>0$ with $f>0$ on $(x^*,x^*+\delta]$ (possible as in (a)).
+For $x(0)\in(x^*,x^*+\delta)$, let $H(y) = \int_{x(0)}^{y}\frac{\mathrm{d}s}{f(s)}$.
+Since $f\ge m>0$ on $[x(0),x^*+\delta]$, $H(x^*+\delta)\le\delta/m<\infty$; by
+\cref{thm:ch03-separation}(c) the solution $x = H^{-1}(t)$ reaches $x^*+\delta$
+at time $t = H(x^*+\delta)$. This holds however close $x(0)$ is to $x^*$, so
+with $\varepsilon = \delta$ no $\delta'$ satisfies the definition of stability.
+
+(c) $\dot x = -x^3$, $\dot x = x^3$, $\dot x = x^2$ all have $f(0) = f'(0) = 0$;
+the origin is asymptotically stable, unstable, and \emph{semi-stable}
+(attracting from one side, repelling from the other), respectively.
+\end{proof}
+
+% ------------------------------------------------------------
+\section{Worked examples}\label{sec:ch07-examples}
+
+\begin{example}[Reading a phase line]\label{ex:ch07-cubic}
+Analyze $\dot x = f(x) = x(1-x)(x-2)$.
+
+\emph{Solution.} Equilibria: $0,1,2$. Signs (product of three factors):
+\begin{center}
+\begin{tabular}{@{}lcccc@{}}
+  \toprule
+  interval & $x<0$ & $0<x<1$ & $1<x<2$ & $x>2$\\
+  \midrule
+  sign of $f$ & $+$ & $-$ & $+$ & $-$\\
+  \bottomrule
+\end{tabular}
+\end{center}
+So arrows point toward $0$ from both sides, away from $1$, and toward $2$.
+Linearization agrees: $f'(x) = (1-x)(x-2) - x(x-2) + x(1-x)$ gives
+$f'(0) = -2$, $f'(1) = 1$, $f'(2) = -2$. Hence $0$ and $2$ are asymptotically
+stable and $1$ is unstable. By \cref{thm:ch07-structure}(b), a solution with
+$x(0)\in(1,2)$ exists for all $t$, tends to $2$ as $t\to\infty$ and to $1$ as
+$t\to-\infty$. The basin of attraction of $0$ is $(-\infty,1)$, and that of
+$2$ is $(1,\infty)$ (\cref{fig:ch07-phase}).
+\end{example}
+
+\begin{figure}[ht]
+  \centering
+  \input{figures/ch07_phase_line}
+  \caption{Graph of $f(x) = x(1-x)(x-2)$ and the phase line of $\dot x = f(x)$
+  below it. Filled dots: stable equilibria; open dot: unstable.}
+  \label{fig:ch07-phase}
+\end{figure}
+
+\begin{example}[Needs care: the phase line does not show time]\label{ex:ch07-blowup}
+The phase lines of $\dot x = x$ and $\dot x = x^2$ for $x>0$ look identical:
+an arrow pointing to $+\infty$. But $x = x_0e^t$ exists for all $t$, while
+$x = \frac{x_0}{1 - x_0t}$ blows up at $t = 1/x_0$. Whether $+\infty$ is reached
+in finite time depends on whether $\int^\infty\frac{\mathrm{d}s}{f(s)}$
+converges (\cref{prob:ch03-h3}), which an arrow cannot show.
+\end{example}
+
+\begin{example}[Needs care: a non-Lipschitz equilibrium is reached]\label{ex:ch07-reach}
+For $\dot x = -x^{1/3}$ (real cube root), the phase line again shows arrows
+toward $0$ from both sides. But $f$ is not $C^1$ at $0$, and
+\cref{thm:ch07-structure}(a) fails: from $x(0) = 1$,
+\notation{Leibniz, to separate}
+$\int_x^1 s^{-1/3}\,\mathrm{d}s = t$ gives $\tfrac32\bigl(1 - x^{2/3}\bigr) = t$,
+so $x$ reaches $0$ at $t = \frac32$ and can stay there (or, for the
+time-reversed equation, leave it). ``Never reaches an equilibrium'' is a
+theorem about $C^1$ (Lipschitz) right sides, not about phase lines.
+\end{example}
+
+\begin{example}[Harvesting: a saddle-node bifurcation]\label{ex:ch07-harvest}
+Analyze \eqref{eq:ch07-harvest} completely.
+
+\emph{Step 1: remove units.} \notation{Leibniz, for the change of variables.}
+Put $X = x/K$ and $\tau = rt$. Then
+$\der{X}{\tau} = \frac{1}{rK}\der{x}{t}$, and \eqref{eq:ch07-harvest} becomes
+\begin{equation}\label{eq:ch07-harvest-dimless}
+  \der{X}{\tau} = X(1 - X) - H,\qquad H = \frac{h}{rK}.
+\end{equation}
+Three parameters became one. (Always nondimensionalize before analysing: it
+shows which combinations of parameters actually matter.)
+
+\emph{Step 2: equilibria.} $X^2 - X + H = 0$ gives
+$X_\pm = \frac{1\pm\sqrt{1 - 4H}}{2}$, real iff $H\le\frac14$.
+
+\emph{Step 3: stability.} With $F(X) = X(1-X) - H$, $F'(X) = 1 - 2X$, so
+$F'(X_+) = -\sqrt{1 - 4H}<0$ and $F'(X_-) = \sqrt{1-4H}>0$ for $H<\frac14$:
+$X_+$ is asymptotically stable (the sustainable population), and $X_-$ is
+unstable (a threshold: below it the stock declines). At $H = \frac14$ the two
+merge into the semi-stable $X = \frac12$; for $H>\frac14$ there are no
+equilibria and $F(X)\le\frac14 - H<0$ everywhere.
+
+\emph{Step 4: collapse.} For $H>\frac14$, $\dot X\le -(H - \tfrac14)<0$, so by
+the mean value theorem $X$ reaches $0$ in finite time from any start: the
+fishery is extinct (the model stops being meaningful at $X = 0$).
+
+\emph{Conclusion.} The maximum sustainable harvest is $h = rK/4$, at which the
+population sits at $K/2$, a semi-stable state: any further loss sends it into
+collapse. The change in the number of equilibria as $H$ crosses $\frac14$ is a
+\emph{saddle-node bifurcation} (\cref{fig:ch07-bifurcation}); Chapter~22
+studies bifurcations systematically.
+\end{example}
+
+\begin{figure}[ht]
+  \centering
+  \input{figures/ch07_bifurcation}
+  \caption{Bifurcation diagram of $\dot X = X(1-X) - H$: equilibria
+  $X_\pm(H)$. Solid: stable; dashed: unstable. Arrows show the direction of
+  motion for fixed $H$. At $H = \frac14$ the branches meet and disappear.}
+  \label{fig:ch07-bifurcation}
+\end{figure}
+
+% ------------------------------------------------------------
+\section{Pitfalls}\label{sec:ch07-pitfalls}
+
+\begin{pitfall}[Stability from the sign of $f$, not of $f'$]\label{pit:ch07-sign}
+``$f(x^*) = 0$ and $f$ is decreasing near $x^*$'' means stable; ``$f(x^*)>0$''
+means nothing, since $f(x^*) = 0$ at every equilibrium. Read the sign of $f$ on
+\emph{either side} of $x^*$, or the sign of $f'(x^*)$.
+\end{pitfall}
+
+\begin{pitfall}[Treating $f'(x^*) = 0$ as stable]\label{pit:ch07-degenerate}
+$f'(x^*) = 0$ is inconclusive: $\dot x = x^3$ is unstable and $\dot x = x^2$ is
+semi-stable. Use the sign chart instead.
+\end{pitfall}
+
+\begin{pitfall}[Reading time off a phase line]\label{pit:ch07-time}
+Arrows give direction, not speed. ``Tends to infinity'' may happen in finite
+time (\cref{ex:ch07-blowup}), and ``tends to an equilibrium'' may happen in
+finite time when $f$ is not Lipschitz (\cref{ex:ch07-reach}).
+\end{pitfall}
+
+\begin{pitfall}[Ignoring the physical domain]\label{pit:ch07-domain}
+In \eqref{eq:ch07-harvest-dimless}, the region $X<0$ has arrows and solutions,
+but no fish. A model's phase line is meaningful only on the set where the
+model's assumptions hold.
+\end{pitfall}
+
+% ------------------------------------------------------------
+\section{Problems}\label{sec:ch07-problems}
+
+\subsection*{Warm-up}
+
+\begin{problem}{W}\label{prob:ch07-w1}
+Draw the phase line of $\dot x = x^2 - 4$ and classify the equilibria.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch07-w2}
+Classify all equilibria of $\dot x = \sin x$.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch07-w3}
+Classify the equilibria of $\dot x = x(1-x)^2$; for which one does
+\cref{thm:ch07-linearization} fail to decide?
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch07-w4}
+Sketch the graph of a $C^1$ function $f$ for which $\dot x = f(x)$ has exactly
+three equilibria: $-1$ semi-stable, $0$ unstable, $2$ asymptotically stable.
+Is such an $f$ possible with all three equilibria satisfying
+$f'(x^*)\neq0$?
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch07-w5}
+Show that the change of variables $X = x/K$, $\tau = rt$ turns
+$\dot x = rx(1 - x/K) - Ex$ into an equation with a single parameter, and
+identify it.
+\end{problem}
+
+\subsection*{Core}
+
+\begin{problem}{C}\label{prob:ch07-c1}
+Draw phase lines of $\dot x = rx - x^3$ for $r<0$, $r = 0$, $r>0$, and draw the
+bifurcation diagram in the $(r,x)$ plane.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch07-c2}
+Prove directly from \cref{thm:ch07-structure} that two distinct solutions of
+$\dot x = f(x)$ ($f$ in $C^1$) that are both defined at time $t$ never take the
+same value at that time, and that every solution is determined, up to a time
+shift, by the value it takes at any one moment.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch07-c3}
+A fishery uses \emph{proportional} harvesting:
+$\dot x = rx(1 - x/K) - Ex$. Find the stable equilibrium for $0<E<r$, the
+yield $Y(E) = Ex^*$, the effort $E$ maximizing it, and the maximum yield.
+Compare the stability of the optimal state with \cref{ex:ch07-harvest}.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch07-c4}
+(Allee effect.) For $\dot x = rx\bigl(\frac xA - 1\bigr)\bigl(1 - \frac xK\bigr)$
+with $0<A<K$, draw the phase line, classify equilibria, and interpret $A$.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch07-c5}
+For the logistic equation $\dot x = rx(1 - x/K)$, compute the time a solution
+takes to go from $K/10$ to $9K/10$. Why does the answer not depend on the
+initial condition?
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch07-c6}
+For \eqref{eq:ch07-harvest-dimless} with $H>\frac14$ and $X(0) = 1$, compute
+exactly the time $\tau$ at which $X$ reaches $0$. What happens to this time as
+$H\to\frac14^+$?
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch07-c7}
+For $\dot x = (x-1)^2 - \varepsilon$, draw the phase lines for $\varepsilon<0$,
+$\varepsilon = 0$, $\varepsilon>0$. Explain why a semi-stable equilibrium is
+``fragile'' under perturbation of $f$, while a hyperbolic one ($f'(x^*)\neq0$)
+is not.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch07-c8}
+\notation{Newton, for mechanics.} A body moves vertically with
+$m\dot v = mg - kv|v|$ (down positive). Draw the phase line on the whole $v$-axis,
+and prove that every solution tends to $v_T = \sqrt{mg/k}$.
+\end{problem}
+
+\subsection*{Hard}
+
+\begin{problem}{H}\label{prob:ch07-h1}
+Let $f$ be $C^1$, $f(x^*) = 0$, $f'(x^*)<0$. Prove there are $c,\delta>0$ such
+that $|x(0) - x^*|<\delta$ implies
+$|x(t) - x^*|\le|x(0) - x^*|\,e^{-ct}$ for all $t\ge0$.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch07-h2}
+Let $f$ be merely \emph{continuous}. Solutions of $\dot x = f(x)$ need not be
+unique. Prove that, nevertheless, every solution is monotone (not
+necessarily strictly).
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch07-h3}
+(Hysteresis.) For $\dot x = h + x - \frac{x^3}{3}$, find the values of $h$ at
+which the number of equilibria changes, draw the bifurcation diagram in the
+$(h,x)$ plane, and describe what happens to a system sitting at the stable
+equilibrium as $h$ is increased very slowly from $-2$ to $2$ and then decreased
+back to $-2$.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch07-h4}
+(Comparison principle.) Let $f$ be $C^1$, $x$ a solution of $\dot x = f(x)$ and
+$u$ a differentiable function with $\dot u\le f(u)$ on $[0,T]$ and
+$u(0)\le x(0)$. Prove $u(t)\le x(t)$ on $[0,T]$.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch07-h5}
+(Ghost of a saddle-node.) Show that for $\varepsilon>0$, a solution of
+$\dot x = \varepsilon + x^2$ takes time exactly $\pi/\sqrt\varepsilon$ to go from
+$-\infty$ to $+\infty$. Then show that in \cref{prob:ch07-c6}, the collapse time
+$\tau(H)$ satisfies $\tau(H)\sqrt{H - \tfrac14}\to\pi$ as $H\to\frac14^+$, and
+explain the connection.
+\end{problem}
+
+\subsection*{Putnam/olympiad-style}
+
+\begin{problem}{P}[Putnam 2009 B5, \cite{Putnam2009}]\label{prob:ch07-p1}
+Let $f:(1,\infty)\to\R$ be a differentiable function such that
+\[
+  f'(x) = \frac{x^2 - f(x)^2}{x^2\bigl(f(x)^2 + 1\bigr)}\qquad\text{for all } x>1.
+\]
+Prove that $\displaystyle\lim_{x\to\infty}f(x) = \infty$.
+\end{problem}
+
+\begin{problem}{P}[Putnam 2010 B5, \cite{Putnam2010}]\label{prob:ch07-p2}
+Is there a strictly increasing function $f:\R\to\R$ such that
+$f'(x) = f(f(x))$ for all $x$?
+\end{problem}
+
+\begin{problem}{P}\label{prob:ch07-p3}
+Let $g:\R\to\R$ be $C^1$ and periodic with period $1$, and let $x$ solve
+$\dot x = g(x)$ for all $t\ge0$. Prove that $\lim_{t\to\infty}x(t)/t$ exists and
+compute it in terms of $g$.
+\end{problem}
+
+% ------------------------------------------------------------
+\section{Hints}\label{sec:ch07-hints}
+
+\paragraph{Warm-up and core.}
+\cref{prob:ch07-w4}: what does a sign chart with three zeros look like, and how
+must the signs alternate if every zero is hyperbolic?
+\cref{prob:ch07-c2}: if two solutions agreed at one time, use
+\cref{thm:ch03-separation}(c).
+\cref{prob:ch07-c5}: use the explicit solution of \cref{ex:ch03-logistic} and
+\cref{prop:ch07-translation}.
+\cref{prob:ch07-c6}: complete the square in $H - X + X^2$.
+\cref{prob:ch07-c8}: $f(v) = g - \frac kmv|v|$ is $C^1$; find its only zero.
+
+\hintfor{prob:ch07-h1}
+\begin{hintlevels}
+  \item Choose $\delta$ so that $\frac{f(x)}{x - x^*}\le -c$ on
+        $0<|x - x^*|<\delta$ (with $c = \frac12|f'(x^*)|$).
+  \item Differentiate $w(t) = (x(t) - x^*)^2$.
+  \item $\dot w\le -2cw$; multiply by $e^{2ct}$ as in \cref{lem:ch02-exp}.
+\end{hintlevels}
+
+\hintfor{prob:ch07-h2}
+\begin{hintlevels}
+  \item Suppose $x(t_1)<x(t_2)$ and $x(t_2)>x(t_3)$ with $t_1<t_2<t_3$.
+  \item Then $x$ takes some value $c$ in between both while increasing and while
+        decreasing; look at $\dot x$ there.
+  \item Find points where $\dot x = f(c)>0$ and $\dot x = f(c)<0$ for the same
+        $c$; make this precise with the mean value theorem on suitable
+        subintervals.
+\end{hintlevels}
+
+\hintfor{prob:ch07-h3}
+\begin{hintlevels}
+  \item The number of equilibria changes where $f = f' = 0$.
+  \item $f' = 1 - x^2$; compute $h$ at $x = \pm1$.
+  \item The stable branches are the outer ones; the state jumps when its branch
+        disappears.
+\end{hintlevels}
+
+\hintfor{prob:ch07-h4}
+\begin{hintlevels}
+  \item Let $w = u - x$ and suppose $w(t_2)>0$ for some $t_2$.
+  \item On an interval where $w>0$, $\dot w\le f(u) - f(x)\le Lw$ for a
+        Lipschitz constant $L$ on the relevant bounded range.
+  \item Take the last time $t_1<t_2$ with $w(t_1) = 0$ and show
+        $\der{}{t}\bigl(e^{-Lt}w\bigr)\le0$ on $[t_1,t_2]$.
+\end{hintlevels}
+
+\hintfor{prob:ch07-h5}
+\begin{hintlevels}
+  \item \notation{Leibniz.} Time $= \int_{-\infty}^{\infty}\frac{\mathrm{d}x}{\varepsilon + x^2}$.
+  \item In \eqref{eq:ch07-harvest-dimless}, put $Y = \tfrac12 - X$: then
+        $\dot Y = (H - \tfrac14) + Y^2$.
+  \item Most of the time is spent near $Y = 0$, where the equation looks like
+        the first part; the distance travelled outside a small window costs
+        bounded time.
+\end{hintlevels}
+
+\hintfor{prob:ch07-p1}
+\begin{hintlevels}
+  \item Compare $|f(x)|$ with $x$: where $|f(x)|<x$, $f'>0$.
+  \item Show $f'(x)>-1/x^2$ for all $x$, so $f$ is bounded below on every
+        $[x_0,\infty)$. If $f(x)<x$ somewhere, deduce that $|f(x)|<x$ holds at
+        some point and then for all larger $x$ (the curves $f = \pm x$ cannot be
+        crossed outward; compare slopes there).
+  \item Then $f$ is increasing with a limit $L\in(-\infty,\infty]$; if $L$ were
+        finite, what would $f'$ tend to?
+\end{hintlevels}
+
+\hintfor{prob:ch07-p2}
+\begin{hintlevels}
+  \item Explore what the equation forces: is $f'$ monotone? How does $f$
+        behave as $x\to+\infty$?
+  \item Show $f'$ is increasing and $f(x)\to\infty$; then that $f(x)>x$ for
+        large $x$, so that $f'(x) = f(f(x))>f(x)$ eventually.
+  \item Feed the resulting lower bound for $f$ back into $f'(x) = f(f(x))$ and
+        compare with the blow-up criterion of \cref{prob:ch03-h3}.
+\end{hintlevels}
+
+\hintfor{prob:ch07-p3}
+\begin{hintlevels}
+  \item If $g$ has a zero, what are all solutions like?
+  \item If $g>0$ (or $g<0$), the time to advance by one period is
+        $T = \int_0^1\frac{\mathrm{d}s}{g(s)}$, independent of the start.
+  \item Use \cref{prop:ch07-translation} and periodicity to show
+        $x(t + T) = x(t) + 1$.
+\end{hintlevels}
+
+% ------------------------------------------------------------
+\section{Further reading}\label{sec:ch07-reading}
+
+\begin{itemize}
+  \item \textcite[Ch.~2 and \S3.1]{Strogatz}: flows on the line, linear
+        stability analysis, and the saddle-node bifurcation; the clearest
+        introduction to this material.
+  \item \textcite[\S\S1.2--1.3]{HSD}: the logistic model, constant harvesting,
+        and bifurcations.
+  \item \textcite[\S2.5]{BoyceDiPrima}: autonomous equations and population
+        dynamics, including thresholds.
+  \item \textcite[\S4.3]{Strogatz}: bottlenecks and the ``ghost'' of a
+        saddle-node (\cref{prob:ch07-h5}).
+  % VERIFY: Strogatz 2nd ed. §4.3 ("Nonuniform oscillator") discusses ghosts and bottlenecks.
+\end{itemize}
