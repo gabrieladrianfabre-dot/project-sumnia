@@ -1,0 +1,555 @@
+% ============================================================
+%  Chapter 6 — Substitution methods
+% ============================================================
+\chapter{Substitution Methods}\label{ch:ch06}
+
+\begin{diagnostic}
+  \item If $y = xv(x)$, express $\der{y}{x}$ in terms of $v$ and $\der{v}{x}$.
+  \item For which $t$ is $f(tx,ty) = f(x,y)$ when $f(x,y) = \dfrac{x^2 + y^2}{xy}$?
+        And when $f(x,y) = \dfrac{x+1}{y}$?
+  \item If $v = y^{-2}$, express $\der{v}{x}$ in terms of $y$ and $\der{y}{x}$.
+\end{diagnostic}
+
+% ------------------------------------------------------------
+\section{Motivation}\label{sec:ch06-motivation}
+
+A population with logistic growth and \emph{seasonally varying} carrying capacity
+satisfies $\der{P}{t} = P - \dfrac{P^2}{K(t)}$. It is neither separable nor
+linear. But the change of variable $v = 1/P$ turns it into
+$\der{v}{t} + v = \dfrac{1}{K(t)}$, which Chapter~4 solves completely. Chapters
+3--5 gave you three solvable classes; this chapter is about \emph{transforming}
+an equation into one of them. We study three classical families (homogeneous,
+Bernoulli, Riccati), but the real skill is the general principle: a good
+substitution, and an honest account of which solutions it gains or loses.
+
+% ------------------------------------------------------------
+\section{The substitution principle}\label{sec:ch06-principle}
+
+\notation{Leibniz throughout this chapter: every substitution is a chain-rule
+computation.}
+
+\begin{theorem}[Changing the dependent variable]\label{thm:ch06-substitution}
+Let $\psi(x,u)$ have continuous first partials on an open set, with
+$\pder{\psi}{u}\neq 0$ there, and consider $\der{y}{x} = f(x,y)$. For
+differentiable $u$ on an interval $I$, put $y(x) = \psi(x,u(x))$. Then $y$
+solves $\der{y}{x} = f(x,y)$ on $I$ iff $u$ solves
+\begin{equation}\label{eq:ch06-transformed}
+  \der{u}{x} = \frac{f(x,\psi(x,u)) - \pder{\psi}{x}(x,u)}{\pder{\psi}{u}(x,u)} .
+\end{equation}
+\end{theorem}
+\begin{proof}
+By the chain rule, $\der{y}{x} = \pder{\psi}{x}(x,u) + \pder{\psi}{u}(x,u)\der{u}{x}$.
+So $\der{y}{x} = f(x,y)$ iff
+$\pder{\psi}{u}\der{u}{x} = f(x,\psi) - \pder{\psi}{x}$, and since
+$\pder{\psi}{u}\neq 0$ we may divide.
+\end{proof}
+
+The hypothesis $\pder{\psi}{u}\neq0$ is where solutions get lost. In every
+example below, ask: on which set is the substitution invertible, and which
+solutions live outside it?
+
+% ------------------------------------------------------------
+\section{Homogeneous-degree equations}\label{sec:ch06-homogeneous}
+
+\begin{definition}\label{def:ch06-homogeneous}
+$f(x,y)$ is \emph{homogeneous of degree $0$} if $f(tx,ty) = f(x,y)$ for all
+$t\neq 0$ (whenever both sides are defined). The equation $\der{y}{x} = f(x,y)$
+is then called \emph{homogeneous}.\footnote{Not to be confused with
+\emph{homogeneous linear} ($q\equiv 0$). The double use of the word is
+unfortunate and standard.}
+\end{definition}
+
+For such $f$ and $x\neq0$, taking $t = 1/x$ gives $f(x,y) = f(1,y/x) =: F(y/x)$:
+the slope depends only on the ratio $y/x$, so the direction field is constant
+along every ray from the origin. That suggests $v = y/x$.
+
+\begin{proposition}\label{prop:ch06-homogeneous}
+On $x>0$ or on $x<0$, the substitution $y = xv$ transforms $\der{y}{x} = F(y/x)$
+into the separable equation
+\[
+  x\der{v}{x} = F(v) - v .
+\]
+Every root $v^*$ of $F(v) = v$ gives a line solution $y = v^*x$.
+\end{proposition}
+\begin{proof}
+Apply \cref{thm:ch06-substitution} with $\psi(x,v) = xv$, so $\pder{\psi}{v} = x\neq0$
+and $\pder{\psi}{x} = v$: \eqref{eq:ch06-transformed} reads
+$\der{v}{x} = \frac{F(v) - v}{x}$. Roots of $F(v) - v$ are equilibria
+(\cref{prop:ch03-equilibria}).
+\end{proof}
+
+\begin{example}[A first homogeneous equation]\label{ex:ch06-homog1}
+Solve $\der{y}{x} = \dfrac{x^2 + y^2}{xy}$ on $x>0$, $y>0$.
+
+\emph{Solution.} $F(v) = \frac{1 + v^2}{v}$ (divide top and bottom by $x^2$).
+\begin{align*}
+  x\der{v}{x} &= \frac{1 + v^2}{v} - v = \frac1v \why{\cref{prop:ch06-homogeneous}}\\
+  \int v\,\mathrm{d}v &= \int\frac{\mathrm{d}x}{x} \why{separate; no equilibria}\\
+  \frac{v^2}{2} &= \ln x + C\;\Rightarrow\; y = x\sqrt{2\ln x + 2C}
+     \why{$y = xv$, $v>0$}.
+\end{align*}
+The solution with constant $C$ lives where $2\ln x + 2C>0$, i.e.\ $x>e^{-C}$:
+again a nonlinear equation chooses its own interval.
+\end{example}
+
+\begin{example}[Logarithmic spirals]\label{ex:ch06-spiral}
+Solve $\der{y}{x} = \dfrac{x + y}{x - y}$.
+
+\emph{Solution.} $F(v) = \frac{1+v}{1-v}$, and
+$F(v) - v = \frac{1 + v - v + v^2}{1 - v} = \frac{1 + v^2}{1-v}$, never zero:
+no line solutions.
+\begin{align*}
+  \int\frac{1 - v}{1 + v^2}\,\mathrm{d}v &= \int\frac{\mathrm{d}x}{x} \why{separate}\\
+  \arctan v - \tfrac12\ln(1 + v^2) &= \ln|x| + C \why{integrate}\\
+  \arctan\frac yx &= \ln|x| + \tfrac12\ln\Bigl(1 + \frac{y^2}{x^2}\Bigr) + C
+     = \ln\sqrt{x^2+y^2} + C .
+\end{align*}
+In polar coordinates (on a region where $\arctan(y/x)$ is a branch of the
+polar angle $\theta$) this is $\theta = \ln r + C$, i.e.\ $r = Ke^{\theta}$:
+logarithmic spirals (\cref{fig:ch06-spiral}). The implicit relation was
+the efficient form; solving for $y$ would hide the geometry.
+\end{example}
+
+\begin{figure}[ht]
+  \centering
+  \input{figures/ch06_spiral}
+  \caption{Direction field of $\der{y}{x} = \frac{x+y}{x-y}$, drawn as the
+  vectors $(x - y,\,x + y)$, with the spirals $\theta = \ln r + \varphi$
+  (i.e.\ $r = e^{-\varphi}e^{\theta}$) for $\varphi\in\{0,\frac{2\pi}3,\frac{4\pi}3\}$.}
+  \label{fig:ch06-spiral}
+\end{figure}
+
+\paragraph{Linear coefficients.} An equation
+$\der{y}{x} = \dfrac{a_1x + b_1y + c_1}{a_2x + b_2y + c_2}$ with
+$a_1b_2 - a_2b_1\neq0$ becomes homogeneous after translating the origin to the
+intersection $(h,k)$ of the two lines: with $X = x - h$, $Y = y - k$ the
+constants disappear and $\der{Y}{X} = \der{y}{x}$. If $a_1b_2 - a_2b_1 = 0$, the
+two linear forms are proportional and $u = a_1x + b_1y$ works (next paragraph).
+
+\paragraph{Functions of a linear combination.} For $\der{y}{x} = f(ax + by + c)$
+with $b\neq 0$, put $u = ax + by + c$; then $\der{u}{x} = a + bf(u)$ is
+separable (and autonomous).
+
+\begin{example}[$u = x + y$]\label{ex:ch06-xplusy}
+Solve $\der{y}{x} = (x + y)^2$.
+
+\emph{Solution.} $u = x + y$ gives $\der{u}{x} = 1 + \der{y}{x} = 1 + u^2$,
+so $\arctan u = x + C$ and
+\[
+  y = \tan(x + C) - x,\qquad -\tfrac\pi2 < x + C < \tfrac\pi2 .
+\]
+Every solution lives on an interval of length exactly $\pi$.
+\end{example}
+
+% ------------------------------------------------------------
+\section{Bernoulli equations}\label{sec:ch06-bernoulli}
+
+\begin{definition}\label{def:ch06-bernoulli}
+A \emph{Bernoulli equation} is
+\begin{equation}\label{eq:ch06-bernoulli}
+  \der{y}{x} + p(x)y = q(x)y^n,\qquad n\neq 0,1,
+\end{equation}
+with $p,q$ continuous. (For $n = 0$ or $1$ it is already linear.) For
+non-integer $n$ we consider $y>0$, or $y\ge0$ when $n>0$.
+\end{definition}
+
+\begin{proposition}[Bernoulli's substitution]\label{prop:ch06-bernoulli}
+On any interval where $y>0$ (or, for integer $n$, where $y\neq0$), $y$ solves
+\eqref{eq:ch06-bernoulli} iff $v = y^{1-n}$ solves the \emph{linear} equation
+\begin{equation}\label{eq:ch06-bernoulli-linear}
+  \der{v}{x} + (1-n)p(x)\,v = (1-n)q(x).
+\end{equation}
+If $n>0$, $y\equiv0$ is an additional solution not captured by $v$.
+\end{proposition}
+\begin{proof}
+Where $y\neq0$, $v = y^{1-n}$ is differentiable and
+\begin{align*}
+  \der{v}{x} &= (1-n)y^{-n}\der{y}{x} \why{chain rule}\\
+  &= (1-n)y^{-n}\bigl(-py + qy^n\bigr) = (1-n)\bigl(-p\,y^{1-n} + q\bigr)
+     \why{substitute \eqref{eq:ch06-bernoulli}}\\
+  &= -(1-n)p\,v + (1-n)q .
+\end{align*}
+Conversely, if $v>0$ solves \eqref{eq:ch06-bernoulli-linear}, then
+$y = v^{1/(1-n)}$ reverses each step (this is \cref{thm:ch06-substitution} with
+$\psi(x,v) = v^{1/(1-n)}$, $\pder{\psi}{v}\neq 0$ for $v>0$). Finally,
+$y\equiv0$ makes both sides of \eqref{eq:ch06-bernoulli} zero when $n>0$.
+\end{proof}
+
+\begin{example}[The logistic equation is Bernoulli]\label{ex:ch06-logistic}
+$\der{P}{t} = rP - \dfrac{r}{K}P^2$ is \eqref{eq:ch06-bernoulli} with
+$p = -r$, $q = -r/K$, $n = 2$. So $v = 1/P$ satisfies
+$\der{v}{t} + rv = \frac rK$, whence $v = \frac1K + Ce^{-rt}$ by
+\cref{cor:ch02-affine} and
+\[
+  P(t) = \frac{1}{1/K + Ce^{-rt}} .
+\]
+This is the same family as \cref{ex:ch03-logistic}, obtained with no partial
+fractions. The equilibrium $P\equiv0$ is the extra solution of
+\cref{prop:ch06-bernoulli}.
+\end{example}
+
+\begin{example}[Bernoulli with $n = 2$]\label{ex:ch06-bern2}
+Solve $\der{y}{x} + \dfrac{y}{x} = xy^2$ on $x>0$.
+
+\emph{Solution.} $n = 2$, $v = y^{-1}$:
+\begin{align*}
+  \der{v}{x} - \frac1x v &= -x \why{\eqref{eq:ch06-bernoulli-linear} with $1 - n = -1$}\\
+  \der{}{x}\Bigl(\frac vx\Bigr) &= -1 \why{integrating factor $\mu = 1/x$}\\
+  v &= -x^2 + Cx \;\Rightarrow\; y = \frac{1}{Cx - x^2}
+     \why{$y = 1/v$},
+\end{align*}
+together with $y\equiv0$. Each nonzero solution lives on an interval avoiding
+$x = C$.
+\end{example}
+
+\begin{example}[Needs care: $n = \tfrac12$, spurious roots and non-uniqueness]\label{ex:ch06-bern-half}
+Consider $\der{y}{x} - y = e^x\sqrt{y}$ for $y\ge0$.
+
+\emph{General solution.} $n = \frac12$, $v = y^{1/2}$ (so $v\ge0$):
+\begin{align*}
+  \der{v}{x} - \tfrac12 v &= \tfrac12e^x \why{\eqref{eq:ch06-bernoulli-linear}}\\
+  \der{}{x}\bigl(e^{-x/2}v\bigr) &= \tfrac12e^{x/2} \why{$\mu = e^{-x/2}$}\\
+  v &= e^x + Ce^{x/2},\qquad y = v^2\ \text{where } v\ge0 .
+\end{align*}
+
+\emph{IVP $y(0) = 1$.} Then $(1 + C)^2 = 1$, so $C = 0$ \emph{or} $C = -2$.
+But $v = \sqrt y\ge 0$ forces $v(0) = 1$, i.e.\ $C = 0$: the root $C = -2$
+gives $v(0) = -1$ and is spurious (it came from squaring). So $y = e^{2x}$.
+
+\emph{IVP $y(0) = 0$.} Now $y\equiv0$ is a solution. So is
+$y = \bigl(e^x - e^{x/2}\bigr)^2$ for $x\ge0$ (with $C = -1$; $v\ge0$ there),
+extended by $0$ for $x<0$. More: for every $a\ge0$,
+\[
+  y_a(x) = \begin{cases} 0, & x\le a,\\ \bigl(e^x - e^{(x+a)/2}\bigr)^2, & x>a,\end{cases}
+\]
+is a solution (at $x = a$ both one-sided derivatives are $0$). Infinitely many
+solutions: $\sqrt y$ is not Lipschitz at $0$, exactly as in
+\cref{ex:ch01-cube}.
+\end{example}
+
+% ------------------------------------------------------------
+\section{Riccati equations}\label{sec:ch06-riccati}
+
+\begin{definition}\label{def:ch06-riccati}
+A \emph{Riccati equation} is
+\begin{equation}\label{eq:ch06-riccati}
+  \der{y}{x} = q_0(x) + q_1(x)y + q_2(x)y^2,
+\end{equation}
+with $q_0,q_1,q_2$ continuous and $q_2\not\equiv0$.
+\end{definition}
+
+In general a Riccati equation cannot be solved in closed form
+(\cref{prob:ch06-p1} hints at why). But one solution unlocks all the others.
+
+\begin{theorem}[One solution gives all]\label{thm:ch06-riccati}
+Let $y_1$ solve \eqref{eq:ch06-riccati} on $I$. On any subinterval where
+$y\neq y_1$, $y$ solves \eqref{eq:ch06-riccati} iff $u = \dfrac{1}{y - y_1}$
+solves the linear equation
+\begin{equation}\label{eq:ch06-riccati-linear}
+  \der{u}{x} = -\bigl(q_1 + 2q_2y_1\bigr)u - q_2 .
+\end{equation}
+\end{theorem}
+\begin{proof}
+Write $y = y_1 + w$. Subtracting the equation for $y_1$ from the one for $y$:
+\begin{align*}
+  \der{w}{x} &= q_1(y - y_1) + q_2(y^2 - y_1^2) \why{$q_0$ cancels}\\
+             &= q_1w + q_2w(w + 2y_1) = (q_1 + 2q_2y_1)w + q_2w^2
+     \why{$y + y_1 = w + 2y_1$}.
+\end{align*}
+This is Bernoulli with $n = 2$; by \cref{prop:ch06-bernoulli}, where $w\neq0$,
+$u = w^{-1}$ satisfies \eqref{eq:ch06-riccati-linear}.
+\end{proof}
+
+The solution $y_1$ itself corresponds to ``$u = \infty$'', so it never appears
+in the formula $y = y_1 + 1/u$: list it separately.
+
+\begin{example}[Guessing $y_1$, then everything]\label{ex:ch06-riccati}
+Solve $\der{y}{x} = y^2 - \dfrac{2}{x^2}$ on $x>0$.
+
+\emph{Solution.} \emph{Find $y_1$.} The equation is unchanged by
+$x\mapsto tx$, $y\mapsto y/t$, which suggests $y = a/x$:
+$-\frac{a}{x^2} = \frac{a^2}{x^2} - \frac2{x^2}$, so $a^2 + a - 2 = 0$ and
+$a\in\{1,-2\}$. Take $y_1 = 1/x$.
+
+\emph{Linearize.} Here $q_0 = -2/x^2$, $q_1 = 0$, $q_2 = 1$:
+\begin{align*}
+  \der{u}{x} &= -\frac2x u - 1 \why{\eqref{eq:ch06-riccati-linear}}\\
+  \der{}{x}\bigl(x^2u\bigr) &= -x^2 \why{$\mu = x^2$}\\
+  u &= \frac{C - x^3/3}{x^2} = \frac{3C - x^3}{3x^2}
+     \why{integrate, divide by $x^2$}.
+\end{align*}
+So $y = \dfrac1x + \dfrac{3x^2}{3C - x^3}$, plus $y_1 = 1/x$ itself. The other
+guess $y = -2/x$ is the member $C = 0$: $\frac1x - \frac3x = -\frac2x$.
+\end{example}
+
+\paragraph{Riccati and second-order linear equations.}
+\notation{Lagrange, for compact algebra.} If $q_2$ is nonvanishing and
+$C^1$, the substitution $y = -\dfrac{u'}{q_2u}$ converts
+\eqref{eq:ch06-riccati} into the \emph{linear second-order} equation
+\begin{equation}\label{eq:ch06-riccati-second}
+  u'' - \Bigl(q_1 + \frac{q_2'}{q_2}\Bigr)u' + q_0q_2\,u = 0
+\end{equation}
+(\cref{prob:ch06-c6} for $q_2$ constant; the general case is the same
+computation). Poles of $y$ are zeros of $u$. This is one reason Part III
+studies second-order linear equations so carefully: they contain every
+Riccati equation.
+
+% ------------------------------------------------------------
+\section{Pitfalls}\label{sec:ch06-pitfalls}
+
+\begin{pitfall}[Forgetting the product rule]\label{pit:ch06-product}
+With $y = xv$, $\der{y}{x} = v + x\der{v}{x}$, not $\der{v}{x}$ and not
+$x\der{v}{x}$. Dropping the $v$ turns a separable equation into nonsense.
+\end{pitfall}
+
+\begin{pitfall}[Losing $y\equiv0$ in Bernoulli]\label{pit:ch06-bern-zero}
+For $n>0$, $y\equiv0$ is a solution that $v = y^{1-n}$ cannot represent. For
+$0<n<1$, solutions can even leave $0$ (\cref{ex:ch06-bern-half}).
+\end{pitfall}
+
+\begin{pitfall}[Spurious roots from squaring]\label{pit:ch06-spurious}
+When $y = v^2$ (or $y = v^{1/(1-n)}$ in general), an initial condition on $y$
+may give several values of $C$. Keep only those consistent with the sign
+convention for $v$.
+\end{pitfall}
+
+\begin{pitfall}[Losing the particular Riccati solution]\label{pit:ch06-riccati-lost}
+$y = y_1 + 1/u$ never equals $y_1$. Always add $y_1$ back to the list.
+\end{pitfall}
+
+\begin{pitfall}[``Homogeneous'' means two things]\label{pit:ch06-homog-name}
+$\der{y}{x} = F(y/x)$ (this chapter) and $y' + py = 0$ (Chapter~4) are different
+notions. When you write ``homogeneous'' in a solution, say which.
+\end{pitfall}
+
+% ------------------------------------------------------------
+\section{Problems}\label{sec:ch06-problems}
+
+\subsection*{Warm-up}
+
+\begin{problem}{W}\label{prob:ch06-w1}
+Which right-hand sides are homogeneous of degree $0$?
+(a) $\frac{x^2+y^2}{xy}$; (b) $\frac{x + y + 1}{x}$;
+(c) $\sin\frac yx + \frac yx$; (d) $\frac{x^3 + y^3}{x^2y}$.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch06-w2}
+Solve $\der{y}{x} = \dfrac{y + x}{x}$ on $x>0$ as a homogeneous equation, and
+again as a linear equation.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch06-w3}
+Solve the Bernoulli equation $\der{y}{x} + y = y^2$.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch06-w4}
+Solve $\der{y}{x} = (x - y + 1)^2$ with $y(0) = 1$. Then solve it with
+$y(0) = 0$, and explain why the second is easier.
+\end{problem}
+
+\begin{problem}{W}\label{prob:ch06-w5}
+Verify that $y_1 = x$ solves $\der{y}{x} = 1 + x^2 - y^2$, and write down the
+linear equation \eqref{eq:ch06-riccati-linear} for $u$. (Do not solve it.)
+\end{problem}
+
+\subsection*{Core}
+
+\begin{problem}{C}\label{prob:ch06-c1}
+Solve $\der{y}{x} = \dfrac{x^2 + 3y^2}{2xy}$, $y(1) = 1$, and find the maximal
+interval.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch06-c2}
+Solve $\der{y}{x} = \dfrac{x + y - 3}{x - y - 1}$ by translating to the
+intersection of the lines, and describe the solution curves geometrically.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch06-c3}
+Solve $x\der{y}{x} + y = x^4y^3$ on $x>0$. Which solutions does your
+substitution miss?
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch06-c4}
+A population obeys $\der{P}{t} = P - \bigl(1 + \tfrac12\sin t\bigr)P^2$. Find the
+unique $2\pi$-periodic positive solution and prove that every solution with
+$P(0)>0$ approaches it as $t\to\infty$. (Use \cref{prop:ch04-transient}.)
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch06-c5}
+Verify that $y_1 = -e^x$ solves
+$\der{y}{x} = e^{2x} + (1 + 2e^x)y + y^2$, and find all solutions.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch06-c6}
+Show that $y = u'/u$ transforms $y' + y^2 + 1 = 0$ into $u'' + u = 0$. Using
+$u = \cos(x - c)$, recover a one-parameter family of solutions and explain how
+the poles of $y$ correspond to zeros of $u$. Which solution of the Riccati
+equation is missing from this family, if any?
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch06-c7}
+Solve $\der{y}{x} = \cos(x - y)$. Find the line solutions first.
+\end{problem}
+
+\begin{problem}{C}\label{prob:ch06-c8}
+Solve the mirror problem (\cref{prob:ch02-p3}) a second way: show that
+$\der{y}{x} = \dfrac{-x + \sqrt{x^2+y^2}}{y}$ is homogeneous and solve it with
+$y = xv$.
+\end{problem}
+
+\subsection*{Hard}
+
+\begin{problem}{H}\label{prob:ch06-h1}
+Suppose only $f(tx,ty) = f(x,y)$ for $t>0$. Show $f(x,y) = F_+(y/x)$ on
+$x>0$ and $f(x,y) = F_-(y/x)$ on $x<0$, where $F_+$ and $F_-$ may differ. Then
+solve $\der{y}{x} = \dfrac yx + \dfrac{\sqrt{x^2+y^2}}{x}$ separately on $x>0$
+and $x<0$, and compare.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch06-h2}
+(Cross-ratio.) Let $y_1, y_2, y_3$ be three solutions of \eqref{eq:ch06-riccati}
+that are pairwise distinct at every point of $I$. Prove that every other
+solution $y$ satisfies
+\[
+  \frac{(y - y_1)(y_3 - y_2)}{(y - y_2)(y_3 - y_1)} = \text{constant}.
+\]
+So three solutions determine all the others \emph{without any integration}.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch06-h3}
+Let $y_1\neq y_2$ be two solutions of \eqref{eq:ch06-riccati}. Prove that every
+other solution satisfies
+$\dfrac{y - y_1}{y - y_2} = C\exp\Bigl(\displaystyle\int q_2\,(y_1 - y_2)\,\mathrm{d}x\Bigr)$,
+and check this against \cref{ex:ch06-riccati} using $y_1 = 1/x$, $y_2 = -2/x$.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch06-h4}
+(d'Alembert--Lagrange equation.) For $y = x\phi(p) + g(p)$ with
+$p = \der{y}{x}$ and $\phi(p)\neq p$, show that differentiating gives an
+equation that is \emph{linear in $x$ as a function of $p$}. Solve
+$y = 2xp - p^2$ in parametric form, and find the solutions with $p$ constant.
+\end{problem}
+
+\begin{problem}{H}\label{prob:ch06-h5}
+Let $p, q$ be continuous with $q>0$ on $\R$. Prove that the IVP
+$\der{y}{x} = p(x)y + q(x)\sqrt{y}$, $y(x_0) = 0$, has infinitely many
+solutions on $[x_0,\infty)$, and describe all of them.
+\end{problem}
+
+\subsection*{Putnam/olympiad-style}
+
+\begin{problem}{P}\label{prob:ch06-p1}
+Prove that the Riccati equation $\der{y}{x} = x^2 + y^2$ has no solution that is
+a rational function of $x$ (on any interval).
+\end{problem}
+
+\begin{problem}{P}\label{prob:ch06-p2}
+Find all continuous $f:[0,\infty)\to[0,\infty)$ such that
+$\displaystyle f(x)^2 = \int_0^x t\,f(t)\,\mathrm{d}t$ for all $x\ge0$.
+\end{problem}
+
+\begin{problem}{P}\label{prob:ch06-p3}
+Let $q$ be continuous on $[0,\infty)$. Assume (Chapter~9) that
+$u'' = qu$, $u(0) = 1$, $u'(0) = 0$ has a $C^2$ solution on $[0,\infty)$.
+\begin{enumerate}[label=(\alph*)]
+  \item Prove that if $q\ge 0$, the Riccati IVP $y' + y^2 = q$, $y(0) = 0$, has a
+        solution on all of $[0,\infty)$, and that it is nonnegative.
+  \item Show that for $q\equiv -1$ the solution exists exactly on
+        $[0,\frac\pi2)$.
+\end{enumerate}
+\end{problem}
+
+% ------------------------------------------------------------
+\section{Hints}\label{sec:ch06-hints}
+
+\paragraph{Warm-up and core.}
+\cref{prob:ch06-w4}: $u = x - y + 1$ has equilibria $u = \pm1$.
+\cref{prob:ch06-c1}: you should reach $1 + v^2 = Kx$.
+\cref{prob:ch06-c2}: the lines meet at $(2,1)$; compare \cref{ex:ch06-spiral}.
+\cref{prob:ch06-c3}: $n = 3$, $v = y^{-2}$.
+\cref{prob:ch06-c4}: with $v = 1/P$, look for a periodic $v$ of the form
+$\alpha + \beta\sin t + \gamma\cos t$.
+\cref{prob:ch06-c7}: $u = x - y$; $1 - \cos u = 2\sin^2(u/2)$.
+\cref{prob:ch06-c8}: rationalize $F(v) - v$.
+
+\hintfor{prob:ch06-h1}
+\begin{hintlevels}
+  \item For $x<0$ take $t = -1/x>0$.
+  \item On $x>0$: $\sqrt{x^2+y^2}/x = \sqrt{1+v^2}$; on $x<0$ it is
+        $-\sqrt{1+v^2}$.
+  \item $\int\frac{\mathrm{d}v}{\sqrt{1+v^2}} = \operatorname{arsinh}v$.
+\end{hintlevels}
+
+\hintfor{prob:ch06-h2}
+\begin{hintlevels}
+  \item By \cref{thm:ch06-riccati}, $u_j = 1/(y_j - y_1)$ ($j = 2,3$) and
+        $u = 1/(y - y_1)$ all solve the same linear equation.
+  \item Differences of solutions of a linear equation solve the homogeneous one,
+        so $(u - u_2)/(u_3 - u_2)$ is \ldots
+  \item Rewrite that quotient in terms of $y, y_1, y_2, y_3$.
+\end{hintlevels}
+
+\hintfor{prob:ch06-h3}
+\begin{hintlevels}
+  \item Compute $\der{}{x}\ln|y - y_1| - \der{}{x}\ln|y - y_2|$ using the
+        equations.
+  \item $\frac{(y-y_1)'}{y - y_1} = q_1 + q_2(y + y_1)$.
+  \item Subtract the analogous expression for $y_2$.
+\end{hintlevels}
+
+\hintfor{prob:ch06-h4}
+\begin{hintlevels}
+  \item Differentiate $y = x\phi(p) + g(p)$ in $x$, with $\der{y}{x} = p$.
+  \item You get $\bigl(p - \phi(p)\bigr)\der{x}{p} = x\phi'(p) + g'(p)$.
+  \item For $y = 2xp - p^2$: $-p\der{x}{p} = 2x - 2p$; then $y$ from the original
+        relation.
+\end{hintlevels}
+
+\hintfor{prob:ch06-h5}
+\begin{hintlevels}
+  \item $y\equiv0$ is one solution; use $v = \sqrt y$ for the others.
+  \item $v' = \frac p2 v + \frac q2$ with $v(a) = 0$ has a solution that is
+        positive for $x>a$ (why, using $q>0$?).
+  \item Glue $0$ on $[x_0,a]$ to $v^2$ on $[a,\infty)$, and prove every solution
+        is of this form (where can a solution leave $0$, and can it return?).
+\end{hintlevels}
+
+\hintfor{prob:ch06-p1}
+\begin{hintlevels}
+  \item Compare behaviour at a pole and at infinity.
+  \item At a pole of order $k$, $y'$ has order $k+1$ and $y^2$ has order $2k$.
+  \item At infinity, if $y\sim bx^m$, compare the growth of $y'$ with that of
+        $x^2 + y^2$ for $m\ge2$, $m = 1$, $m\le0$.
+\end{hintlevels}
+
+\hintfor{prob:ch06-p2}
+\begin{hintlevels}
+  \item Let $G(x) = \int_0^xtf(t)\,\mathrm{d}t$; then $f = \sqrt G$ and $G$ is
+        differentiable.
+  \item $G' = x\sqrt G$, $G(0) = 0$: a Bernoulli equation with a non-Lipschitz
+        zero.
+  \item Expect a family of solutions, as in \cref{ex:ch06-bern-half}; check
+        each candidate in the \emph{original} equation.
+\end{hintlevels}
+
+\hintfor{prob:ch06-p3}
+\begin{hintlevels}
+  \item Here $y = u'/u$ (compare \cref{prob:ch06-c6}).
+  \item For (a), show $u'\ge0$ and $u\ge1$ for as long as $u>0$, so $u$ never
+        vanishes.
+  \item For (b), $u = \cos x$.
+\end{hintlevels}
+
+% ------------------------------------------------------------
+\section{Further reading}\label{sec:ch06-reading}
+
+\begin{itemize}
+  \item \textcite[Lessons 7, 8, 11]{TenenbaumPollard}: homogeneous coefficients,
+        linear coefficients, and the Bernoulli equation, with many exercises.
+  % VERIFY: Tenenbaum & Pollard Lesson 7 (homogeneous coefficients) and Lesson 8 (linear coefficients).
+  \item \textcite[\S2.2 and the problems of \S2.4]{BoyceDiPrima}: homogeneous
+        equations, Bernoulli and Riccati equations.
+  % VERIFY: Boyce & DiPrima 10e, location of homogeneous/Bernoulli/Riccati exercises.
+  \item \textcite[Ch.~2]{Simmons}: the classical first-order methods with
+        historical notes on the Bernoullis and Riccati.
+\end{itemize}

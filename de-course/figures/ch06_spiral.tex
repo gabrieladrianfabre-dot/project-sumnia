@@ -1,0 +1,15 @@
+% Field (x - y, x + y) and log spirals theta = ln r + phi.
+\begin{tikzpicture}
+\begin{axis}[deplot, slopefield, axis equal image,
+  xmin=-3, xmax=3, ymin=-3, ymax=3,
+  domain=-3:3, y domain=-3:3, samples=13, xlabel={$x$}, ylabel={$y$}]
+  \addplot3[slopearrows,
+    quiver={u={(x-y)/sqrt((x-y)^2+(x+y)^2+1e-9)},
+            v={(x+y)/sqrt((x-y)^2+(x+y)^2+1e-9)}, scale arrows=0.3}] (x,y,0);
+  % theta = ln r + phi, parametrized by t = ln r
+  \pgfplotsinvokeforeach{0,2.0944,4.1888}{
+    \addplot[blue, samples=300, domain=-3.5:1.25, variable=\t]
+      ({exp(\t)*cos(deg(\t + #1))}, {exp(\t)*sin(deg(\t + #1))});
+  }
+\end{axis}
+\end{tikzpicture}
