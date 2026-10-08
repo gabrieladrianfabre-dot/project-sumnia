@@ -1,0 +1,74 @@
+% BulPriSA Science Speed-Round Reviewer (Grades 7-10)
+% Compile: latexmk -pdf main.tex   (or pdflatex twice; the "Items to verify" list needs 2 runs)
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=1.4cm,top=1.8cm,bottom=1.6cm,headsep=0.4cm]{geometry}
+\usepackage{microtype}
+\usepackage{multicol}
+\usepackage{enumitem}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{fancyhdr}
+\usepackage[colorlinks=true,linkcolor=MidnightBlue,urlcolor=MidnightBlue]{hyperref}
+
+\input{macros}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries BulPriSA Science Speed-Round Reviewer}\\[3pt]
+  {\large Junior High School Science, Grades 7--10 \,|\, SY 2026--2027}\\[2pt]
+  {\small Based on the DepEd MATATAG Three-Term Budgets of Work (Science 7--10), with a K-12 MELC appendix for Grade 10}
+\end{center}
+
+\begin{tcolorbox}[colback=gray!5,colframe=gray!60!black,boxrule=0.4pt,arc=1pt,
+  left=4pt,right=4pt,top=2pt,bottom=2pt,fontupper=\small,title=How to read this reviewer]
+\textbf{Format assumed:} multiple choice (conceptual and applied), about 20\,s per question, all grades mixed.\\
+\textbf{Card line:} \textbf{Q:} cue $\rightarrow$ \textbf{A:} \textit{answer} with a difficulty tag:
+\qatag{E} easy, \qatag{A} average, \qatag{D} difficult.\\
+\textbf{Orange boxes} list common confusions. These are the pairs most likely to show up as \emph{distractors} in multiple choice, so learn the distinguisher, not just the term.\\
+\textbf{Items tagged}\textsuperscript{\,\textcolor{red}{\textbf{[VERIFY]}}} were uncertain or conflicting across sources. They are collected in \emph{Items to verify} at the end.\\
+\textbf{Drill order:} grade sections first (cover the answer, say it aloud), then \emph{Rapid Fire}, then \emph{Cheat Sheets} the night before.
+\end{tcolorbox}
+
+{\small
+\setcounter{tocdepth}{2}
+\begin{multicols}{2}
+\tableofcontents
+\end{multicols}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancyhead[L]{\small\bfseries\leftmark}
+\fancyhead[R]{\small\rightmark}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\sectionmark}[1]{\markboth{#1}{}}
+\renewcommand{\subsectionmark}[1]{\markright{#1}}
+
+\clearpage
+\input{g7}
+\clearpage
+\input{g8}
+\clearpage
+\input{g9}
+\clearpage
+\input{g10}
+\clearpage
+\input{rapidfire}
+\clearpage
+\input{cheatsheets}
+\clearpage
+\input{sources}
+\clearpage
+\listofverify
+
+\end{document}

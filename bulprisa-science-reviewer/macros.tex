@@ -1,0 +1,70 @@
+% ---------------------------------------------------------------
+% macros.tex -- shared commands for the BulPriSA reviewer
+% ---------------------------------------------------------------
+\sisetup{per-mode=symbol}
+\setlength{\columnsep}{1.4em}
+\setlength{\columnseprule}{0.2pt}
+\raggedcolumns
+\setlength{\parindent}{0pt}
+\emergencystretch=2em
+\setlength{\headheight}{14pt}
+\setlist{nosep}
+
+% Difficulty colours and tag
+\definecolor{tagE}{HTML}{2E7D32}
+\definecolor{tagA}{HTML}{1565C0}
+\definecolor{tagD}{HTML}{C62828}
+\newcommand{\qatag}[1]{\textsuperscript{\textbf{\textcolor{tag#1}{#1}}}}
+
+% Card counters (reset per grade/part with \resetcards, printed with \cardstats)
+\newcounter{qaE}\newcounter{qaA}\newcounter{qaD}
+\newcommand{\resetcards}{\setcounter{qaE}{0}\setcounter{qaA}{0}\setcounter{qaD}{0}}
+\newcommand{\cardstats}{\par\medskip\noindent{\footnotesize\itshape Cards in this part:
+  \number\numexpr\value{qaE}+\value{qaA}+\value{qaD}\relax\
+  (E~\arabic{qaE}, A~\arabic{qaA}, D~\arabic{qaD})}\par}
+
+% \qa{question}{answer}{E|A|D}
+\newcommand{\qa}[3]{\par\noindent\hangindent=1em\hangafter=1
+  \stepcounter{qa#3}%
+  \textbf{Q:}~#1~$\rightarrow$~\textbf{A:}~\textit{#2}\,\qatag{#3}\par\vspace{1pt}}
+
+% \verify{text}: prints text with a visible [VERIFY] tag and logs it for the final list
+\newcommand{\verify}[1]{#1\textsuperscript{\,\textcolor{red}{\textbf{[VERIFY]}}}%
+  \addtocontents{vfy}{\protect\vfyline{\unexpanded{#1}}{\thepage}}}
+\newcommand{\vfyline}[2]{\par\noindent\hangindent=1em\hangafter=1
+  \textbullet~#1\dotfill p.\,#2\par}
+\makeatletter
+\newcommand{\listofverify}{%
+  \section*{Items to verify}
+  \markboth{Items to verify}{}
+  \addcontentsline{toc}{section}{Items to verify}
+  {\small Every \textcolor{red}{\textbf{[VERIFY]}} tag in this document, with its page.
+  These are facts that were uncertain, that changed recently, or where sources disagree.
+  Check each against the source named in \emph{Sources} (or ask your coach) before the contest.\par\medskip}
+  {\small\@starttoc{vfy}}}
+\makeatother
+
+% Common confusions
+\newtcolorbox{confbox}{enhanced,colback=orange!6,colframe=orange!65!black,boxrule=0.4pt,
+  arc=1pt,left=3pt,right=3pt,top=1pt,bottom=2pt,toptitle=0.5pt,bottomtitle=0.5pt,
+  fonttitle=\footnotesize\bfseries,fontupper=\footnotesize,title=Common confusions,
+  before skip=4pt,after skip=4pt}
+% \confusion{term A}{term B}{one-line distinguisher}
+\newcommand{\confusion}[3]{\par\noindent\hangindent=1em\hangafter=1
+  \textbf{#1} vs.\ \textbf{#2}: #3\par\vspace{1pt}}
+
+% Mnemonic line
+\newcommand{\mnemonic}[1]{\par\smallskip\noindent\hangindent=1em\hangafter=1
+  \textcolor{Plum}{\textbf{Mnemonic:}} #1\par}
+
+% Sub-headings inside a topic
+\newcommand{\kf}{\par\smallskip\noindent\textcolor{gray!70!black}{\scriptsize\bfseries KEY FACTS}\par}
+\newcommand{\cards}{\par\smallskip\noindent\textcolor{gray!70!black}{\scriptsize\bfseries QUICK CARDS}\par}
+\newenvironment{keyfacts}{\begin{itemize}[leftmargin=1em,label=\textbullet,itemsep=0.5pt]}{\end{itemize}}
+
+% Two-column body for each grade
+\newenvironment{gradebody}{\begin{multicols}{2}\small}{\end{multicols}}
+
+% Topic heading
+\newcommand{\topic}[1]{\subsubsection*{#1}\addcontentsline{toc}{subsubsection}{#1}}
+\setcounter{secnumdepth}{2}
