@@ -5,6 +5,8 @@ FILES
   main.tex         master file (compile this one)
   macros.tex       \qa, \verify, \confusion, \mnemonic and layout macros
   g7.tex ... g10.tex   one file per grade, organised Term > Topic
+  rw7.tex ... rw10.tex  real-world multiple-choice problems per grade
+                   (answers go to the Answer Key automatically)
   rapidfire.tex    mixed-grade scenario drill, grouped Easy / Average / Difficult
   cheatsheets.tex  compact tables (SI units, periodic table, EM spectrum, Earth, ...)
   sources.tex      DepEd curriculum basis per grade + fact-check URLs
@@ -25,8 +27,10 @@ HOW TO USE
      Cover the right half of each line, say the answer aloud, uncover, check.
   2. Orange "Common confusions" boxes are the likeliest multiple-choice
      distractors. Learn the one-line distinguisher, not just the terms.
-  3. Suggested cycle: one grade per session -> Rapid Fire with a 20 s timer
-     -> Cheat Sheets the night before.
+  3. Suggested cycle: one grade per session: recall cards -> that grade's
+     Real-World Problems with a 20 s timer per item -> check the Answer Key
+     -> Rapid Fire -> Cheat Sheets the night before.
+     The problems are practice items in BulPriSA style, not past questions.
   4. Anything tagged [VERIFY] is collected on the last page with its page
      number. Confirm those with your coach before the contest.
   5. Card counts per part are printed at the end of each grade section.

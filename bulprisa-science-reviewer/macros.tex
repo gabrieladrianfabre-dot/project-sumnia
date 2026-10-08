@@ -68,3 +68,28 @@
 % Topic heading
 \newcommand{\topic}[1]{\subsubsection*{#1}\addcontentsline{toc}{subsubsection}{#1}}
 \setcounter{secnumdepth}{2}
+
+% ---------------------------------------------------------------
+% Real-world multiple-choice problems
+% \probset{7} starts a grade's set (numbers 7.1, 7.2, ...)
+% \mcq{scenario + question}{A}{B}{C}{D}{correct letter}{one-line why}{E|A|D}
+% Answers are logged to the answer key (\answerkey), not printed inline.
+% ---------------------------------------------------------------
+\newcounter{prob}
+\newcommand{\probprefix}{}
+\newcommand{\probset}[1]{\renewcommand{\probprefix}{#1}\setcounter{prob}{0}%
+  \addtocontents{ans}{\protect\ansgrade{#1}}}
+\newcommand{\mcq}[8]{\stepcounter{prob}%
+  \par\smallskip\noindent\hangindent=1.2em\hangafter=1
+  \textbf{\probprefix.\arabic{prob}}\qatag{#8}~#1\par
+  {\leftskip=1.2em\noindent\textbf{(A)}~#2\hspace{1em plus 0.5em}\textbf{(B)}~#3\hspace{1em plus 0.5em}\textbf{(C)}~#4\hspace{1em plus 0.5em}\textbf{(D)}~#5\par}%
+  \addtocontents{ans}{\protect\ansline{\probprefix.\arabic{prob}}{#6}{\unexpanded{#7}}}}
+\newcommand{\probstats}{\par\medskip\noindent{\footnotesize\itshape Problems in this set: \arabic{prob}}\par}
+\newcommand{\ansgrade}[1]{\par\medskip\noindent{\normalsize\bfseries Grade #1}\par\smallskip}
+\newcommand{\ansline}[3]{\par\noindent\hangindent=1em\hangafter=1\textbf{#1}~\textbf{#2}: #3\par}
+\makeatletter
+\newcommand{\answerkey}{%
+  \section{Answer Key: Real-World Problems}
+  {\small Check yourself only after attempting a whole set under time. Each line gives the item, the correct letter, and why. If you missed one, find the matching topic in that grade's recall cards.\par}
+  \begin{multicols}{2}\footnotesize\@starttoc{ans}\end{multicols}}
+\makeatother
